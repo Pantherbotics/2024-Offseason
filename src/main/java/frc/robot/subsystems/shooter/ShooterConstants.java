@@ -1,0 +1,25 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.subsystems.shooter;
+
+/** Add your docs here. */
+public final class ShooterConstants {
+    
+    public static final int kPivotMotorID = 1;
+    public static final int kEncoderID = 0;
+    public static final double kHandoffPosition = 0.0;
+
+
+    public static final double dt = 0.02; // PID update period
+    public static final double Ks = 0.0;
+    public static final double Kv = 0.0;
+    public static final double Kg = 0.0;
+    public static final double Ka = 0.0;
+
+    public static final double Kp = 0.0;
+    public static final double Ki = 0.0;
+    public static final double Kd = 0.0;
+
+}
