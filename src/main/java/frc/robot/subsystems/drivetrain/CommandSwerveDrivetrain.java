@@ -88,14 +88,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
     }
 
-    public Command pathfindToPosition(Pose2d targetPose){
+    /*public Command pathfindToPosition(Pose2d targetPose){
         return (AutoBuilder.pathfindToPose(
                 targetPose,
-                TunerConstants.kPathfindingConstraints,
+                DriveConstants.kPathfindingConstraints,
                 0, // Goal end velocity in meters/sec
                 0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
         ));
-    }
+    }*/
 
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
