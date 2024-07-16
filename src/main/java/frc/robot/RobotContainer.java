@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drivetrain.DriveConstants;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.ShooterPivot;
@@ -28,6 +29,8 @@ public class RobotContainer {
     shooterPivot = new ShooterPivot();
     intake = new Intake();
     climber = new Climber();
+
+    drivetrain.setDefaultCommand(DriveConstants.driveCommand(drivetrain, mainController.getHID()).ignoringDisable(true));
     configureBindings();
   }
 

@@ -22,7 +22,7 @@ public class DriveConstants {
       .withDeadband(kMaxSpeed * 0.05).withRotationalDeadband(kMaxAngularRate * 0.05)
       .withDriveRequestType(DriveRequestType.Velocity);
 
-    public Command driveCommand(CommandSwerveDrivetrain drivetrain, XboxController joystick){
+    public static Command driveCommand(CommandSwerveDrivetrain drivetrain, XboxController joystick){
       return drivetrain.applyRequest(
         () -> drive.withVelocityX(-joystick.getLeftY() * kMaxSpeed)
         .withVelocityY(-joystick.getLeftX() * kMaxSpeed) 
