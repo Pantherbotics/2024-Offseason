@@ -6,13 +6,33 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.ShooterPivot;
 
 public class RobotContainer {
+
+  private final CommandXboxController mainController;
+  private final ShooterPivot shooterPivot;
+  private final Intake intake;
+  private final Climber climber;
+
   public RobotContainer() {
+    mainController = new CommandXboxController(0);
+    shooterPivot = new ShooterPivot();
+    intake = new Intake();
+    climber = new Climber();
     configureBindings();
   }
 
   private void configureBindings() {
+    mainController.a().whileTrue(shooterPivot.sysIdDynamicCommand(Direction.kForward));
+    mainController.x().whileTrue(shooterPivot.sysIdDynamicCommand(Direction.kReverse));
+    mainController.b().whileTrue(shooterPivot.sysIdQuasistaticCommand(Direction.kForward));
+    mainController.y().whileTrue(shooterPivot.sysIdQuasistaticCommand(Direction.kReverse));
+
   }
 
   public Command getAutonomousCommand() {
