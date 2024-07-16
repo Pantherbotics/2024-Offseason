@@ -6,7 +6,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
-import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.util.Units;
 
@@ -26,11 +25,6 @@ public class TunerConstants {
         .withKP(3).withKI(0).withKD(0)
         .withKS(0).withKV(0).withKA(0);
 
-    public static final PathConstraints kPathfindingConstraints = new PathConstraints(
-            2, 1.75,
-            Units.degreesToRadians(180), Units.degreesToRadians(180));
-
-
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
     private static final ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.Voltage;
@@ -48,7 +42,7 @@ public class TunerConstants {
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
-    private static final double kCoupleRatio = 0;
+    private static final double kCoupleRatio = 1;
 
     private static final double kDriveGearRatio = 7.5;
     private static final double kSteerGearRatio = 5.625;
