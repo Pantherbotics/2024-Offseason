@@ -9,6 +9,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -22,11 +23,11 @@ public class DriveConstants {
       .withDeadband(kMaxSpeed * 0.05).withRotationalDeadband(kMaxAngularRate * 0.05)
       .withDriveRequestType(DriveRequestType.Velocity);
 
-    public static Command driveCommand(CommandSwerveDrivetrain drivetrain, XboxController joystick){
+    public static Command driveCommand(CommandSwerveDrivetrain drivetrain, Joystick joystick){
       return drivetrain.applyRequest(
-        () -> drive.withVelocityX(-joystick.getLeftY() * kMaxSpeed)
-        .withVelocityY(-joystick.getLeftX() * kMaxSpeed) 
-        .withRotationalRate(-joystick.getRightX() * kMaxAngularRate)
+        () -> drive.withVelocityX(-joystick.getY() * kMaxSpeed)
+        .withVelocityY(-joystick.getX() * kMaxSpeed) 
+        .withRotationalRate(-joystick.getZ() * kMaxAngularRate)
       );
     }
 

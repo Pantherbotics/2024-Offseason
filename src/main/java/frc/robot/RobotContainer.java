@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.climber.Climber;
@@ -17,7 +18,7 @@ import frc.robot.subsystems.shooter.ShooterPivot;
 
 public class RobotContainer {
 
-  private final CommandXboxController mainController;
+  private final CommandJoystick mainController;
   private final CommandSwerveDrivetrain drivetrain;
   private final ShooterPivot shooterPivot;
   private final Intake intake;
@@ -25,7 +26,7 @@ public class RobotContainer {
 
   public RobotContainer() {
     drivetrain = TunerConstants.DriveTrain;
-    mainController = new CommandXboxController(0);
+    mainController = new CommandJoystick(0);
     shooterPivot = new ShooterPivot();
     intake = new Intake();
     climber = new Climber();
@@ -35,10 +36,10 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    mainController.a().whileTrue(shooterPivot.sysIdDynamicCommand(Direction.kForward));
-    mainController.x().whileTrue(shooterPivot.sysIdDynamicCommand(Direction.kReverse));
-    mainController.b().whileTrue(shooterPivot.sysIdQuasistaticCommand(Direction.kForward));
-    mainController.y().whileTrue(shooterPivot.sysIdQuasistaticCommand(Direction.kReverse));
+    mainController.button(1).whileTrue(shooterPivot.sysIdDynamicCommand(Direction.kForward));
+    mainController.button(2).whileTrue(shooterPivot.sysIdDynamicCommand(Direction.kReverse));
+    mainController.button(3).whileTrue(shooterPivot.sysIdQuasistaticCommand(Direction.kForward));
+    mainController.button(4).whileTrue(shooterPivot.sysIdQuasistaticCommand(Direction.kReverse));
 
   }
 
