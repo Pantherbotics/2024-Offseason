@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.ExponentialProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -60,8 +61,8 @@ public class ShooterPivot extends SubsystemBase {
     var nextSetpoint = profile.calculate(ShooterConstants.dt, currentSetpoint, goal);
 
     m_pivotMotor.setVoltage(
-        feedforward.calculate(currentSetpoint.velocity, nextSetpoint.velocity, ShooterConstants.dt)
-            + controller.calculate(m_encoder.getDistance(), currentSetpoint.position));
+        feedforward.calculate(Units.rotationsToRadians(m_encoder.get()), Units.rotationsToRadians(m_pivotMotor.getVelocity().getValueAsDouble()), Units.rotationsToRadians(m_pivotMotor.getAcceleration().getValueAsDouble()))
+            + controller.calculate(m_encoder.get(), currentSetpoint.position));
 
     currentSetpoint = nextSetpoint;
   }
