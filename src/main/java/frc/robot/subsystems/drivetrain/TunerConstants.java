@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -65,7 +64,7 @@ public class TunerConstants {
     private static final double kSteerGearRatio = 15.625;
     private static final double kWheelRadiusInches = 2;
 
-    private static final boolean kSteerMotorReversed = !Utils.isSimulation();
+    private static final boolean kSteerMotorReversed = true;
     private static final boolean kInvertLeftSide = true;
     private static final boolean kInvertRightSide = false;
 

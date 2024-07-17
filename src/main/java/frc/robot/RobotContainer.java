@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.DriveConstants;
@@ -54,6 +55,11 @@ public class RobotContainer {
     mainController.button(3).whileTrue(shooterPivot.sysIdQuasistaticCommand(Direction.kForward));
     mainController.button(4).whileTrue(shooterPivot.sysIdQuasistaticCommand(Direction.kReverse));
     */
+    mainController.pov(0).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+    mainController.pov(90).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+    mainController.pov(180).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+    mainController.pov(270).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+    
   }
 
   private void invertEncoders(){
