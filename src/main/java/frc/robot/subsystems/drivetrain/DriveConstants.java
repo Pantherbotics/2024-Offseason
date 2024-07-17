@@ -10,7 +10,6 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** Add your docs here. */
@@ -21,7 +20,7 @@ public class DriveConstants {
 
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric() // main drive type
       .withDeadband(kMaxSpeed * 0.05).withRotationalDeadband(kMaxAngularRate * 0.05)
-      .withDriveRequestType(DriveRequestType.Velocity);
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     public static Command driveCommand(CommandSwerveDrivetrain drivetrain, Joystick joystick){
       return drivetrain.applyRequest(
@@ -33,7 +32,7 @@ public class DriveConstants {
 
 
     public static final PathConstraints kPathfindingConstraints = new PathConstraints(
-        2, 1.75,
+        6, 3,
         Units.degreesToRadians(180), Units.degreesToRadians(180));
 
 }
