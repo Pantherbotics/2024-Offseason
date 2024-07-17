@@ -3,6 +3,7 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
@@ -34,11 +35,11 @@ public class TunerConstants {
     private static final ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.Voltage;
     // The closed-loop output type to use for the drive motors;
     // This affects the PID/FF gains for the drive motors
-    private static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.Voltage;
+    private static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.TorqueCurrentFOC;
 
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
-    private static final double kSlipCurrentA = 300;
+    private static final double kSlipCurrentA = 150;
 
     private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration();
         private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
@@ -51,6 +52,7 @@ public class TunerConstants {
         );
         private static final CANcoderConfiguration cancoderInitialConfigs = new CANcoderConfiguration();
 
+        private static final Pigeon2Configuration pigeonConfigs = null;
     // Theoretical free speed (m/s) at 12v applied output;
     // This needs to be tuned to your individual robot
     public static final double kSpeedAt12VoltsMps = 4.26;
@@ -60,7 +62,7 @@ public class TunerConstants {
     private static final double kCoupleRatio = 1;
 
     private static final double kDriveGearRatio = 7.5;
-    private static final double kSteerGearRatio = 5.625;
+    private static final double kSteerGearRatio = 15.625;
     private static final double kWheelRadiusInches = 2;
 
     private static final boolean kSteerMotorReversed = !Utils.isSimulation();
@@ -80,6 +82,7 @@ public class TunerConstants {
 
     private static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
             .withPigeon2Id(kPigeonId)
+            .withPigeon2Configs(pigeonConfigs)
             .withCANbusName(kCANbusName);
 
     private static final SwerveModuleConstantsFactory ConstantCreator = new SwerveModuleConstantsFactory()

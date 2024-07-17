@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 /** Add your docs here. */
 public class DriveConstants {
 
-    public static final double kMaxSpeed = 3.0;
-    public static final double kMaxAngularRate = 1.77 * Math.PI;
+    public static final double kMaxSpeed = 4.0;
+    public static final double kMaxAngularRate = 1.5 * Math.PI;
 
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric() // main drive type
       .withDeadband(kMaxSpeed * 0.05).withRotationalDeadband(kMaxAngularRate * 0.05)
