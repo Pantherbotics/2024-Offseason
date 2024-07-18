@@ -49,7 +49,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    mainController.button(1).onTrue(drivetrain.pathfindToPosition(new Pose2d(0.0, 0.0, new Rotation2d(0))));
+    mainController.button(1).onTrue(drivetrain.pathfindToPosition(DriveConstants.kAmpPose));
     /*mainController.button(1).whileTrue(shooterPivot.sysIdDynamicCommand(Direction.kForward));
     mainController.button(2).whileTrue(shooterPivot.sysIdDynamicCommand(Direction.kReverse));
     mainController.button(3).whileTrue(shooterPivot.sysIdQuasistaticCommand(Direction.kForward));
