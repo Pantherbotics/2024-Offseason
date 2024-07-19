@@ -8,6 +8,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -38,6 +39,9 @@ public class DriveConstants {
 
     public static final PathConstraints kPathfindingConstraints = new PathConstraints(
         6, 4,
-        Units.degreesToRadians(180), Units.degreesToRadians(180));
+        Units.degreesToRadians(360), Units.degreesToRadians(180));
+
+    public static final PIDConstants kMoveGains = new PIDConstants(10, 0, 0);
+    public static final PIDConstants kTurnGains = new PIDConstants(10, 0, 0);
 
 }
