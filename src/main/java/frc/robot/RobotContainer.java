@@ -9,8 +9,6 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -22,11 +20,13 @@ import frc.robot.subsystems.drivetrain.Telemetry;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.ShooterPivot;
+import frc.robot.subsystems.vision.Vision;
 
 public class RobotContainer {
 
   private final CommandJoystick mainController;
   private final CommandSwerveDrivetrain drivetrain;
+  private final Vision vision;
   private final ShooterPivot shooterPivot;
   private final Intake intake;
   private final Climber climber;
@@ -36,6 +36,7 @@ public class RobotContainer {
 
     drivetrain = TunerConstants.DriveTrain;
     drivetrain.registerTelemetry(logger::telemeterize);
+    vision = new Vision();
     mainController = new CommandJoystick(0);
     shooterPivot = new ShooterPivot();
     intake = new Intake();
@@ -43,6 +44,7 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(DriveConstants.driveCommand(drivetrain, mainController.getHID()).ignoringDisable(true));
     configureBindings();
+    vision.setDefaultCommand(vision.updatePose(drivetrain));
 
     invertEncoders();
 

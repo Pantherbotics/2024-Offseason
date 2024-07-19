@@ -6,8 +6,6 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
-import static edu.wpi.first.units.Units.Rotation;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathConstraints;
 
