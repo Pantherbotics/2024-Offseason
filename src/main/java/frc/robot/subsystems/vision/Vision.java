@@ -66,8 +66,8 @@ public class Vision extends SubsystemBase {
         cameraSim = new PhotonCameraSim(mainCam, cameraProp);
         // Add the simulated camera to view the targets on this simulated field.
         visionSim.addCamera(cameraSim, VisionConstants.kRobotToMainCam);
-
-        cameraSim.enableDrawWireframe(false);
+        cameraSim.setMaxSightRange(3.0);
+        cameraSim.enableDrawWireframe(true);
     }
   }
 
