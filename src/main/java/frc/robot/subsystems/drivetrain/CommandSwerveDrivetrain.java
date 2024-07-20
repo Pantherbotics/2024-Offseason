@@ -122,6 +122,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             this); // Subsystem for requirements
     }
 
+    public void restartLogger(){
+        SignalLogger.stop(); 
+        SignalLogger.start();
+    }
+
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
     }
@@ -135,11 +140,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
      * which one you're trying to characterize
      */
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return RoutineToApply.quasistatic(direction);
+        return RoutineToApply.quasistatic(direction).andThen(()->restartLogger());
     }
 
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return RoutineToApply.dynamic(direction);
+        return RoutineToApply.dynamic(direction).andThen(()->restartLogger());
     }
 
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
