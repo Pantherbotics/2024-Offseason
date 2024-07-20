@@ -55,24 +55,44 @@ public class Intake extends SubsystemBase {
     m_rollersMotor.set(speed);
   }
 
+  public void setPivotDown(){
+    setGoal(IntakeConstants.kDownPosition);
+  }
+
+  public void setPivotUp(){
+    setGoal(IntakeConstants.kUpPosition);
+  }
+
+  public void setRollersIn(){
+    setRollers(IntakeConstants.kInSpeed);
+  }
+
+  public void setRollersStop(){
+    setRollers(0);
+  }
+
+  public void setRollersOut(){
+    setRollers(IntakeConstants.kOutSpeed);
+  }
+
   public Command pivotDown(){
-    return runOnce(() -> setGoal(IntakeConstants.kDownPosition));
+    return runOnce(()->setPivotDown());
   }
 
   public Command pivotUp(){
-    return runOnce(() -> setGoal(IntakeConstants.kUpPosition));
+    return runOnce(()->setPivotUp());
   }
 
   public Command rollersIn(){
-    return runOnce(() -> setRollers(IntakeConstants.kInSpeed));
+    return runOnce(()->setRollersIn());
   }
 
   public Command rollersStop(){
-    return runOnce(() -> setRollers(0));
+    return runOnce(()->setRollersStop());
   }
 
   public Command rollersOut(){
-    return runOnce(() -> setRollers(IntakeConstants.kOutSpeed));
+    return runOnce(()->setRollersOut());
   }
 
   @Override
