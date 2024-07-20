@@ -9,6 +9,11 @@ public class ControlConstants {
 
     public static final int kMoveYAxisPort = 0;
     public static final int kMoveXAxisPort = 1;
+    public static final int kRotateAxisPort = 3;
+
+    public static final int kIntakeButtonPort = 0;
+    public static final int kShootButtonPort = 0;
+    public static final int kClimbButtonPort = 0;
 
 
 }

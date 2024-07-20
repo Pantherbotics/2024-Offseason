@@ -5,6 +5,7 @@
 package frc.robot.controls;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /** Add your docs here. */
 public class DriverIO extends GenericHID{
@@ -13,10 +14,23 @@ public class DriverIO extends GenericHID{
         super(port);
     }
 
+
     public double moveX(){
         return getRawAxis(ControlConstants.kMoveXAxisPort);
     }
     public double moveY(){
         return getRawAxis(ControlConstants.kMoveYAxisPort);
+    }
+    public double rotate(){
+        return getRawAxis(ControlConstants.kRotateAxisPort);
+    }
+    public Trigger intake(){
+        return new Trigger(()->getRawButton(ControlConstants.kIntakeButtonPort));
+    }
+    public Trigger shoot(){
+        return new Trigger(()->getRawButton(ControlConstants.kShootButtonPort));
+    }
+    public Trigger climb(){
+        return new Trigger(()->getRawButton(ControlConstants.kClimbButtonPort));
     }
 }

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.controls.DriverIO;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.DriveConstants;
@@ -25,6 +26,7 @@ import frc.robot.subsystems.vision.Vision;
 
 public class RobotContainer {
 
+  public static final DriverIO driverIO = new DriverIO(0);
   private final CommandJoystick mainController;
   private final CommandSwerveDrivetrain drivetrain;
   private final Vision vision;
@@ -41,6 +43,7 @@ public class RobotContainer {
     vision = new Vision();
     noteDetection = new NoteDetection();
     mainController = new CommandJoystick(0);
+    
     shooterPivot = new ShooterPivot();
     intake = new Intake();
     climber = new Climber();
