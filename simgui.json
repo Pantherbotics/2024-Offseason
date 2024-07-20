@@ -43,6 +43,9 @@
             "open": true
           }
         },
+        "MainCam-raw": {
+          "open": true
+        },
         "open": true
       }
     }
