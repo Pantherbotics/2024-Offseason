@@ -20,6 +20,7 @@ import frc.robot.subsystems.drivetrain.Telemetry;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.ShooterPivot;
+import frc.robot.subsystems.vision.NoteDetection;
 import frc.robot.subsystems.vision.Vision;
 
 public class RobotContainer {
@@ -27,6 +28,7 @@ public class RobotContainer {
   private final CommandJoystick mainController;
   private final CommandSwerveDrivetrain drivetrain;
   private final Vision vision;
+  private final NoteDetection noteDetection;
   private final ShooterPivot shooterPivot;
   private final Intake intake;
   private final Climber climber;
@@ -37,6 +39,7 @@ public class RobotContainer {
     drivetrain = TunerConstants.DriveTrain;
     drivetrain.registerTelemetry(logger::telemeterize);
     vision = new Vision();
+    noteDetection = new NoteDetection();
     mainController = new CommandJoystick(0);
     shooterPivot = new ShooterPivot();
     intake = new Intake();
@@ -45,6 +48,7 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(DriveConstants.driveCommand(drivetrain, mainController.getHID()).ignoringDisable(true));
     configureBindings();
     vision.setDefaultCommand(vision.updatePose(drivetrain));
+    noteDetection.setDefaultCommand(noteDetection.findNotes(()->drivetrain.getState().Pose));
 
     invertEncoders();
 
