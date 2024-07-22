@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.IntakeAssist;
 import frc.robot.controls.DriverIO;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
@@ -25,7 +26,7 @@ import frc.robot.subsystems.vision.NoteDetection;
 import frc.robot.subsystems.vision.Vision;
 
 public class RobotContainer {
-
+  
   public static final DriverIO driverIO = new DriverIO(0);
   private final CommandJoystick mainController;
   private final CommandSwerveDrivetrain drivetrain;
@@ -37,7 +38,6 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(DriveConstants.kMaxSpeed);
 
   public RobotContainer() {
-
     drivetrain = TunerConstants.DriveTrain;
     drivetrain.registerTelemetry(logger::telemeterize);
     vision = new Vision();
@@ -64,6 +64,7 @@ public class RobotContainer {
     mainController.button(3).whileTrue(shooterPivot.sysIdQuasistaticCommand(Direction.kForward));
     mainController.button(4).whileTrue(shooterPivot.sysIdQuasistaticCommand(Direction.kReverse));
     */
+    mainController.button(2).onTrue(new IntakeAssist(intake, drivetrain, driverIO));
     mainController.pov(0).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     mainController.pov(90).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
     mainController.pov(180).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
