@@ -50,14 +50,15 @@ public class NoteDetection extends SubsystemBase {
     double[] noteY = ty.getDoubleArray(new double[]{});
 
     Transform2d[] robotRelativeNotes = new Transform2d[noteX.length];
-    fieldNotes2d = new Pose2d[noteX.length];
-    Pose3d[] fieldNotes3d = new Pose3d[noteX.length];
+    fieldNotes2d = new Pose2d[]{new Pose2d(5,5,Rotation2d.fromDegrees(0))};
+    Pose3d[] fieldNotes3d = new Pose3d[]{new Pose3d(5,5,Units.inchesToMeters(1), new Rotation3d(0.0,0.0,0.0))};
 
     for (var i = 0; i < noteX.length; i++){
       robotRelativeNotes[i] = noteAngleToTranslation(noteX[i], noteY[i]);
       fieldNotes2d[i] = robotPose.get().plus(robotRelativeNotes[i]);
-      fieldNotes3d[i] = new Pose3d(fieldNotes2d[i].getX(), fieldNotes2d[i].getY(), 0.0, new Rotation3d(0.0,0.0,0.0));
+      fieldNotes3d[i] = new Pose3d(fieldNotes2d[i].getX(), fieldNotes2d[i].getY(), Units.inchesToMeters(1), new Rotation3d(0.0,0.0,0.0));
     }
+
     notePublisher.set(fieldNotes3d);
   }
 
