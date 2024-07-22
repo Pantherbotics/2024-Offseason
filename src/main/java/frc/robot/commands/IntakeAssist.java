@@ -4,19 +4,16 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Rotation;
-
 import java.util.Arrays;
-
-import org.opencv.core.Mat;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.IntegerArrayPublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.controls.DriverIO;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
@@ -75,19 +72,19 @@ public class IntakeAssist extends Command {
   private void guidedDrive(){
     Pose2d robotPose = drivetrain.getState().Pose;
     Pose2d nearestNote = nearestNotePose();
-    ChassisSpeeds speeds = drivetrain.getState().speeds;
     double[] joystickSpeeds = toPolar(-driverIO.moveX(), -driverIO.moveY());
     double[] toNote = toPolar(robotPose.getY() - nearestNote.getY(),robotPose.getX()-nearestNote.getX() );
     double match = Math.max(Math.cos(Math.abs(joystickSpeeds[1] - toNote[1])), 0);
     //match = Math.sqrt(match);
 
-    double[] toNoteMove = toCartesian(new double[]{MathUtil.clamp(toNote[0], 0, 1), toNote[1]});
-    Rotation2d toNoteRotate = Rotation2d.fromRadians(toNote[1]);
-    toNoteRotate = toNoteRotate.minus(robotPose.getRotation());
-
+    double[] toNoteMove = toCartesian(new double[]{MathUtil.clamp(toNote[0], 0.1, 1), toNote[1]});
+    Rotation2d toNoteRotate = Rotation2d.fromRadians(-toNote[1]);
+    toNoteRotate = toNoteRotate.minus(robotPose.getRotation().plus(Rotation2d.fromDegrees(90)));
+    toNoteRotate = toNoteRotate.div(2);
+    
     double xvel = MathUtil.interpolate(-driverIO.moveY(), toNoteMove[0] * joystickSpeeds[0], match);
     double yvel = MathUtil.interpolate(-driverIO.moveX(), toNoteMove[1] * joystickSpeeds[0], match);
-    double rotationRate = MathUtil.interpolate(-driverIO.rotate(), toNoteRotate.getRadians() * joystickSpeeds[0], match);
+    double rotationRate = MathUtil.interpolate(-driverIO.rotate(), MathUtil.clamp(toNoteRotate.getRadians(),-1,1) * joystickSpeeds[0], match);
 
     toNote = toCartesian(toNote);
     joystickSpeeds = toCartesian(joystickSpeeds);
@@ -96,8 +93,9 @@ public class IntakeAssist extends Command {
       drivetrain.setControl(DriveConstants.drive
     .withVelocityX(xvel * DriveConstants.kMaxSpeed)
     .withVelocityY(yvel * DriveConstants.kMaxSpeed) 
-    .withRotationalRate(-driverIO.rotate() * DriveConstants.kMaxAngularRate));
-    poses.set(new long[]{Math.round(joystickSpeeds[0]*10), Math.round(joystickSpeeds[1]*10), Math.round(toNote[0]*10), Math.round(toNote[1]*10), Math.round(match*10), 0});
+    .withRotationalRate(rotationRate * DriveConstants.kMaxAngularRate));
+    SmartDashboard.putNumber("RotateDegrees",Units.radiansToDegrees(toNote[1]));
+    //poses.set(new long[]{Math.round(joystickSpeeds[0]*10), Math.round(joystickSpeeds[1]*10), Math.round(toNote[0]*10), Math.round(toNote[1]*10), Math.round(match*10), 0});
   }
 
   // Called every time the scheduler runs while the command is scheduled.
