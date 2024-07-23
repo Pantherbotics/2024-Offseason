@@ -49,7 +49,7 @@ public class NoteDetection extends SubsystemBase {
 
 
   public void getNotes(Supplier<Pose2d> robotPose){
-    LimelightHelpers.LimelightResults llresults = LimelightHelpers.getLatestResults("");
+    LimelightHelpers.LimelightResults llresults = LimelightHelpers.getLatestResults("limelight");
     LimelightHelpers.LimelightTarget_Detector[] results = llresults.targets_Detector;
 
     double[] noteX = tx.getDoubleArray(new double[]{});
