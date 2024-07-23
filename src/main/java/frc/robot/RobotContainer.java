@@ -8,9 +8,11 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.IntakeAssist;
@@ -37,6 +39,8 @@ public class RobotContainer {
   private final Climber climber;
   private final Telemetry logger = new Telemetry(DriveConstants.kMaxSpeed);
 
+  private final SendableChooser <Command> autoChooser;
+
   public RobotContainer() {
     drivetrain = TunerConstants.DriveTrain;
     drivetrain.registerTelemetry(logger::telemeterize);
@@ -53,6 +57,9 @@ public class RobotContainer {
     vision.setDefaultCommand(vision.updatePose(drivetrain));
 
     invertEncoders();
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", this.autoChooser);
 
   }
 
@@ -71,7 +78,9 @@ public class RobotContainer {
     
   }
 
+
   private void invertEncoders(){
+    if (!Utils.isSimulation()){
     for (int i = 0; i < 4; ++i)
     {
       var module = drivetrain.getModule(i);
@@ -92,12 +101,14 @@ public class RobotContainer {
         /* Apply configuration to CANcoder */
         module.getCANcoder().getConfigurator().apply(cfg);
       } while (!response.isOK());
-    
+    }
   }
 
   }
+
+
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.getSelected();
   }
 }
