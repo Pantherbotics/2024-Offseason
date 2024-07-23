@@ -41,7 +41,7 @@ public class RobotContainer {
     drivetrain = TunerConstants.DriveTrain;
     drivetrain.registerTelemetry(logger::telemeterize);
     vision = new Vision();
-    noteDetection = new NoteDetection();
+    noteDetection = new NoteDetection(drivetrain);
     mainController = new CommandJoystick(0);
     
     shooterPivot = new ShooterPivot();
@@ -51,7 +51,6 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(DriveConstants.driveCommand(drivetrain, mainController.getHID()).ignoringDisable(true));
     configureBindings();
     vision.setDefaultCommand(vision.updatePose(drivetrain));
-    noteDetection.setDefaultCommand(noteDetection.findNotes(()->drivetrain.getState().Pose));
 
     invertEncoders();
 
