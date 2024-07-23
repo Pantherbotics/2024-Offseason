@@ -4,28 +4,19 @@
 
 package frc.robot.subsystems.vision;
 
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 
 public class NoteDetection extends SubsystemBase {
   
-  private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-  private NetworkTableEntry tx = table.getEntry("tx");
-  private NetworkTableEntry ty = table.getEntry("ty");
   private CommandSwerveDrivetrain drivetrain;
 
   public static Pose2d[] fieldNotes2d;
@@ -50,13 +41,10 @@ public class NoteDetection extends SubsystemBase {
 
 
   public void getNotes(){
-    LimelightHelpers.LimelightResults llresults = LimelightHelpers.getLatestResults("");
+    LimelightHelpers.LimelightResults llresults = LimelightHelpers.getLatestResults(VisionConstants.kNoteCamName);
     LimelightHelpers.LimelightTarget_Detector[] results = llresults.targets_Detector;
+    
 
-    double[] noteX = tx.getDoubleArray(new double[]{});
-    double[] noteY = ty.getDoubleArray(new double[]{});
-
-    System.out.println(results.toString());
     Transform2d[] robotRelativeNotes = new Transform2d[results.length];
     fieldNotes2d = new Pose2d[]{};//new Pose2d(5,5,Rotation2d.fromDegrees(0))};
     Pose3d[] fieldNotes3d = new Pose3d[]{};//new Pose3d(5,5,Units.inchesToMeters(1), new Rotation3d(0.0,0.0,0.0))};
