@@ -6,8 +6,8 @@ package frc.robot.subsystems.intake;
 
 /** Add your docs here. */
 public class IntakeConstants {
-    public static final int kPivotMotorID = 13;
-    public static final int kRollersMotorID = 14;
+    public static final int kPivotMotorID = 25;
+    public static final int kRollersMotorID = 24;
 
     public static final int kLimitSiwtchID = 3;
 

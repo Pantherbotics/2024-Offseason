@@ -73,7 +73,6 @@ public class RobotContainer {
   }
 
   private void invertEncoders(){
-    if (!Utils.isSimulation()){
     for (int i = 0; i < 4; ++i)
     {
       var module = drivetrain.getModule(i);
@@ -94,7 +93,7 @@ public class RobotContainer {
         /* Apply configuration to CANcoder */
         module.getCANcoder().getConfigurator().apply(cfg);
       } while (!response.isOK());
-    }
+    
   }
 
   }

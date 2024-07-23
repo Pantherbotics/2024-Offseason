@@ -18,12 +18,16 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.LimelightResults;
 
 public class NoteDetection extends SubsystemBase {
   
   private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
   private NetworkTableEntry tx = table.getEntry("tx");
   private NetworkTableEntry ty = table.getEntry("ty");
+  private NetworkTableEntry json = table.getEntry("json");
+  
 
   public static Pose2d[] fieldNotes2d;
 
@@ -45,16 +49,19 @@ public class NoteDetection extends SubsystemBase {
 
 
   public void getNotes(Supplier<Pose2d> robotPose){
+    LimelightHelpers.LimelightResults llresults = LimelightHelpers.getLatestResults("");
+    LimelightHelpers.LimelightTarget_Detector[] results = llresults.targets_Detector;
 
     double[] noteX = tx.getDoubleArray(new double[]{});
     double[] noteY = ty.getDoubleArray(new double[]{});
 
-    Transform2d[] robotRelativeNotes = new Transform2d[noteX.length];
-    fieldNotes2d = new Pose2d[]{new Pose2d(5,5,Rotation2d.fromDegrees(0))};
-    Pose3d[] fieldNotes3d = new Pose3d[]{new Pose3d(5,5,Units.inchesToMeters(1), new Rotation3d(0.0,0.0,0.0))};
+    System.out.println(results.toString());
+    Transform2d[] robotRelativeNotes = new Transform2d[results.length];
+    fieldNotes2d = new Pose2d[]{};//new Pose2d(5,5,Rotation2d.fromDegrees(0))};
+    Pose3d[] fieldNotes3d = new Pose3d[]{};//new Pose3d(5,5,Units.inchesToMeters(1), new Rotation3d(0.0,0.0,0.0))};
 
-    for (var i = 0; i < noteX.length; i++){
-      robotRelativeNotes[i] = noteAngleToTranslation(noteX[i], noteY[i]);
+    for (var i = 0; i < results.length; i++){
+      robotRelativeNotes[i] = noteAngleToTranslation(results[i].tx, results[i].ty);
       fieldNotes2d[i] = robotPose.get().plus(robotRelativeNotes[i]);
       fieldNotes3d[i] = new Pose3d(fieldNotes2d[i].getX(), fieldNotes2d[i].getY(), Units.inchesToMeters(1), new Rotation3d(0.0,0.0,0.0));
     }

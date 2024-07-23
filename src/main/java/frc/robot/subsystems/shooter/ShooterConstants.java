@@ -7,7 +7,7 @@ package frc.robot.subsystems.shooter;
 /** Add your docs here. */
 public final class ShooterConstants {
     
-    public static final int kPivotMotorID = 20;
+    public static final int kPivotMotorID = 30;
     public static final int kEncoderID = 2;
     public static final double kHandoffPosition = 0.0;
 
