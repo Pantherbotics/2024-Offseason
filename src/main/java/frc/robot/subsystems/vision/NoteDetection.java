@@ -19,15 +19,14 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
-import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 
 public class NoteDetection extends SubsystemBase {
   
   private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
   private NetworkTableEntry tx = table.getEntry("tx");
   private NetworkTableEntry ty = table.getEntry("ty");
-  private NetworkTableEntry json = table.getEntry("json");
-  
+  private CommandSwerveDrivetrain drivetrain;
 
   public static Pose2d[] fieldNotes2d;
 
@@ -35,7 +34,9 @@ public class NoteDetection extends SubsystemBase {
     .getStructArrayTopic("fieldNotes3d", Pose3d.struct).publish();
 
 
-  public NoteDetection() {}
+  public NoteDetection(CommandSwerveDrivetrain m_drivetrain) {
+    drivetrain = m_drivetrain;
+  }
 
 
   public Transform2d noteAngleToTranslation(double x, double y){
@@ -48,8 +49,8 @@ public class NoteDetection extends SubsystemBase {
   }
 
 
-  public void getNotes(Supplier<Pose2d> robotPose){
-    LimelightHelpers.LimelightResults llresults = LimelightHelpers.getLatestResults("limelight");
+  public void getNotes(){
+    LimelightHelpers.LimelightResults llresults = LimelightHelpers.getLatestResults("");
     LimelightHelpers.LimelightTarget_Detector[] results = llresults.targets_Detector;
 
     double[] noteX = tx.getDoubleArray(new double[]{});
@@ -62,21 +63,16 @@ public class NoteDetection extends SubsystemBase {
 
     for (var i = 0; i < results.length; i++){
       robotRelativeNotes[i] = noteAngleToTranslation(results[i].tx, results[i].ty);
-      fieldNotes2d[i] = robotPose.get().plus(robotRelativeNotes[i]);
+      fieldNotes2d[i] = drivetrain.getState().Pose.plus(robotRelativeNotes[i]);
       fieldNotes3d[i] = new Pose3d(fieldNotes2d[i].getX(), fieldNotes2d[i].getY(), Units.inchesToMeters(1), new Rotation3d(0.0,0.0,0.0));
     }
 
     notePublisher.set(fieldNotes3d);
   }
 
-  
-  public Command findNotes (Supplier<Pose2d> robotPose) {
-    return run(()->getNotes(robotPose));
-  }
-
 
   @Override
   public void periodic() {
-
+    getNotes();
   }
 }
