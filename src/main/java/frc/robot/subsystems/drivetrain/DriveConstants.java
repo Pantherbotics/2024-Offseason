@@ -13,8 +13,8 @@ import com.pathplanner.lib.util.PIDConstants;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.controls.DriverIO;
 
 /** Add your docs here. */
 public class DriveConstants {
@@ -28,11 +28,11 @@ public class DriveConstants {
       .withDeadband(kMaxSpeed * 0.05).withRotationalDeadband(kMaxAngularRate * 0.05)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    public static Command driveCommand(CommandSwerveDrivetrain drivetrain, Joystick joystick){
+    public static Command driveCommand(CommandSwerveDrivetrain drivetrain, DriverIO mainIO){
       return drivetrain.applyRequest(
-        () -> drive.withVelocityX(-joystick.getY() * kMaxSpeed)
-        .withVelocityY(-joystick.getX() * kMaxSpeed) 
-        .withRotationalRate(-joystick.getZ() * kMaxAngularRate)
+        () -> drive.withVelocityX(-mainIO.moveY() * kMaxSpeed)
+        .withVelocityY(-mainIO.moveX() * kMaxSpeed) 
+        .withRotationalRate(-mainIO.rotate() * kMaxAngularRate)
       );
     }
 
