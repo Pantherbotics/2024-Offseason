@@ -9,7 +9,16 @@ public final class ShooterConstants {
     
     public static final int kPivotMotorID = 30;
     public static final int kEncoderID = 2;
+
+    public static final double kEncoderOffset = 0.0;
+
     public static final double kHandoffPosition = 0.0;
+    public static final double kAmpPosition = 1.0;
+
+    public static final int kLeftFlywheelMotorID = 20;
+    public static final int kRightFlywheelMotorID = 21;
+    public static final int kLeftIntakeMotorID = 23;
+    public static final int kRightIntakeMotorID = 24;
 
 
     public static final double dt = 0.02; // PID update period
@@ -18,8 +27,7 @@ public final class ShooterConstants {
     public static final double Kg = 0.0;
     public static final double Ka = 0.0;
 
-    public static final double Kp = 0.0;
+    public static final double Kp = 0.5;
     public static final double Ki = 0.0;
     public static final double Kd = 0.0;
-
 }

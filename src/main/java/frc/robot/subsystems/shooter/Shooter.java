@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 
-public class ShooterPivot extends SubsystemBase {
+public class Shooter extends SubsystemBase {
   private final TalonFX m_pivotMotor;
   private final DutyCycleEncoder m_encoder;
 
@@ -33,9 +33,13 @@ public class ShooterPivot extends SubsystemBase {
 
   private final SysIdRoutine routine = new SysIdRoutine(new Config(), new Mechanism(this::pivotVoltage, null, this));
   
-  public ShooterPivot() {
+  public Shooter() {
+
     m_encoder = new DutyCycleEncoder(ShooterConstants.kEncoderID);
+    m_encoder.setPositionOffset(ShooterConstants.kEncoderOffset);
     m_pivotMotor = new TalonFX(ShooterConstants.kPivotMotorID);
+
+    setGoal(ShooterConstants.kHandoffPosition);
     
   }
 
