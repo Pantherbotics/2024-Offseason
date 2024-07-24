@@ -67,37 +67,44 @@ public class IntakeAssist extends Command {
      */
   
   private void guidedDrive(){
-    Pose2d robotPose = drivetrain.getState().Pose;
-    Pose2d nearestNote = nearestNotePose();
-    double[] joystickSpeeds = toPolar(-driverIO.moveX(), -driverIO.moveY());
-    double[] toNote = toPolar(robotPose.getY() - nearestNote.getY(),robotPose.getX()-nearestNote.getX() );
-    double match = Math.max(Math.cos(Math.abs(joystickSpeeds[1] - toNote[1])), 0);
-    //match = Math.sqrt(match);
+    double xvel;
+    double yvel;
+    double rotationRate;
+    if (NoteDetection.fieldNotes2d.length > 0){
+      Pose2d robotPose = drivetrain.getState().Pose;
+      Pose2d nearestNote = nearestNotePose();
+      double[] joystickSpeeds = toPolar(-driverIO.moveX(), -driverIO.moveY());
+      double[] toNote = toPolar(robotPose.getY() - nearestNote.getY(),robotPose.getX()-nearestNote.getX() );
+      double match = Math.max(Math.cos(Math.abs(joystickSpeeds[1] - toNote[1])), 0);
+      //match = Math.sqrt(match);
 
-    double[] toNoteMove = toCartesian(new double[]{MathUtil.clamp(toNote[0], 0.1, 1), toNote[1]});
-    Rotation2d toNoteRotate = Rotation2d.fromRadians(-toNote[1]);
-    toNoteRotate = toNoteRotate.minus(robotPose.getRotation().plus(Rotation2d.fromDegrees(90)));
-    toNoteRotate = toNoteRotate.div(2);
-    
-    double xvel = MathUtil.interpolate(-driverIO.moveY(), toNoteMove[0] * joystickSpeeds[0], match);
-    double yvel = MathUtil.interpolate(-driverIO.moveX(), toNoteMove[1] * joystickSpeeds[0], match);
-    double rotationRate = MathUtil.interpolate(-driverIO.rotate(), MathUtil.clamp(toNoteRotate.getRadians(),-1,1) * joystickSpeeds[0], match);
+      double[] toNoteMove = toCartesian(new double[]{MathUtil.clamp(toNote[0], 0.1, 1), toNote[1]});
+      Rotation2d toNoteRotate = Rotation2d.fromRadians(-toNote[1]);
+      toNoteRotate = toNoteRotate.minus(robotPose.getRotation().plus(Rotation2d.fromDegrees(90)));
+      toNoteRotate = toNoteRotate.div(2);
+      
+      xvel = MathUtil.interpolate(-driverIO.moveY(), toNoteMove[0] * joystickSpeeds[0], match);
+      yvel = MathUtil.interpolate(-driverIO.moveX(), toNoteMove[1] * joystickSpeeds[0], match);
+      rotationRate = MathUtil.interpolate(-driverIO.rotate(), MathUtil.clamp(toNoteRotate.getRadians(),-1,1) * joystickSpeeds[0], match);
 
-    toNote = toCartesian(toNote);
-    joystickSpeeds = toCartesian(joystickSpeeds);
-
+      toNote = toCartesian(toNote);
+      joystickSpeeds = toCartesian(joystickSpeeds);
+    } else {
+      xvel = -driverIO.moveY();
+      yvel = -driverIO.moveX();
+      rotationRate = -driverIO.rotate();
+    }
 
       drivetrain.setControl(DriveConstants.drive
     .withVelocityX(xvel * DriveConstants.kMaxSpeed)
     .withVelocityY(yvel * DriveConstants.kMaxSpeed) 
     .withRotationalRate(rotationRate * DriveConstants.kMaxAngularRate));
-    SmartDashboard.putNumber("RotateDegrees",Units.radiansToDegrees(toNote[1]));
-    //poses.set(new long[]{Math.round(joystickSpeeds[0]*10), Math.round(joystickSpeeds[1]*10), Math.round(toNote[0]*10), Math.round(toNote[1]*10), Math.round(match*10), 0});
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
     guidedDrive();
 
   }
