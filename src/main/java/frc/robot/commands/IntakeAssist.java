@@ -19,15 +19,15 @@ import frc.robot.subsystems.vision.NoteDetection;
 public class IntakeAssist extends Command {
   private final Intake intake;
   private final CommandSwerveDrivetrain drivetrain;
-  private DriverIO driverIO;
+  private DriverIO mainIO;
 
 
   //private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
   //private final IntegerArrayPublisher poses = inst.getIntegerArrayTopic("test").publish();
 
-  public IntakeAssist(Intake m_intake, CommandSwerveDrivetrain m_drivetrain, DriverIO m_driverIO) {
-    this.driverIO = m_driverIO;
+  public IntakeAssist(Intake m_intake, CommandSwerveDrivetrain m_drivetrain, DriverIO m_mainIO) {
+    this.mainIO = m_mainIO;
     this.intake = m_intake;
     this.drivetrain = m_drivetrain;
     addRequirements(m_intake, m_drivetrain);
@@ -58,26 +58,31 @@ public class IntakeAssist extends Command {
     if (NoteDetection.fieldNotes2d.length > 0){
       Pose2d robotPose = drivetrain.getState().Pose;
       Pose2d nearestNote = nearestNotePose();
-      double[] joystickSpeeds = toPolar(-driverIO.moveX(), -driverIO.moveY());
+      double[] joystickSpeeds = toPolar(-mainIO.moveX(), -mainIO.moveY());
       double[] toNote = toPolar(robotPose.getY() - nearestNote.getY(),robotPose.getX()-nearestNote.getX() );
       double match = Math.max(Math.cos(Math.abs(joystickSpeeds[1] - toNote[1])), 0);
       //match = Math.sqrt(match);
+      match /= Math.cbrt(toNote[0]);
 
       double[] toNoteMove = toCartesian(new double[]{MathUtil.clamp(toNote[0], 0.1, 1), toNote[1]});
       Rotation2d toNoteRotate = Rotation2d.fromRadians(-toNote[1]);
       toNoteRotate = toNoteRotate.minus(robotPose.getRotation().plus(Rotation2d.fromDegrees(90)));
       toNoteRotate = toNoteRotate.div(2);
+      double rotate = toNoteRotate.getRadians();
+      rotate += MathUtil.clamp(Math.copySign(0.1, rotate),-1,1);
       
-      xvel = MathUtil.interpolate(-driverIO.moveY(), toNoteMove[0] * joystickSpeeds[0], match);
-      yvel = MathUtil.interpolate(-driverIO.moveX(), toNoteMove[1] * joystickSpeeds[0], match);
-      rotationRate = MathUtil.interpolate(-driverIO.rotate(), MathUtil.clamp(toNoteRotate.getRadians(),-1,1) * joystickSpeeds[0], match);
+      xvel = MathUtil.interpolate(-mainIO.moveY(), toNoteMove[0] * joystickSpeeds[0], match);
+      yvel = MathUtil.interpolate(-mainIO.moveX(), toNoteMove[1] * joystickSpeeds[0], match);
+      rotationRate = MathUtil.interpolate(-mainIO.rotate(), rotate * joystickSpeeds[0], match);
+
+      mainIO.setRumble(1.2/Math.pow(toNote[0], 2));
 
       toNote = toCartesian(toNote);
       joystickSpeeds = toCartesian(joystickSpeeds);
     } else {
-      xvel = -driverIO.moveY();
-      yvel = -driverIO.moveX();
-      rotationRate = -driverIO.rotate();
+      xvel = -mainIO.moveY();
+      yvel = -mainIO.moveX();
+      rotationRate = -mainIO.rotate();
     }
 
       drivetrain.setControl(DriveConstants.drive
@@ -96,7 +101,9 @@ public class IntakeAssist extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    mainIO.setRumble(0, 0);
+  }
 
   // Returns true when the command should end.
   @Override

@@ -6,31 +6,50 @@ package frc.robot.controls;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.controls.ControlConstants.InputType;
 
 /** Add your docs here. */
 public class DriverIO extends GenericHID{
 
-    public DriverIO(int port){
+    private final ControlConstants ports;
+
+    public DriverIO(int port, InputType type){
         super(port);
+        ports = new ControlConstants(type);
+    }
+
+    public static enum goal{
+        SPEAKER,
+        AMP,
+        PASS
     }
 
 
     public double moveX(){
-        return getRawAxis(ControlConstants.kMoveXAxisPort);
+        return getRawAxis(ports.kMoveXAxisPort);
     }
     public double moveY(){
-        return getRawAxis(ControlConstants.kMoveYAxisPort);
+        return getRawAxis(ports.kMoveYAxisPort);
     }
     public double rotate(){
-        return getRawAxis(ControlConstants.kRotateAxisPort);
+        return getRawAxis(ports.kRotateAxisPort);
     }
     public Trigger intake(){
-        return new Trigger(()->getRawButton(ControlConstants.kIntakeButtonPort));
+        return new Trigger(()->getRawButton(ports.kIntakeButtonPort));
     }
     public Trigger shoot(){
-        return new Trigger(()->getRawButton(ControlConstants.kShootButtonPort));
+        return new Trigger(()->getRawButton(ports.kShootButtonPort));
     }
     public Trigger climb(){
-        return new Trigger(()->getRawButton(ControlConstants.kClimbButtonPort));
+        return new Trigger(()->getRawButton(ports.kClimbButtonPort));
     }
+    public void setRumble(double left, double right){
+        setRumble(RumbleType.kLeftRumble, left);
+        setRumble(RumbleType.kRightRumble, right);
+    }
+    public void setRumble(double amount){
+        setRumble(RumbleType.kLeftRumble, amount);
+        setRumble(RumbleType.kRightRumble, amount);
+    }
+
 }

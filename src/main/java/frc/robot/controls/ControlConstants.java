@@ -7,13 +7,58 @@ package frc.robot.controls;
 /** Add your docs here. */
 public class ControlConstants {
 
-    public static final int kMoveYAxisPort = 1;
-    public static final int kMoveXAxisPort = 0;
-    public static final int kRotateAxisPort = 2;
+    public int kMoveYAxisPort;
+    public int kMoveXAxisPort;
+    public int kRotateAxisPort;
 
-    public static final int kIntakeButtonPort = 0;
-    public static final int kShootButtonPort = 0;
-    public static final int kClimbButtonPort = 0;
+    public int kIntakeButtonPort;
+    public int kShootButtonPort;
+    public int kAmpButtonPort;
+    public int kPassButtonPort;
+    public int kClimbButtonPort;
+
+    public ControlConstants(InputType type){
+        switch (type) {
+            case XBOX:
+                kMoveYAxisPort = 1;
+                kMoveXAxisPort = 0;
+                kRotateAxisPort = 4;
+                kIntakeButtonPort = 5;
+                kShootButtonPort = 4;
+                kAmpButtonPort = 6;
+                kPassButtonPort = 7;
+                kClimbButtonPort = 0;
+            break;
+            case JOYSTICK:
+                kMoveYAxisPort = 1;
+                kMoveXAxisPort = 0;
+                kRotateAxisPort = 3;
+                kIntakeButtonPort = 0;
+                kShootButtonPort = 1;
+                kAmpButtonPort = 2;
+                kPassButtonPort = 3;
+                kClimbButtonPort = 5;
+            break;
+            default:
+                kMoveYAxisPort = 1;
+                kMoveXAxisPort = 0;
+                kRotateAxisPort = 4;
+                kIntakeButtonPort = 5;
+                kShootButtonPort = 4;
+                kAmpButtonPort = 6;
+                kPassButtonPort = 7;
+                kClimbButtonPort = 0;
+            break;
+        }
+        
+    }
+
+    public static enum InputType{
+        JOYSTICK,
+        XBOX,
+        PLAYSTATION
+    }
+
 
 
 }
