@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 
@@ -43,7 +44,7 @@ public class NoteDetection extends SubsystemBase {
   public void getNotes(){
     LimelightHelpers.LimelightResults llresults = LimelightHelpers.getLatestResults(VisionConstants.kNoteCamName);
     LimelightHelpers.LimelightTarget_Detector[] results = llresults.targets_Detector;
-    
+
 
     Transform2d[] robotRelativeNotes = new Transform2d[results.length];
     fieldNotes2d = new Pose2d[]{};//new Pose2d(5,5,Rotation2d.fromDegrees(0))};
