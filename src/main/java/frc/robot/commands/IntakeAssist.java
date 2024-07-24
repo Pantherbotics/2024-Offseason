@@ -9,8 +9,6 @@ import java.util.Arrays;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.controls.DriverIO;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
@@ -53,19 +51,6 @@ public class IntakeAssist extends Command {
     return drivetrain.getState().Pose.nearest(Arrays.asList(NoteDetection.fieldNotes2d));
   }
 
-  /*    Transform2d noteDiff = new Transform2d(nearestNote.getX()-robotPose.getX(), nearestNote.getY()-robotPose.getY(), Rotation2d.fromDegrees(0));
-    double[] notePolar = toPolar(noteDiff.getX(), noteDiff.getY());
-    double noteDist = notePolar[0];
-    notePolar[0] = MathUtil.clamp(notePolar[0], 0, 1);
-    double[] joyPolar = toPolar(driverIO.moveX(), driverIO.moveY());
-    joyPolar[0] = MathUtil.clamp(joyPolar[0], 0, 1);
-    double[] noteClamped = toCartesian(notePolar);
-    double[] joyClamped = toCartesian(joyPolar);
-    double[] difference = new double[]{noteClamped[0]-joyClamped[0], noteClamped[1]-joyClamped[1]};
-    double angleDiff = MathUtil.clamp(notePolar[1]-robotPose.getRotation().getRadians(),-5,5) - MathUtil.clamp(driverIO.rotate(),-5,5);
-    noteClamped = new double[]{noteClamped[0], noteClamped[1], MathUtil.clamp(notePolar[1]-robotPose.getRotation().getRadians(),-5,5)};
-     */
-  
   private void guidedDrive(){
     double xvel;
     double yvel;

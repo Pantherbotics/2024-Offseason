@@ -23,7 +23,7 @@ import frc.robot.subsystems.drivetrain.DriveConstants;
 import frc.robot.subsystems.drivetrain.Telemetry;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.shooter.ShooterPivot;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.vision.NoteDetection;
 import frc.robot.subsystems.vision.Vision;
 
@@ -34,7 +34,7 @@ public class RobotContainer {
   private final CommandSwerveDrivetrain drivetrain;
   private final Vision vision;
   private final NoteDetection noteDetection;
-  private final ShooterPivot shooterPivot;
+  private final Shooter shooter;
   private final Intake intake;
   private final Climber climber;
   private final Telemetry logger = new Telemetry(DriveConstants.kMaxSpeed);
@@ -48,7 +48,7 @@ public class RobotContainer {
     noteDetection = new NoteDetection(drivetrain);
     mainController = new CommandJoystick(0);
     
-    shooterPivot = new ShooterPivot();
+    shooter = new Shooter();
     intake = new Intake();
     climber = new Climber();
 
@@ -65,10 +65,10 @@ public class RobotContainer {
 
   private void configureBindings() {
     mainController.button(1).onTrue(drivetrain.pathfindToPosition(DriveConstants.kAmpPose));
-    /*mainController.button(1).whileTrue(shooterPivot.sysIdDynamicCommand(Direction.kForward));
-    mainController.button(2).whileTrue(shooterPivot.sysIdDynamicCommand(Direction.kReverse));
-    mainController.button(3).whileTrue(shooterPivot.sysIdQuasistaticCommand(Direction.kForward));
-    mainController.button(4).whileTrue(shooterPivot.sysIdQuasistaticCommand(Direction.kReverse));
+    /*mainController.button(1).whileTrue(shooter.sysIdDynamicCommand(Direction.kForward));
+    mainController.button(2).whileTrue(shooter.sysIdDynamicCommand(Direction.kReverse));
+    mainController.button(3).whileTrue(shooter.sysIdQuasistaticCommand(Direction.kForward));
+    mainController.button(4).whileTrue(shooter.sysIdQuasistaticCommand(Direction.kReverse));
     */
     mainController.button(2).onTrue(new IntakeAssist(intake, drivetrain, driverIO));
     mainController.pov(0).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
