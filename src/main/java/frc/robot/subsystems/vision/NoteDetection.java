@@ -32,6 +32,8 @@ public class NoteDetection extends SubsystemBase {
 
 
   public Transform2d noteAngleToTranslation(double x, double y){
+    x = Units.degreesToRadians(x);
+    y = Units.degreesToRadians(y);
     double camHeight = VisionConstants.kRobotToNoteCam.getRotation().getY() - Units.inchesToMeters(1);
     double pitchAngle = VisionConstants.kRobotToNoteCam.getRotation().getY() + y; // true angle relative to robot
 
