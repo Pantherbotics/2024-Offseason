@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 
@@ -41,15 +42,14 @@ public class NoteDetection extends SubsystemBase {
 
 
   public void getNotes(){
-    LimelightHelpers.LimelightResults llresults = LimelightHelpers.getLatestResults(VisionConstants.kNoteCamName);
-
-    
+    LimelightHelpers.LimelightResults llresults = LimelightHelpers.getLatestResults("");
+    SmartDashboard.putBoolean("isVaild", llresults.valid);
     LimelightHelpers.LimelightTarget_Detector[] results = llresults.targets_Detector;
 
 
     Transform2d[] robotRelativeNotes = new Transform2d[results.length];
-    fieldNotes2d = new Pose2d[]{};//new Pose2d(5,5,Rotation2d.fromDegrees(0))};
-    Pose3d[] fieldNotes3d = new Pose3d[]{};//new Pose3d(5,5,Units.inchesToMeters(1), new Rotation3d(0.0,0.0,0.0))};
+    fieldNotes2d = new Pose2d[results.length];//new Pose2d(5,5,Rotation2d.fromDegrees(0))};
+    Pose3d[] fieldNotes3d = new Pose3d[results.length];//new Pose3d(5,5,Units.inchesToMeters(1), new Rotation3d(0.0,0.0,0.0))};
 
     for (var i = 0; i < results.length; i++){
       robotRelativeNotes[i] = noteAngleToTranslation(results[i].tx, results[i].ty);

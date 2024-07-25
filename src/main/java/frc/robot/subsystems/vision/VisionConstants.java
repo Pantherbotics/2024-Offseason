@@ -19,7 +19,7 @@ import edu.wpi.first.math.util.Units;
 public class VisionConstants {
     public static final String kMainCamName = "MainCam";
     public static final String kBackCamName = "BackCam";
-    public static final String kNoteCamName = "limelight";
+    public static final String kNoteCamName = "";
 
     public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
