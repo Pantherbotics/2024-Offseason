@@ -59,8 +59,6 @@ public class RobotContainer {
     configureBindings();
     vision.setDefaultCommand(vision.updatePose(drivetrain));
 
-    invertEncoders();
-
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", this.autoChooser);
   }
@@ -84,32 +82,6 @@ public class RobotContainer {
   }
 
 
-  private void invertEncoders(){
-    if (!Utils.isSimulation()){
-    for (int i = 0; i < 4; ++i)
-    {
-      var module = drivetrain.getModule(i);
-      CANcoderConfiguration cfg = new CANcoderConfiguration();
-      StatusCode response = StatusCode.StatusCodeNotInitialized;
-
-      /* Repeat this in a loop until we have success */
-      do {
-        /* First make sure we refresh the object so we don't overwrite anything */
-        response = module.getCANcoder().getConfigurator().refresh(cfg);
-      } while(!response.isOK());
-
-      /* Invert your CANcoder magnet direction */
-      cfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-
-      /* Repeat this in a loop until we have success */
-      do {
-        /* Apply configuration to CANcoder */
-        module.getCANcoder().getConfigurator().apply(cfg);
-      } while (!response.isOK());
-    }
-  }
-
-  }
 
 
 
