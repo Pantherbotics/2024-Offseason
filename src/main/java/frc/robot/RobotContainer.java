@@ -4,18 +4,12 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.Handoff;
 import frc.robot.commands.IntakeAssist;
 import frc.robot.controls.DriverIO;
@@ -40,7 +34,7 @@ public class RobotContainer {
   private final Shooter shooter;
   private final Intake intake;
   private final Climber climber;
-  private final Telemetry logger = new Telemetry(DriveConstants.kMaxSpeed);
+  private final Telemetry logger = new Telemetry();
 
   private final SendableChooser <Command> autoChooser;
 
@@ -58,6 +52,8 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(DriveConstants.driveCommand(drivetrain, mainIO).ignoringDisable(true));
     configureBindings();
     vision.setDefaultCommand(vision.updatePose(drivetrain));
+
+
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", this.autoChooser);
@@ -77,7 +73,9 @@ public class RobotContainer {
     mainController.pov(270).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
     */
     mainIO.intake().toggleOnTrue(new IntakeAssist(intake, drivetrain, mainIO));
-    mainIO.shoot().onTrue(new Handoff(intake, shooter));
+    intake.gotNote().onTrue(new Handoff(intake, shooter));
+    mainIO.climb().onTrue(climber.climbUntilSwitches());
+    
     
   }
 
