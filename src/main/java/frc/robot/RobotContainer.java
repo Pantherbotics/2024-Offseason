@@ -13,8 +13,10 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.Handoff;
 import frc.robot.commands.IntakeAssist;
 import frc.robot.controls.DriverIO;
 import frc.robot.controls.ControlConstants.InputType;
@@ -61,10 +63,10 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", this.autoChooser);
-
   }
 
   private void configureBindings() {
+    
     /*mainController.button(1).whileTrue(shooter.sysIdDynamicCommand(Direction.kForward));
     mainController.button(2).whileTrue(shooter.sysIdDynamicCommand(Direction.kReverse));
     mainController.button(3).whileTrue(shooter.sysIdQuasistaticCommand(Direction.kForward));
@@ -76,7 +78,8 @@ public class RobotContainer {
     mainController.pov(180).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
     mainController.pov(270).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
     */
-    mainIO.intake().onTrue(new IntakeAssist(intake, drivetrain, mainIO));
+    mainIO.intake().toggleOnTrue(new IntakeAssist(intake, drivetrain, mainIO));
+    mainIO.shoot().onTrue(new Handoff(intake, shooter));
     
   }
 

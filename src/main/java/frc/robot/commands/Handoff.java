@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.intake.Intake;
@@ -19,13 +21,13 @@ public class Handoff extends SequentialCommandGroup {
     addCommands(
       intake.pivotUp(),
       shooter.handoffPosition(),
-      new WaitUntilCommand(()->intake.isAtGoal() && shooter.isAtGoal()),
+      new WaitUntilCommand(()->intake.isAtGoal() && shooter.isAtGoal()).withTimeout(5).finallyDo((end)->{if(end){DataLogManager.log("handoff pivot failed");CommandScheduler.getInstance().cancel(this);}}),
       intake.rollersOut(),
       shooter.rollersIn(),
-      new WaitUntilCommand(shooter::noteSeated),
+      new WaitUntilCommand(shooter::noteSeated).withTimeout(5).finallyDo((end)->{if(end){DataLogManager.log("shooter note loading failed");CommandScheduler.getInstance().cancel(this);}}),
       shooter.rollersStop(),
       intake.rollersStop()
     );
-
+    
   }
 }

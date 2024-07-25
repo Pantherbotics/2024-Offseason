@@ -73,8 +73,11 @@ public class Shooter extends SubsystemBase {
     handoffPosition();
 
 
-    SmartDashboard.putNumber("topSensor", m_topSensor.getAverageValue());
-    SmartDashboard.putBoolean("noteSeated", noteSeated());
+    SmartDashboard.putNumber("ShooterTopSensor", m_topSensor.getAverageValue());
+    SmartDashboard.putBoolean("ShooterHasNote", noteSeated());
+
+    SmartDashboard.putBoolean("ShooterAtGoal", isAtGoal());
+    SmartDashboard.putNumber("ShooterDistToGoal", this.goal.position - m_encoder.get());
   }
 
   public void pivotVoltage(Measure<Voltage> voltageMeasure){
@@ -118,7 +121,6 @@ public class Shooter extends SubsystemBase {
   public Command rollersStop(){
     return runOnce(()->setRollers(0));
   }
-
 
   public Command ampPosition(){
     return runOnce(()->setPivotGoal(ShooterConstants.kAmpPosition));

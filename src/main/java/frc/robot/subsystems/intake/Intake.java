@@ -12,6 +12,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.ExponentialProfile;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -33,6 +34,13 @@ public class Intake extends SubsystemBase {
     m_rollersMotor = new TalonFX(IntakeConstants.kRollersMotorID);
     m_limitSwitch = new DigitalInput(IntakeConstants.kLimitSiwtchID);
     m_distanceSensor = new AnalogInput(IntakeConstants.kDistanceSensorID);
+    m_distanceSensor.setAverageBits(4);
+
+    SmartDashboard.putBoolean("IntakeAtGoal", isAtGoal());
+    SmartDashboard.putNumber("IntakeDistToGoal", this.goal.position - m_pivotMotor.getPosition().getValueAsDouble());
+
+    SmartDashboard.putBoolean("IntakeHasNote", hasNote());
+    SmartDashboard.putNumber("IntakeSensor", m_distanceSensor.getAverageValue());
   }
 
   public boolean limitSwitch(){
@@ -48,7 +56,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isAtGoal(){
-    return MathUtil.isNear(this.goal.position, m_pivotMotor.get(), IntakeConstants.kGoalTolerance);
+    return MathUtil.isNear(this.goal.position, m_pivotMotor.getPosition().getValueAsDouble(), IntakeConstants.kGoalTolerance);
   }
 
   public void setRollers(double speed){
@@ -101,7 +109,7 @@ public class Intake extends SubsystemBase {
 
     m_pivotMotor.setVoltage(
         feedforward.calculate(currentSetpoint.velocity, nextSetpoint.velocity, IntakeConstants.dt)
-            + controller.calculate(m_pivotMotor.get(), currentSetpoint.position));
+            + controller.calculate(m_pivotMotor.getPosition().getValueAsDouble(), currentSetpoint.position));
 
     currentSetpoint = nextSetpoint;
   }
