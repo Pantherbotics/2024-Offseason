@@ -23,11 +23,11 @@ public class ControlConstants {
                 kMoveYAxisPort = 1;
                 kMoveXAxisPort = 0;
                 kRotateAxisPort = 4;
-                kIntakeButtonPort = 5;
-                kShootButtonPort = 4;
-                kAmpButtonPort = 6;
-                kPassButtonPort = 7;
-                kClimbButtonPort = 0;
+                kIntakeButtonPort = 6;
+                kShootButtonPort = 5;
+                kAmpButtonPort = 7;
+                kPassButtonPort = 8;
+                kClimbButtonPort = 1;
             break;
             case JOYSTICK:
                 kMoveYAxisPort = 1;
