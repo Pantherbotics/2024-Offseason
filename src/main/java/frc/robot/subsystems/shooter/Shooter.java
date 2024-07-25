@@ -7,6 +7,7 @@ package frc.robot.subsystems.shooter;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
@@ -84,6 +85,10 @@ public class Shooter extends SubsystemBase {
     this.goal.position = goal;
   }
 
+  public boolean isAtGoal(){
+    return MathUtil.isNear(this.goal.position, m_pivotMotor.get(), ShooterConstants.kPivotTolerance);
+  }
+
   public void setFlywheelSpeed(double goal){
     m_leftController.setSetpoint(goal);
     m_rightController.setSetpoint(goal);
@@ -97,6 +102,23 @@ public class Shooter extends SubsystemBase {
   public boolean noteSeated(){
     return m_topSensor.getAverageValue() > ShooterConstants.kTopSensorThreshold;
   }
+
+  public void setRollers(double speed){
+    // TODO: add rollers
+  }
+
+  public Command rollersIn(){
+    return runOnce(()->setRollers(ShooterConstants.kRollersInSpeed));
+  }
+
+  public Command rollersOut(){
+    return runOnce(()->setRollers(ShooterConstants.kRollersOutSpeed));
+  }
+
+  public Command rollersStop(){
+    return runOnce(()->setRollers(0));
+  }
+
 
   public Command ampPosition(){
     return runOnce(()->setPivotGoal(ShooterConstants.kAmpPosition));

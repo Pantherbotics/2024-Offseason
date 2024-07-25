@@ -47,8 +47,8 @@ public class Intake extends SubsystemBase {
     this.goal.position = goal;
   }
 
-  public boolean isAtGoal(double tolerance){
-    return MathUtil.isNear(this.goal.position, m_pivotMotor.get(), tolerance);
+  public boolean isAtGoal(){
+    return MathUtil.isNear(this.goal.position, m_pivotMotor.get(), IntakeConstants.kGoalTolerance);
   }
 
   public void setRollers(double speed){

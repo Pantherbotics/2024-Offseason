@@ -20,12 +20,16 @@ public final class ShooterConstants {
     public static final int kLeftIntakeMotorID = 23;
     public static final int kRightIntakeMotorID = 24;
 
+    public static final double kRollersInSpeed = 1;
+    public static final double kRollersOutSpeed = -1;
+
     public static final int kTopSensorID = 3;
     public static final int kSideSensorID = 4;
     public static final int kTopSensorThreshold = 0;
     public static final int kSideSensorThreshold = 0;
 
     public static final double kBangBangTolerance = 0.05;
+    public static final double kPivotTolerance = 0.1;
 
     // Pivot gains
     public static final double dt = 0.02; // PID update period
@@ -37,4 +41,7 @@ public final class ShooterConstants {
     public static final double Kp = 0.0;
     public static final double Ki = 0.0;
     public static final double Kd = 0.0;
+
+
+
 }

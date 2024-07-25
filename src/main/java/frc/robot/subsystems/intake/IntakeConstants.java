@@ -9,6 +9,8 @@ public class IntakeConstants {
     public static final int kPivotMotorID = 25;
     public static final int kRollersMotorID = 24;
 
+    public static final double kGoalTolerance = 0.1;
+
     public static final int kLimitSiwtchID = 3;
 
     public static final int kDistanceSensorID = 0;
