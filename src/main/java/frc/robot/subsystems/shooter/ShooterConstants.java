@@ -23,6 +23,8 @@ public final class ShooterConstants {
     public static final double kRollersInSpeed = 1;
     public static final double kRollersOutSpeed = -1;
 
+    public static final double kFlywheelShotSpeed = 1;
+
     public static final int kTopSensorID = 3;
     public static final int kSideSensorID = 4;
     public static final int kTopSensorThreshold = 0;

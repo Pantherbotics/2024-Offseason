@@ -38,7 +38,7 @@ public class Climber extends SubsystemBase {
   }
 
   public Command climbUntilSwitches(){
-    return runEnd(()->m_leftClimber.set(1), ()->m_leftClimber.set(0)).until(this::leftSwitch).alongWith(runEnd(()->m_rightClimber.set(-1), ()->m_rightClimber.set(0)).until(this::rightSwitch));
+    return runEnd(()->m_leftClimber.set(1), ()->m_leftClimber.set(0)).until(this::leftSwitch).asProxy().alongWith(runEnd(()->m_rightClimber.set(-1), ()->m_rightClimber.set(0)).until(this::rightSwitch));
   } 
 
   @Override

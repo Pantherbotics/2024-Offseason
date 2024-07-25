@@ -5,7 +5,8 @@
 package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.PIDConstants;
@@ -23,11 +24,19 @@ public class DriveConstants {
     public static final double kMaxAngularRate = 1.5 * Math.PI;
 
     public static final Pose2d kAmpPose = new Pose2d(1.8,7.65, Rotation2d.fromDegrees(90));
+    public static final Pose2d kSpeakerPose = new Pose2d(0,5.5, Rotation2d.fromDegrees(90));
+
 
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric() // main drive type
       .withDeadband(kMaxSpeed * 0.05).withRotationalDeadband(kMaxAngularRate * 0.05)
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+      .withDriveRequestType(DriveRequestType.Velocity).withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
+
+    public static final SwerveRequest.FieldCentricFacingAngle facing = new SwerveRequest.FieldCentricFacingAngle()
+      .withDeadband(kMaxSpeed * 0.05).withRotationalDeadband(kMaxAngularRate * 0.05)
+      .withDriveRequestType(DriveRequestType.Velocity).withSteerRequestType(SteerRequestType.MotionMagicExpo);
+
+      
     public static Command driveCommand(CommandSwerveDrivetrain drivetrain, DriverIO mainIO){
       return drivetrain.applyRequest(
         () -> drive.withVelocityX(-mainIO.moveY() * kMaxSpeed)
@@ -36,6 +45,8 @@ public class DriveConstants {
       );
     }
 
+    public static final PhoenixPIDController kHeadingController = new PhoenixPIDController(1, 0.0, 0.1);
+    
 
     public static final PathConstraints kPathfindingConstraints = new PathConstraints(
         6, 4,
