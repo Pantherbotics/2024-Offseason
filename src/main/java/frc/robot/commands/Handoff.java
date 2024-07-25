@@ -21,6 +21,7 @@ public class Handoff extends SequentialCommandGroup {
     addCommands(
       intake.pivotUp(),
       shooter.handoffPosition(),
+      // TODO: see if this works
       new WaitUntilCommand(()->intake.isAtGoal() && shooter.isAtGoal()).withTimeout(5).finallyDo((end)->{if(end){DataLogManager.log("handoff pivot failed");CommandScheduler.getInstance().cancel(this);}}),
       intake.rollersOut(),
       shooter.rollersIn(),
