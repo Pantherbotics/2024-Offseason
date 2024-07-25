@@ -45,7 +45,6 @@ public class NoteDetection extends SubsystemBase {
 
   public void getNotes(){
     LimelightHelpers.LimelightResults llresults = LimelightHelpers.getLatestResults("");
-    SmartDashboard.putBoolean("isVaild", llresults.valid);
     LimelightHelpers.LimelightTarget_Detector[] results = llresults.targets_Detector;
 
 
