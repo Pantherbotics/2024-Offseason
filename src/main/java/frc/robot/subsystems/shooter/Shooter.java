@@ -6,7 +6,6 @@ package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.BangBangController;
@@ -72,14 +71,11 @@ public class Shooter extends SubsystemBase {
 
     handoffPosition();
 
+    SmartDashboard.putData("shooter", this);
+    SmartDashboard.putData("Shooter Controller", controller);
 
-    SmartDashboard.putNumber("ShooterTopSensor", m_topSensor.getAverageValue());
-    SmartDashboard.putBoolean("ShooterHasNote", noteSeated());
-
-    SmartDashboard.putBoolean("ShooterAtGoal", isAtGoal());
-    SmartDashboard.putNumber("ShooterDistToGoal", this.goal.position - m_encoder.get());
   }
-
+  
   public void pivotVoltage(Measure<Voltage> voltageMeasure){
     m_pivotMotor.setVoltage(voltageMeasure.magnitude());
   }
@@ -89,7 +85,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isAtGoal(){
-    return MathUtil.isNear(this.goal.position, m_pivotMotor.get(), ShooterConstants.kPivotTolerance);
+    return MathUtil.isNear(this.goal.position, m_pivotMotor.getPosition().getValueAsDouble(), ShooterConstants.kPivotTolerance);
   }
 
   public void setFlywheelSpeed(double goal){
@@ -140,6 +136,12 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("ShooterTopSensor", m_topSensor.getAverageValue());
+    SmartDashboard.putBoolean("ShooterHasNote", noteSeated());
+
+    SmartDashboard.putBoolean("ShooterAtGoal", isAtGoal());
+    SmartDashboard.putNumber("ShooterDistToGoal", this.goal.position - m_encoder.get());
+
     var nextSetpoint = profile.calculate(ShooterConstants.dt, currentSetpoint, goal);
 
     m_pivotMotor.setVoltage(

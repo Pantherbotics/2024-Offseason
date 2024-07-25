@@ -28,6 +28,8 @@
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
       "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Intake": "Subsystem",
+      "/SmartDashboard/Intake Controller": "PIDController",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",

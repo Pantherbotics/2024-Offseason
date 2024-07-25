@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class Intake extends SubsystemBase {
   private final TalonFX m_pivotMotor;
@@ -36,11 +37,8 @@ public class Intake extends SubsystemBase {
     m_distanceSensor = new AnalogInput(IntakeConstants.kDistanceSensorID);
     m_distanceSensor.setAverageBits(4);
 
-    SmartDashboard.putBoolean("IntakeAtGoal", isAtGoal());
-    SmartDashboard.putNumber("IntakeDistToGoal", this.goal.position - m_pivotMotor.getPosition().getValueAsDouble());
-
-    SmartDashboard.putBoolean("IntakeHasNote", hasNote());
-    SmartDashboard.putNumber("IntakeSensor", m_distanceSensor.getAverageValue());
+    SmartDashboard.putData("Intake", this);
+    SmartDashboard.putData("Intake Controller", controller);
   }
 
   public boolean limitSwitch(){
@@ -52,6 +50,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setGoal(double goal){
+    SmartDashboard.putNumber("Intake goal", goal);
     this.goal.position = goal;
   }
 
@@ -103,8 +102,20 @@ public class Intake extends SubsystemBase {
     return runOnce(()->setRollersOut());
   }
 
+  public Trigger gotNote(){
+    return new Trigger(this::hasNote);
+  }
+
   @Override
   public void periodic() {
+
+    SmartDashboard.putBoolean("IntakeAtGoal", isAtGoal());
+    SmartDashboard.putNumber("IntakeDistToGoal", this.goal.position - m_pivotMotor.getPosition().getValueAsDouble());
+
+    SmartDashboard.putBoolean("IntakeHasNote", hasNote());
+    SmartDashboard.putNumber("IntakeSensor", m_distanceSensor.getAverageValue());
+    SmartDashboard.putNumber("Intake position", m_pivotMotor.getPosition().getValueAsDouble());
+
     var nextSetpoint = profile.calculate(IntakeConstants.dt, currentSetpoint, goal);
 
     m_pivotMotor.setVoltage(
