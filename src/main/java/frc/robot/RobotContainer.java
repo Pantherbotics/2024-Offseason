@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.GeometryUtil;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.commands.Handoff;
 import frc.robot.commands.IntakeAssist;
+import frc.robot.commands.Shoot;
 import frc.robot.controls.DriverIO;
 import frc.robot.controls.ControlConstants.InputType;
 import frc.robot.subsystems.climber.Climber;
@@ -73,10 +76,11 @@ public class RobotContainer {
     mainController.pov(270).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
     */
     mainIO.intake().toggleOnTrue(new IntakeAssist(intake, drivetrain, mainIO));
+    //mainIO.climb().onTrue(climber.climbUntilSwitches());
+    mainIO.shoot().onTrue(new Shoot(shooter, drivetrain, mainIO));
+    mainIO.climb().onTrue(new Handoff(intake, shooter));
     intake.gotNote().onTrue(new Handoff(intake, shooter));
-    mainIO.climb().onTrue(climber.climbUntilSwitches());
-    
-    
+        
   }
 
 

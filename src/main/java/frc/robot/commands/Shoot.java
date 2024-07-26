@@ -4,14 +4,19 @@
 
 package frc.robot.commands;
 
+import com.pathplanner.lib.util.GeometryUtil;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.proto.Geometry2D;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.controls.DriverIO;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.DriveConstants;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.subsystems.vision.FieldPoses;
 
 public class Shoot extends Command {
   private final Shooter shooter;
@@ -35,12 +40,13 @@ public class Shoot extends Command {
   @Override
   public void execute() {
     Pose2d robotPose = drivetrain.getState().Pose;
-    Pose2d speakerPose = DriveConstants.kSpeakerPose;
-    Rotation2d angleToSpeaker = Rotation2d.fromRadians(Math.atan2(speakerPose.getY() - robotPose.getY(), speakerPose.getX() - robotPose.getX()));
+    Pose2d speakerPose = FieldPoses.kSpeakerPose;
+    
+    Rotation2d angleToSpeaker = new Rotation2d(speakerPose.getX() - robotPose.getX(),speakerPose.getY() - robotPose.getY()).plus(Rotation2d.fromDegrees(180));//Rotation2d.fromRadians(Math.atan2(speakerPose.getY() - robotPose.getY(), speakerPose.getX() - robotPose.getX()));
     drivetrain.setControl(
       DriveConstants.facing.withTargetDirection(angleToSpeaker)
-      .withVelocityX(-mainIO.moveY())
-      .withVelocityY(-mainIO.moveX())
+      .withVelocityX(-mainIO.moveY() * DriveConstants.kMaxSpeed)
+      .withVelocityY(-mainIO.moveX() * DriveConstants.kMaxSpeed)
       );
   }
 
