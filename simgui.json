@@ -36,7 +36,8 @@
       "/SmartDashboard/Module 3": "Mechanism2d",
       "/SmartDashboard/Shooter Controller": "PIDController",
       "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d",
-      "/SmartDashboard/shooter": "Subsystem"
+      "/SmartDashboard/shooter": "Subsystem",
+      "/SmartDashboard/thing": "PIDController"
     }
   },
   "NetworkTables": {

@@ -16,6 +16,7 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Tracer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -45,7 +46,8 @@ public class Shooter extends SubsystemBase {
 
   private ExponentialProfile.State currentSetpoint = new ExponentialProfile.State();
   private ExponentialProfile.State goal = new ExponentialProfile.State();
-
+  private Tracer tracer = new Tracer();
+  private Tracer tracer2 = new Tracer();
   private final SysIdRoutine routine = new SysIdRoutine(new Config(), new Mechanism(this::pivotVoltage, null, this));
   
   public Shooter() {
@@ -136,18 +138,24 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
+    tracer2.resetTimer();
+    tracer.resetTimer();
     SmartDashboard.putNumber("ShooterTopSensor", m_topSensor.getAverageValue());
     SmartDashboard.putBoolean("ShooterHasNote", noteSeated());
 
     SmartDashboard.putBoolean("ShooterAtGoal", isAtGoal());
     SmartDashboard.putNumber("ShooterDistToGoal", this.goal.position - m_encoder.get());
-
+    tracer.addEpoch("SmartDashboard");
     var nextSetpoint = profile.calculate(ShooterConstants.dt, currentSetpoint, goal);
-
-    m_pivotMotor.setVoltage(
-        feedforward.calculate(Units.rotationsToRadians(m_encoder.get()), Units.rotationsToRadians(m_pivotMotor.getVelocity().getValueAsDouble()), Units.rotationsToRadians(m_pivotMotor.getAcceleration().getValueAsDouble()))
-            + controller.calculate(m_encoder.get(), currentSetpoint.position));
-
+    tracer.addEpoch("profiling");
+    var encoderValue = m_encoder.get();
+    tracer.addEpoch("encoder.get");
+    double feed = feedforward.calculate(Units.rotationsToRadians(encoderValue), Units.rotationsToRadians(m_pivotMotor.getVelocity().getValueAsDouble()), Units.rotationsToRadians(m_pivotMotor.getAcceleration().getValueAsDouble()));
+    tracer.addEpoch("feedForward calc");
+    double control = controller.calculate(encoderValue, currentSetpoint.position);
+    tracer.addEpoch("PID CALC");
+    m_pivotMotor.setVoltage(feed + control);
+    tracer.addEpoch("setVoltage");
     currentSetpoint = nextSetpoint;
 
     m_leftFlywheel.set(
@@ -157,6 +165,14 @@ public class Shooter extends SubsystemBase {
     m_rightFlywheel.set(
       -m_rightController.calculate(-m_rightFlywheel.getVelocity().getValueAsDouble())
     );
+    tracer.addEpoch("bangBang controllers");
 
+    tracer2.addEpoch("");
+    tracer2.printEpochs((outputE)->{
+      if ( Double.parseDouble(outputE.substring(2,11)) > 0.001){
+        System.out.println(outputE.substring(2,11));
+        tracer.printEpochs();
+      }
+    });
   }
 }
