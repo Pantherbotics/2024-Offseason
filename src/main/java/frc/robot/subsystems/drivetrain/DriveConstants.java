@@ -22,10 +22,7 @@ public class DriveConstants {
 
     public static final double kMaxSpeed = 4.0;
     public static final double kMaxAngularRate = 1.5 * Math.PI;
-
-    public static final Pose2d kAmpPose = new Pose2d(1.8,7.65, Rotation2d.fromDegrees(90));
-    public static final Pose2d kSpeakerPose = new Pose2d(0,5.5, Rotation2d.fromDegrees(90));
-
+  
 
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric() // main drive type
       .withDeadband(kMaxSpeed * 0.05).withRotationalDeadband(kMaxAngularRate * 0.05)
@@ -45,7 +42,7 @@ public class DriveConstants {
       );
     }
 
-    public static final PhoenixPIDController kHeadingController = new PhoenixPIDController(1, 0.0, 0.1);
+    public static PhoenixPIDController kHeadingController = new PhoenixPIDController(20, 0.0, 0.5);
     
 
     public static final PathConstraints kPathfindingConstraints = new PathConstraints(
