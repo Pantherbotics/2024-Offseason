@@ -104,6 +104,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     private void configurePathPlanner() {
         DriveConstants.facing.HeadingController = DriveConstants.kHeadingController;
+        DriveConstants.facing.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
         SmartDashboard.putData("thing", DriveConstants.facing.HeadingController);
         double driveBaseRadius = 0;
         for (var moduleLocation : m_moduleLocations) {
