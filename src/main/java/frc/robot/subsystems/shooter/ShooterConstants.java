@@ -15,8 +15,8 @@ public final class ShooterConstants {
     public static final double kHandoffPosition = 0.0;
     public static final double kAmpPosition = 1.0;
 
-    public static final int kLeftFlywheelMotorID = 20;
-    public static final int kRightFlywheelMotorID = 21;
+    public static final int kLeftFlywheelMotorID = 31;
+    public static final int kRightFlywheelMotorID = 32;
     public static final int kLeftIntakeMotorID = 23;
     public static final int kRightIntakeMotorID = 24;
 
@@ -25,9 +25,9 @@ public final class ShooterConstants {
 
     public static final double kFlywheelShotSpeed = 1;
 
-    public static final int kTopSensorID = 3;
-    public static final int kSideSensorID = 4;
-    public static final int kTopSensorThreshold = 0;
+    public static final int kTopSensorID = 0;
+    public static final int kSideSensorID = 2;
+    public static final int kTopSensorThreshold = 1800;
     public static final int kSideSensorThreshold = 0;
 
     public static final double kBangBangTolerance = 0.05;

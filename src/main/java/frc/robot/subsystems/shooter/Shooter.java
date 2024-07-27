@@ -169,7 +169,7 @@ public class Shooter extends SubsystemBase {
 
     tracer2.addEpoch("");
     tracer2.printEpochs((outputE)->{
-      if ( Double.parseDouble(outputE.substring(2,11)) > 0.001){
+      if ( Double.parseDouble(outputE.substring(2,11)) > 0.02){
         System.out.println(outputE.substring(2,11));
         tracer.printEpochs();
       }

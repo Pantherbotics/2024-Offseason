@@ -4,14 +4,18 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.GeometryUtil;
-
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.Handoff;
 import frc.robot.commands.IntakeAssist;
 import frc.robot.commands.Shoot;
@@ -54,9 +58,10 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(DriveConstants.driveCommand(drivetrain, mainIO).ignoringDisable(true));
     configureBindings();
+    drivetrain.seedFieldRelative(new Pose2d(6.0, 4.0, Rotation2d.fromDegrees(0)));
     vision.setDefaultCommand(vision.updatePose(drivetrain));
 
-
+    invertEncoders();
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", this.autoChooser);
@@ -64,11 +69,11 @@ public class RobotContainer {
 
   private void configureBindings() {
     
-    /*mainController.button(1).whileTrue(shooter.sysIdDynamicCommand(Direction.kForward));
+    mainController.button(1).whileTrue(shooter.sysIdDynamicCommand(Direction.kForward));
     mainController.button(2).whileTrue(shooter.sysIdDynamicCommand(Direction.kReverse));
     mainController.button(3).whileTrue(shooter.sysIdQuasistaticCommand(Direction.kForward));
     mainController.button(4).whileTrue(shooter.sysIdQuasistaticCommand(Direction.kReverse));
-    
+    /*
     mainController.button(2).onTrue(new IntakeAssist(intake, drivetrain, mainIO));
     mainController.pov(0).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     mainController.pov(90).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
@@ -84,8 +89,31 @@ public class RobotContainer {
   }
 
 
+private void invertEncoders(){
+  if(!Utils.isSimulation()){
+    for (int i = 0; i < 4; ++i)
+    {
+      var module = drivetrain.getModule(i);
+      CANcoderConfiguration cfg = new CANcoderConfiguration();
+      StatusCode response = StatusCode.StatusCodeNotInitialized;
 
+      /* Repeat this in a loop until we have success */
+      do {
+        /* First make sure we refresh the object so we don't overwrite anything */
+        response = module.getCANcoder().getConfigurator().refresh(cfg);
+      } while(!response.isOK());
 
+      /* Invert your CANcoder magnet direction */
+      cfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+
+      /* Repeat this in a loop until we have success */
+      do {
+        /* Apply configuration to CANcoder */
+        module.getCANcoder().getConfigurator().apply(cfg);
+      } while (!response.isOK());
+  }
+  }
+}
 
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();

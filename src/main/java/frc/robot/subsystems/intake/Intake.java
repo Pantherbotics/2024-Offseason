@@ -46,7 +46,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasNote(){
-    return m_distanceSensor.getAverageValue() < IntakeConstants.kSensorThreshold;
+    return m_distanceSensor.getAverageValue() > IntakeConstants.kSensorThreshold;
   }
 
   public void setGoal(double goal){

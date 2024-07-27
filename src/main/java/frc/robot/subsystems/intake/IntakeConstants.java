@@ -13,8 +13,8 @@ public class IntakeConstants {
 
     public static final int kLimitSiwtchID = 3;
 
-    public static final int kDistanceSensorID = 0;
-    public static final int kSensorThreshold = 0;
+    public static final int kDistanceSensorID = 3;
+    public static final int kSensorThreshold = 600;
 
     public static final double kDownPosition = 0.0;
     public static final double kUpPosition = 0.0;
