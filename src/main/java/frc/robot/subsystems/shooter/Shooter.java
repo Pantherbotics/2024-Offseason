@@ -145,6 +145,8 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putBoolean("ShooterAtGoal", isAtGoal());
     SmartDashboard.putNumber("ShooterDistToGoal", this.goal.position - m_encoder.get());
+    SmartDashboard.putNumber("shooterEncoderPosition", m_encoder.getAbsolutePosition());
+
     tracer.addEpoch("SmartDashboard");
     var nextSetpoint = profile.calculate(ShooterConstants.dt, currentSetpoint, goal);
     tracer.addEpoch("profiling");
