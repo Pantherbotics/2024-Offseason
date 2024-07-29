@@ -4,12 +4,10 @@
 
 package frc.robot.subsystems.intake;
 
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.trajectory.ExponentialProfile;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,13 +20,7 @@ public class Intake extends SubsystemBase {
   private final TalonFX m_rollersMotor;
   private final DigitalInput m_limitSwitch;
   private final AnalogInput m_distanceSensor;
-
-  private ExponentialProfile profile = new ExponentialProfile(ExponentialProfile.Constraints.fromCharacteristics(10, IntakeConstants.Kv, IntakeConstants.Ka));
-  private ArmFeedforward feedforward = new ArmFeedforward(IntakeConstants.Ks, IntakeConstants.Kg, IntakeConstants.Kv, IntakeConstants.Ka);
-  private PIDController controller = new PIDController(IntakeConstants.Kp, IntakeConstants.Ki, IntakeConstants.Kd, IntakeConstants.dt);
-
-  private ExponentialProfile.State currentSetpoint = new ExponentialProfile.State();
-  private ExponentialProfile.State goal = new ExponentialProfile.State();
+  private final MotionMagicVoltage m_request;
 
   public Intake() {
     m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorID);
@@ -37,8 +29,20 @@ public class Intake extends SubsystemBase {
     m_distanceSensor = new AnalogInput(IntakeConstants.kDistanceSensorID);
     m_distanceSensor.setAverageBits(4);
 
+    TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
+    pivotConfigs.withSlot0(IntakeConstants.kPivotGains);
+    pivotConfigs.withMotionMagic(IntakeConstants.kProfileConfigs);
+
+    FeedbackConfigs feedbackConfigs = pivotConfigs.Feedback;
+    feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.kMotorToPivotRatio);
+    feedbackConfigs.withFeedbackRotorOffset(IntakeConstants.kRotorOffset);
+    
+
+    m_pivotMotor.getConfigurator().apply(pivotConfigs);
+    m_request = new MotionMagicVoltage(0);
+    
+
     SmartDashboard.putData("Intake", this);
-    SmartDashboard.putData("Intake Controller", controller);
   }
 
   public boolean limitSwitch(){
@@ -51,11 +55,11 @@ public class Intake extends SubsystemBase {
 
   public void setGoal(double goal){
     SmartDashboard.putNumber("Intake goal", goal);
-    this.goal.position = goal;
+    m_pivotMotor.setControl(m_request.withPosition(goal));
   }
 
   public boolean isAtGoal(){
-    return MathUtil.isNear(this.goal.position, m_pivotMotor.getPosition().getValueAsDouble(), IntakeConstants.kGoalTolerance);
+    return Math.abs(m_request.Position - m_pivotMotor.getPosition().getValueAsDouble()) < IntakeConstants.kGoalTolerance;
   }
 
   public void setRollers(double speed){
@@ -110,18 +114,10 @@ public class Intake extends SubsystemBase {
   public void periodic() {
 
     SmartDashboard.putBoolean("IntakeAtGoal", isAtGoal());
-    SmartDashboard.putNumber("IntakeDistToGoal", this.goal.position - m_pivotMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("IntakeDistToGoal", m_request.Position - m_pivotMotor.getPosition().getValueAsDouble());
 
     SmartDashboard.putBoolean("IntakeHasNote", hasNote());
     SmartDashboard.putNumber("IntakeSensor", m_distanceSensor.getAverageValue());
     SmartDashboard.putNumber("Intake position", m_pivotMotor.getPosition().getValueAsDouble());
-
-    var nextSetpoint = profile.calculate(IntakeConstants.dt, currentSetpoint, goal);
-
-    m_pivotMotor.setVoltage(
-        feedforward.calculate(currentSetpoint.velocity, nextSetpoint.velocity, IntakeConstants.dt)
-            + controller.calculate(m_pivotMotor.getPosition().getValueAsDouble(), currentSetpoint.position));
-
-    currentSetpoint = nextSetpoint;
   }
 }
