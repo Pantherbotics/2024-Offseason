@@ -21,6 +21,20 @@
           "open": true
         }
       }
+    },
+    "RoboRIO": {
+      "3.3V Rail": {
+        "open": true
+      },
+      "5V Rail": {
+        "open": true
+      },
+      "6V Rail": {
+        "open": true
+      },
+      "RoboRIO Input": {
+        "open": true
+      }
     }
   },
   "NTProvider": {
@@ -38,6 +52,101 @@
       "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d",
       "/SmartDashboard/shooter": "Subsystem",
       "/SmartDashboard/thing": "PIDController"
+    },
+    "windows": {
+      "/Pose": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "robotPose": {
+          "image": "D:\\Programs\\pantherbotics\\videos\\IMG_20240326_195747383_HDR.jpg"
+        },
+        "rotation": {
+          "arrowColor": [
+            0.0,
+            1.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 39,
+          "image": "D:\\Programs\\pantherbotics\\videos\\IMG_20240326_195747383_HDR.jpg",
+          "style": "Box/Image"
+        },
+        "top": 79,
+        "width": 16.541748046875
+      },
+      "/SmartDashboard/Auto Chooser": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": {
+        "EstimatedRobot": {
+          "arrows": false,
+          "color": [
+            0.9460784196853638,
+            0.9460784196853638,
+            0.9460784196853638,
+            255.0
+          ]
+        },
+        "VisionEstimation": {
+          "arrows": false,
+          "color": [
+            0.06862747669219971,
+            0.09602105617523193,
+            1.0,
+            255.0
+          ],
+          "selectable": false,
+          "weight": 2.0
+        },
+        "apriltag": {
+          "arrows": false,
+          "color": [
+            1.0,
+            1.0,
+            1.0,
+            255.0
+          ],
+          "length": 0.10000000149011612,
+          "selectable": false,
+          "width": 0.10000000149011612
+        },
+        "bottom": 1476,
+        "cameras": {
+          "arrows": false,
+          "color": [
+            0.9411764740943909,
+            0.9411764740943909,
+            0.9411764740943909,
+            255.0
+          ],
+          "length": 0.10000000149011612,
+          "selectable": false,
+          "width": 0.10000000149011612
+        },
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "visibleTargetPoses": {
+          "arrows": false,
+          "color": [
+            0.5501730442047119,
+            1.0,
+            0.044117629528045654,
+            255.0
+          ],
+          "length": 0.5,
+          "width": 0.5
+        },
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
@@ -68,5 +177,26 @@
       }
     },
     "visible": true
+  },
+  "NetworkTables View": {
+    "visible": false
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 338
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    }
   }
 }
