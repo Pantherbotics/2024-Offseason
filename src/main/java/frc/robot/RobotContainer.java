@@ -73,6 +73,8 @@ public class RobotContainer {
     mainController.button(2).whileTrue(shooter.sysIdDynamicCommand(Direction.kReverse));
     mainController.button(3).whileTrue(shooter.sysIdQuasistaticCommand(Direction.kForward));
     mainController.button(4).whileTrue(shooter.sysIdQuasistaticCommand(Direction.kReverse));
+    mainController.pov(0).onTrue(intake.pivotUp());
+    mainController.pov(180).onTrue(intake.pivotDown());
     /*
     mainController.button(2).onTrue(new IntakeAssist(intake, drivetrain, mainIO));
     mainController.pov(0).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
@@ -83,7 +85,7 @@ public class RobotContainer {
     mainIO.intake().toggleOnTrue(new IntakeAssist(intake, drivetrain, mainIO));
     //mainIO.climb().onTrue(climber.climbUntilSwitches());
     mainIO.shoot().onTrue(new Shoot(shooter, drivetrain, mainIO));
-    mainIO.climb().onTrue(new Handoff(intake, shooter));
+    //mainIO.climb().onTrue(new Handoff(intake, shooter));
     intake.gotNote().onTrue(new Handoff(intake, shooter));
         
   }
