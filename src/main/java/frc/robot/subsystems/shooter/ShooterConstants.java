@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+
 /** Add your docs here. */
 public final class ShooterConstants {
     
@@ -44,7 +46,19 @@ public final class ShooterConstants {
     public static final double Ki = 0.0;
     public static final double Kd = 0.0;
 
+    public static InterpolatingDoubleTreeMap shotTable;
+    private static final double[][] anglesMatrix = {
+        {}
+    };
+
     // shot values
+    public static final void setupShotTable(){
+        shotTable = new InterpolatingDoubleTreeMap();
+        for(int i = 0; i < anglesMatrix.length; i++){
+            shotTable.put(anglesMatrix[i][0], anglesMatrix[i][1]);
+        }
+
+    }
     
 
 
