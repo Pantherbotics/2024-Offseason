@@ -48,11 +48,11 @@ public final class ShooterConstants {
 
     public static InterpolatingDoubleTreeMap shotTable;
     private static final double[][] anglesMatrix = {
-        {}
+        {0,0}
     };
 
     // shot values
-    public static final void setupShotTable(){
+    public static void setupShotTable(){
         shotTable = new InterpolatingDoubleTreeMap();
         for(int i = 0; i < anglesMatrix.length; i++){
             shotTable.put(anglesMatrix[i][0], anglesMatrix[i][1]);
