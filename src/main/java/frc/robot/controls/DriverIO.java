@@ -26,10 +26,10 @@ public class DriverIO extends GenericHID{
 
 
     public double moveX(){
-        return getRawAxis(ports.kMoveXAxisPort);
+        return getRawAxis(ports.kMoveXAxisPort) * Math.abs(getRawAxis(ports.kMoveXAxisPort));
     }
     public double moveY(){
-        return getRawAxis(ports.kMoveYAxisPort);
+        return  getRawAxis(ports.kMoveYAxisPort) * Math.abs(getRawAxis(ports.kMoveYAxisPort));
     }
     public double rotate(){
         return getRawAxis(ports.kRotateAxisPort);
