@@ -4,12 +4,8 @@
 
 package frc.robot.commands;
 
-import com.pathplanner.lib.util.GeometryUtil;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.proto.Geometry2D;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.controls.DriverIO;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;

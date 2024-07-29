@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.trajectory.ExponentialProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
@@ -71,11 +72,17 @@ public class Shooter extends SubsystemBase {
     m_leftController = new BangBangController(ShooterConstants.kBangBangTolerance);
     m_rightController = new BangBangController(ShooterConstants.kBangBangTolerance);
 
-    handoffPosition();
+    setPivotGoal(ShooterConstants.kHandoffPosition);
 
     SmartDashboard.putData("shooter", this);
     SmartDashboard.putData("Shooter Controller", controller);
 
+  }
+
+  public InterpolatingDoubleTreeMap getShotTable(){
+    var map = new InterpolatingDoubleTreeMap();
+    map.put(0.2, 45.0);
+    return map;
   }
   
   public void pivotVoltage(Measure<Voltage> voltageMeasure){
