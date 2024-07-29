@@ -28,6 +28,7 @@ public class Intake extends SubsystemBase {
     m_limitSwitch = new DigitalInput(IntakeConstants.kLimitSiwtchID);
     m_distanceSensor = new AnalogInput(IntakeConstants.kDistanceSensorID);
     m_distanceSensor.setAverageBits(4);
+    m_pivotMotor.setPosition(0);
 
     TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
     pivotConfigs.withSlot0(IntakeConstants.kPivotGains);

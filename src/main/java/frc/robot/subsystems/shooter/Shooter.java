@@ -6,6 +6,10 @@ package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.BangBangController;
@@ -34,6 +38,9 @@ public class Shooter extends SubsystemBase {
   private final AnalogInput m_topSensor;
   private final AnalogInput m_sideSensor;
 
+  private final CANSparkMax m_leftIntake;
+  private final CANSparkMax m_rightIntake;
+
   private final TalonFX m_leftFlywheel;
   private final TalonFX m_rightFlywheel;
   private final BangBangController m_leftController;
@@ -56,6 +63,12 @@ public class Shooter extends SubsystemBase {
     m_encoder.setPositionOffset(ShooterConstants.kEncoderOffset);
 
     m_pivotMotor = new TalonFX(ShooterConstants.kPivotMotorID);
+
+    m_leftIntake = new CANSparkMax(ShooterConstants.kLeftIntakeMotorID, MotorType.kBrushless);
+    m_rightIntake = new CANSparkMax(ShooterConstants.kRightIntakeMotorID, MotorType.kBrushless);
+    m_leftIntake.setIdleMode(IdleMode.kBrake);
+    m_rightIntake.setIdleMode(IdleMode.kBrake);
+    m_leftIntake.follow(m_leftIntake, true);
 
     m_leftFlywheel = new TalonFX(ShooterConstants.kLeftFlywheelMotorID);
     m_rightFlywheel = new TalonFX(ShooterConstants.kRightFlywheelMotorID);
@@ -105,7 +118,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setRollers(double speed){
-    // TODO: add rollers
+    m_leftIntake.set(speed);
   }
 
   public Command rollersIn(){
