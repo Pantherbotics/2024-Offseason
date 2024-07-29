@@ -8,9 +8,16 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -22,6 +29,9 @@ public class Intake extends SubsystemBase {
   private final AnalogInput m_distanceSensor;
   private final MotionMagicVoltage m_request;
 
+  
+  private final SysIdRoutine routine = new SysIdRoutine(new Config(), new Mechanism(this::pivotVoltage, null, this));
+  
   public Intake() {
     m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorID);
     m_rollersMotor = new TalonFX(IntakeConstants.kRollersMotorID);
@@ -44,6 +54,11 @@ public class Intake extends SubsystemBase {
     
 
     SmartDashboard.putData("Intake", this);
+  }
+
+    
+  public void pivotVoltage(Measure<Voltage> voltageMeasure){
+    m_pivotMotor.setVoltage(voltageMeasure.magnitude());
   }
 
   public boolean limitSwitch(){
@@ -105,6 +120,14 @@ public class Intake extends SubsystemBase {
 
   public Command rollersOut(){
     return runOnce(()->setRollersOut());
+  }
+
+  public Command sysIdDynamicCommand(Direction direction){
+    return routine.dynamic(direction);
+  }
+
+  public Command sysIdQuasistaticCommand(Direction direction){
+    return routine.quasistatic(direction);
   }
 
   public Trigger gotNote(){
