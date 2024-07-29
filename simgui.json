@@ -51,7 +51,9 @@
         },
         "MainCam-raw": {
           "open": true
-        },
+        }
+      },
+      "FMSInfo": {
         "open": true
       }
     }
