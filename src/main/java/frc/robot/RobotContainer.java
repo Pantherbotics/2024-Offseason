@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.Amp;
 import frc.robot.commands.Handoff;
 import frc.robot.commands.IntakeAssist;
 import frc.robot.commands.Shoot;
@@ -85,8 +86,11 @@ public class RobotContainer {
     mainIO.intake().toggleOnTrue(new IntakeAssist(intake, drivetrain, mainIO));
     //mainIO.climb().onTrue(climber.climbUntilSwitches());
     mainIO.shoot().onTrue(new Shoot(shooter, drivetrain, mainIO));
+    mainIO.amp().onTrue(new Amp(shooter, drivetrain, mainIO));
     //mainIO.climb().onTrue(new Handoff(intake, shooter));
     intake.gotNote().onTrue(new Handoff(intake, shooter));
+
+
         
   }
 

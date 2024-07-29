@@ -40,6 +40,9 @@ public class DriverIO extends GenericHID{
     public Trigger shoot(){
         return new Trigger(()->getRawButton(ports.kShootButtonPort));
     }
+    public Trigger amp(){
+        return new Trigger(()->getRawButton(ports.kAmpButtonPort));
+    }
     public Trigger climb(){
         return new Trigger(()->getRawButton(ports.kClimbButtonPort));
     }
