@@ -39,9 +39,9 @@ public class RobotContainer {
   private final CommandSwerveDrivetrain drivetrain;
   private final Vision vision;
   private final NoteDetection noteDetection;
-  //private final Climber climber;
-  //private final Shooter shooter;
-  //private final Intake intake;
+  private final Climber climber;
+  private final Shooter shooter;
+  private final Intake intake;
   private final Telemetry logger = new Telemetry();
 
   private final SendableChooser <Command> autoChooser;
@@ -53,9 +53,9 @@ public class RobotContainer {
     noteDetection = new NoteDetection(drivetrain);
     mainController = new CommandJoystick(0);
     
-    //shooter = new Shooter();
-    //intake = new Intake();
-    //climber = new Climber();
+    shooter = new Shooter();
+    intake = new Intake();
+    climber = new Climber();
 
     drivetrain.setDefaultCommand(DriveConstants.driveCommand(drivetrain, mainIO).ignoringDisable(true));
     configureBindings();
@@ -69,28 +69,28 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    /*
+    
     mainController.button(1).whileTrue(shooter.sysIdDynamicCommand(Direction.kForward));
     mainController.button(2).whileTrue(shooter.sysIdDynamicCommand(Direction.kReverse));
     mainController.button(3).whileTrue(shooter.sysIdQuasistaticCommand(Direction.kForward));
     mainController.button(4).whileTrue(shooter.sysIdQuasistaticCommand(Direction.kReverse));
     mainController.pov(0).onTrue(intake.pivotUp());
     mainController.pov(180).onTrue(intake.pivotDown());
-    /*
+    
     mainController.button(2).onTrue(new IntakeAssist(intake, drivetrain, mainIO));
     mainController.pov(0).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     mainController.pov(90).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
     mainController.pov(180).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
     mainController.pov(270).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-    */
-    /*
+    
+    
     mainIO.intake().toggleOnTrue(new IntakeAssist(intake, drivetrain, mainIO));
     //mainIO.climb().onTrue(climber.climbUntilSwitches());
     mainIO.shoot().onTrue(new Shoot(shooter, drivetrain, mainIO));
     mainIO.amp().onTrue(new Amp(shooter, drivetrain, mainIO));
     //mainIO.climb().onTrue(new Handoff(intake, shooter));
     intake.gotNote().onTrue(new Handoff(intake, shooter));
-    */
+    
 
         
   }
