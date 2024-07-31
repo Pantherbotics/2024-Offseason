@@ -1,153 +1,50 @@
 {
   "HALProvider": {
-    "Other Devices": {
-      "Talon FX (v6)[1]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX (v6)[1]/Fwd Limit": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX (v6)[1]/Rev Limit": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX (v6)[1]/Rotor Sensor": {
-        "header": {
-          "open": true
-        }
-      }
-    },
     "RoboRIO": {
       "3.3V Rail": {
-        "open": true
+        "open": false
       },
       "5V Rail": {
-        "open": true
+        "open": false
       },
       "6V Rail": {
-        "open": true
+        "open": false
       },
       "RoboRIO Input": {
-        "open": true
+        "open": false
       }
     }
   },
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo",
-      "/Pose": "Field2d",
-      "/SmartDashboard/Auto Chooser": "String Chooser",
-      "/SmartDashboard/Intake": "Subsystem",
-      "/SmartDashboard/Intake Controller": "PIDController",
-      "/SmartDashboard/Module 0": "Mechanism2d",
-      "/SmartDashboard/Module 1": "Mechanism2d",
-      "/SmartDashboard/Module 2": "Mechanism2d",
-      "/SmartDashboard/Module 3": "Mechanism2d",
-      "/SmartDashboard/Shooter Controller": "PIDController",
-      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d",
-      "/SmartDashboard/shooter": "Subsystem",
-      "/SmartDashboard/thing": "PIDController"
+      "/FMSInfo": "FMSInfo"
     },
     "windows": {
-      "/Pose": {
-        "bottom": 1476,
-        "height": 8.210550308227539,
-        "left": 150,
-        "right": 2961,
-        "robotPose": {
-          "image": "D:\\Programs\\pantherbotics\\videos\\IMG_20240326_195747383_HDR.jpg"
-        },
-        "rotation": {
-          "arrowColor": [
-            0.0,
-            1.0,
-            0.0,
-            255.0
-          ],
-          "arrowSize": 39,
-          "image": "D:\\Programs\\pantherbotics\\videos\\IMG_20240326_195747383_HDR.jpg",
-          "style": "Box/Image"
-        },
-        "top": 79,
-        "width": 16.541748046875,
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Auto Chooser": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/VisionSystemSim-main/Sim Field": {
         "EstimatedRobot": {
-          "arrows": false,
-          "color": [
-            0.9460784196853638,
-            0.9460784196853638,
-            0.9460784196853638,
-            255.0
-          ]
+          "arrows": false
         },
         "VisionEstimation": {
           "arrows": false,
-          "color": [
-            0.06862747669219971,
-            0.09602105617523193,
-            1.0,
-            255.0
-          ],
           "selectable": false,
-          "weight": 2.0
+          "weight": 0.0
         },
         "apriltag": {
           "arrows": false,
-          "color": [
-            1.0,
-            1.0,
-            1.0,
-            255.0
-          ],
-          "length": 0.10000000149011612,
+          "length": 0.0,
           "selectable": false,
-          "width": 0.10000000149011612
+          "width": 0.0
         },
-        "bottom": 1476,
         "cameras": {
           "arrows": false,
-          "color": [
-            0.9411764740943909,
-            0.9411764740943909,
-            0.9411764740943909,
-            255.0
-          ],
-          "length": 0.10000000149011612,
+          "length": 0.0,
           "selectable": false,
-          "width": 0.10000000149011612
+          "width": 0.0
         },
-        "height": 8.210550308227539,
-        "left": 150,
-        "right": 2961,
-        "top": 79,
         "visibleTargetPoses": {
           "arrows": false,
-          "color": [
-            0.5501730442047119,
-            1.0,
-            0.044117629528045654,
-            255.0
-          ],
-          "length": 0.5,
-          "width": 0.5
-        },
-        "width": 16.541748046875,
-        "window": {
-          "visible": true
+          "length": 0.0,
+          "width": 0.0
         }
       }
     }
@@ -156,50 +53,26 @@
     "transitory": {
       "CameraPublisher": {
         "MainCam-processed": {
-          "open": true,
+          "open": false,
           "string[]##v_/CameraPublisher/MainCam-processed/streams": {
-            "open": true
+            "open": false
           }
         },
         "MainCam-raw": {
-          "open": true
+          "open": false
         }
-      },
-      "FMSInfo": {
-        "open": true
       }
     }
   },
   "NetworkTables Info": {
     "AdvantageScope@1": {
-      "open": true
+      "open": false
     },
     "Server": {
       "Publishers": {
-        "open": true
+        "open": false
       }
     },
     "visible": true
-  },
-  "NetworkTables View": {
-    "visible": false
-  },
-  "Plot": {
-    "Plot <0>": {
-      "plots": [
-        {
-          "backgroundColor": [
-            0.0,
-            0.0,
-            0.0,
-            0.8500000238418579
-          ],
-          "height": 338
-        }
-      ],
-      "window": {
-        "visible": false
-      }
-    }
   }
 }

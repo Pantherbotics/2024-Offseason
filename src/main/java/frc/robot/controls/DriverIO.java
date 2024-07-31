@@ -11,7 +11,7 @@ import frc.robot.controls.ControlConstants.InputType;
 /** Add your docs here. */
 public class DriverIO extends GenericHID{
 
-    private final ControlConstants ports;
+    public final ControlConstants ports;
 
     public DriverIO(int port, InputType type){
         super(port);

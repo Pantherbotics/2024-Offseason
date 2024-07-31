@@ -24,6 +24,7 @@ public final class ShooterConstants {
 
     public static final double kRollersInSpeed = 1;
     public static final double kRollersOutSpeed = -1;
+    public static final double kRollersShootSpeed = 1;
 
     public static final double kFlywheelShotSpeed = 1;
 
@@ -46,20 +47,13 @@ public final class ShooterConstants {
     public static final double Ki = 0.0;
     public static final double Kd = 0.0;
 
-    public static InterpolatingDoubleTreeMap shotTable;
-    private static final double[][] anglesMatrix = {
+    public static final double[][] shotMatrix = {
+        {0,0}
+    };
+    public static final double[][] passMatrix = {
         {0,0}
     };
 
-    // shot values
-    public static void setupShotTable(){
-        shotTable = new InterpolatingDoubleTreeMap();
-        for(int i = 0; i < anglesMatrix.length; i++){
-            shotTable.put(anglesMatrix[i][0], anglesMatrix[i][1]);
-        }
-
-    }
-    
 
 
 

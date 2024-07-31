@@ -14,6 +14,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.trajectory.ExponentialProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
@@ -44,6 +45,9 @@ public class Shooter extends SubsystemBase {
   private final TalonFX m_rightFlywheel;
   private final BangBangController m_leftController;
   private final BangBangController m_rightController;
+  
+  private InterpolatingDoubleTreeMap shotTable;
+  private InterpolatingDoubleTreeMap passTable;
 
 
   private ExponentialProfile profile = new ExponentialProfile(ExponentialProfile.Constraints.fromCharacteristics(10, ShooterConstants.Kv, ShooterConstants.Ka));
@@ -55,6 +59,7 @@ public class Shooter extends SubsystemBase {
   private final SysIdRoutine routine = new SysIdRoutine(new Config(), new Mechanism(this::pivotVoltage, null, this));
   
   public Shooter() {
+    
 
     m_encoder = new DutyCycleEncoder(ShooterConstants.kEncoderID);
     m_encoder.setPositionOffset(ShooterConstants.kEncoderOffset);
@@ -81,13 +86,30 @@ public class Shooter extends SubsystemBase {
     m_leftController = new BangBangController(ShooterConstants.kBangBangTolerance);
     m_rightController = new BangBangController(ShooterConstants.kBangBangTolerance);
 
-    
-    ShooterConstants.setupShotTable();
+    shotTable = new InterpolatingDoubleTreeMap();
+    for(int i = 0; i < ShooterConstants.shotMatrix.length; i++){
+        shotTable.put(ShooterConstants.shotMatrix[i][0], ShooterConstants.shotMatrix[i][1]);
+    }
+
+    passTable = new InterpolatingDoubleTreeMap();
+    for(int i = 0; i < ShooterConstants.passMatrix.length; i++){
+        passTable.put(ShooterConstants.passMatrix[i][0], ShooterConstants.passMatrix[i][1]);
+    }
+
+  
     setPivotGoal(ShooterConstants.kHandoffPosition);
 
     SmartDashboard.putData("shooter", this);
     SmartDashboard.putData("Shooter Controller", controller);
 
+  }
+
+  public InterpolatingDoubleTreeMap getShotTable(){
+    return shotTable;
+  }
+
+  public InterpolatingDoubleTreeMap getPassTable(){
+    return passTable;
   }
   
   public void pivotVoltage(Measure<Voltage> voltageMeasure){
@@ -114,6 +136,10 @@ public class Shooter extends SubsystemBase {
 
   public boolean noteSeated(){
     return m_topSensor.getAverageValue() > ShooterConstants.kTopSensorThreshold;
+  }
+
+  public boolean sideSensor(){
+    return m_sideSensor.getAverageValue() > ShooterConstants.kSideSensorThreshold;
   }
 
   public void setRollers(double speed){
