@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.vision;
 
+import org.opencv.core.Rect2d;
+
 import com.pathplanner.lib.util.GeometryUtil;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,13 +16,32 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 /** Add your docs here. */
 public class FieldPoses {
 
+    private static final double FIELD_LENGTH =  16.54;
         
     private static final Pose2d ampPose = new Pose2d(1.8,7.65, Rotation2d.fromDegrees(90));
     private static final Pose2d speakerPose = new Pose2d(0,5.5, Rotation2d.fromDegrees(90));
+    private static final Pose2d ampPassPose = new Pose2d(2,7, Rotation2d.fromDegrees(90));
+    private static final Pose2d midPassPose = new Pose2d(7,6, Rotation2d.fromDegrees(90));
     public static Pose2d kAmpPose = ampPose;
     public static Pose2d kSpeakerPose = speakerPose;
+    public static Pose2d kAmpPassPose = ampPassPose;
+    public static Pose2d kMidPassPose = midPassPose;
+
+    private static final Rect2d shootRegion = new Rect2d(0,0, 5.86, 8.2);
+    private static final Rect2d ampPassRegion = new Rect2d(5.86, 0, 4.82, 8.2);
+    private static final Rect2d midPassRegion = new Rect2d(10.68, 0, 5.86, 8.2);
+    public static Rect2d kShootRegion = shootRegion;
+    public static Rect2d kAmpPassRegion = ampPassRegion;
+    public static Rect2d kMidPassRegion = midPassRegion;
+
 
     private static boolean hasFlipppedPoses = false;
+
+
+
+    private static Rect2d flipFieldRect(Rect2d rect){
+        return new Rect2d(FIELD_LENGTH - rect.x - rect.width, rect.y, rect.width, rect.height); 
+    }
 
     public static void flipPoses(){
         if (!hasFlipppedPoses || DriverStation.isDisabled()) {
@@ -28,9 +49,19 @@ public class FieldPoses {
                 if (allianceColor == Alliance.Red){
                     kAmpPose = GeometryUtil.flipFieldPose(ampPose);
                     kSpeakerPose = GeometryUtil.flipFieldPose(speakerPose);
+                    kAmpPassPose = GeometryUtil.flipFieldPose(ampPassPose);
+                    kMidPassPose = GeometryUtil.flipFieldPose(midPassPose);
+                    kShootRegion = flipFieldRect(shootRegion);
+                    kAmpPassRegion = flipFieldRect(ampPassRegion);
+                    kMidPassRegion = flipFieldRect(midPassRegion);
                 } else {
                     kAmpPose = ampPose;
                     kSpeakerPose = speakerPose;
+                    kAmpPassPose = ampPassPose;
+                    kMidPassPose = midPassPose;
+                    kShootRegion = shootRegion;
+                    kAmpPassRegion = ampPassRegion;
+                    kMidPassRegion = midPassRegion;
                 }
                 hasFlipppedPoses = true;
             });
