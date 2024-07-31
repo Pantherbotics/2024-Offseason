@@ -26,8 +26,7 @@ public class IntakeConstants {
     public static final double kOutSpeed = -1.0;
 
     
-    public static final double kMotorToPivotRatio = 0.0;
-    public static final double kRotorOffset = 0.0;
+    public static final double kMotorToPivotRatio = 20.0 * (23.0/42.0);
 
     public static Slot0Configs kPivotGains = new Slot0Configs()
     .withKS(0.0)

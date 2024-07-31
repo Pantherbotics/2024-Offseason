@@ -46,7 +46,6 @@ public class Intake extends SubsystemBase {
 
     FeedbackConfigs feedbackConfigs = pivotConfigs.Feedback;
     feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.kMotorToPivotRatio);
-    feedbackConfigs.withFeedbackRotorOffset(IntakeConstants.kRotorOffset);
     
 
     m_pivotMotor.getConfigurator().apply(pivotConfigs);
