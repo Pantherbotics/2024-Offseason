@@ -4,9 +4,13 @@
 
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.units.Measure;
@@ -28,9 +32,15 @@ public class Intake extends SubsystemBase {
   private final DigitalInput m_limitSwitch;
   private final AnalogInput m_distanceSensor;
   private final MotionMagicVoltage m_request;
+  private final VoltageOut m_voltReq = new VoltageOut(0.0);
 
   
-  private final SysIdRoutine routine = new SysIdRoutine(new Config(), new Mechanism(this::pivotVoltage, null, this));
+  private final SysIdRoutine routine = new SysIdRoutine(            
+    new SysIdRoutine.Config(
+    null,
+    Volts.of(4),
+    null,
+    (state) -> SignalLogger.writeString("state", state.toString())), new Mechanism(this::pivotVoltage, null, this));
   
   public Intake() {
     m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorID);
@@ -46,7 +56,6 @@ public class Intake extends SubsystemBase {
 
     FeedbackConfigs feedbackConfigs = pivotConfigs.Feedback;
     feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.kMotorToPivotRatio);
-    feedbackConfigs.withFeedbackRotorOffset(IntakeConstants.kRotorOffset);
     
 
     m_pivotMotor.getConfigurator().apply(pivotConfigs);
@@ -58,7 +67,7 @@ public class Intake extends SubsystemBase {
 
     
   public void pivotVoltage(Measure<Voltage> voltageMeasure){
-    m_pivotMotor.setVoltage(voltageMeasure.magnitude());
+    m_pivotMotor.setControl(m_voltReq.withOutput(voltageMeasure.in(Volts)));
   }
 
   public boolean limitSwitch(){
