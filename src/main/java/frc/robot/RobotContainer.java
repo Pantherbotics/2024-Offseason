@@ -69,26 +69,12 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    
-    mainController.button(1).whileTrue(shooter.sysIdDynamicCommand(Direction.kForward));
-    mainController.button(2).whileTrue(shooter.sysIdDynamicCommand(Direction.kReverse));
-    mainController.button(3).whileTrue(shooter.sysIdQuasistaticCommand(Direction.kForward));
-    mainController.button(4).whileTrue(shooter.sysIdQuasistaticCommand(Direction.kReverse));
-    mainController.pov(0).onTrue(intake.pivotUp());
-    mainController.pov(180).onTrue(intake.pivotDown());
-    
-    mainController.button(2).onTrue(new IntakeAssist(intake, drivetrain, mainIO));
-    mainController.pov(0).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    mainController.pov(90).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-    mainController.pov(180).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    mainController.pov(270).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-    
-    
+
     mainIO.intake().toggleOnTrue(new IntakeAssist(intake, drivetrain, mainIO));
-    //mainIO.climb().onTrue(climber.climbUntilSwitches());
+    mainIO.climb().onTrue(climber.climbUntilSwitches());
     mainIO.shoot().onTrue(new Shoot(shooter, drivetrain, mainIO));
     mainIO.amp().onTrue(new Amp(shooter, drivetrain, mainIO));
-    //mainIO.climb().onTrue(new Handoff(intake, shooter));
+
     intake.gotNote().onTrue(new Handoff(intake, shooter));
     
 
