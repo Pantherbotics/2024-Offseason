@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -14,7 +15,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.Amp;
 import frc.robot.commands.Handoff;
@@ -35,7 +38,7 @@ import frc.robot.subsystems.vision.Vision;
 public class RobotContainer {
   
   public static final DriverIO mainIO = new DriverIO(0, InputType.XBOX);
-  private final CommandJoystick mainController;
+  private final CommandXboxController mainController;
   private final CommandSwerveDrivetrain drivetrain;
   private final Vision vision;
   private final NoteDetection noteDetection;
@@ -51,7 +54,7 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
     vision = new Vision();
     noteDetection = new NoteDetection(drivetrain);
-    mainController = new CommandJoystick(0);
+    mainController = new CommandXboxController(0);
     
     shooter = new Shooter();
     intake = new Intake();
@@ -70,13 +73,20 @@ public class RobotContainer {
 
   private void configureBindings() {
 
+    mainController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
+    mainController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+    mainController.button(1).whileTrue(intake.sysIdQuasistaticCommand(Direction.kForward));
+    mainController.button(2).whileTrue(intake.sysIdQuasistaticCommand(Direction.kReverse));
+    mainController.button(3).whileTrue(intake.sysIdDynamicCommand(Direction.kForward));
+    mainController.button(4).whileTrue(intake.sysIdDynamicCommand(Direction.kReverse));
+    /* 
     mainIO.intake().toggleOnTrue(new IntakeAssist(intake, drivetrain, mainIO));
     mainIO.climb().onTrue(climber.climbUntilSwitches());
     mainIO.shoot().onTrue(new Shoot(shooter, drivetrain, mainIO));
     mainIO.amp().onTrue(new Amp(shooter, drivetrain, mainIO));
 
     intake.gotNote().onTrue(new Handoff(intake, shooter));
-    
+    */
 
         
   }

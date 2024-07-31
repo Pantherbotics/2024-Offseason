@@ -22,11 +22,11 @@ public class IntakeConstants {
 
     public static final double kDownPosition = 0.25;
     public static final double kUpPosition = 0.0;
-    public static final double kInSpeed = 1.0;
-    public static final double kOutSpeed = -1.0;
+    public static final double kInSpeed = -0.5;
+    public static final double kOutSpeed = 0.5;
 
     
-    public static final double kMotorToPivotRatio = 20.0 * (23.0/42.0);
+    public static final double kMotorToPivotRatio = 64.0 * (23.0/42.0);
 
     public static Slot0Configs kPivotGains = new Slot0Configs()
     .withKS(0.0)

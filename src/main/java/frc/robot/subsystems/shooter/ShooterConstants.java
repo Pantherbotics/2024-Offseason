@@ -4,15 +4,13 @@
 
 package frc.robot.subsystems.shooter;
 
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-
 /** Add your docs here. */
 public final class ShooterConstants {
     
     public static final int kPivotMotorID = 30;
     public static final int kEncoderID = 2;
 
-    public static final double kEncoderOffset = 0.0;
+    public static final double kEncoderOffset = 0.25;
 
     public static final double kHandoffPosition = 0.0;
     public static final double kAmpPosition = 1.0;
