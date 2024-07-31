@@ -6,6 +6,7 @@ package frc.robot.subsystems.intake;
 
 import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -19,7 +20,6 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -60,6 +60,13 @@ public class Intake extends SubsystemBase {
 
     m_pivotMotor.getConfigurator().apply(pivotConfigs);
     m_request = new MotionMagicVoltage(0);
+    
+    BaseStatusSignal.setUpdateFrequencyForAll(250,
+    m_pivotMotor.getPosition(),
+    m_pivotMotor.getVelocity(),
+    m_pivotMotor.getMotorVoltage());
+    
+    m_pivotMotor.optimizeBusUtilization();
     
 
     SmartDashboard.putData("Intake", this);
