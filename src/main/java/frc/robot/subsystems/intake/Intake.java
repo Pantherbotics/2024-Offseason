@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class Intake extends SubsystemBase {
+  private boolean homed = false;
   private final TalonFX m_pivotMotor;
   private final TalonFX m_rollersMotor;
   private final DigitalInput m_limitSwitch;
@@ -49,7 +50,6 @@ public class Intake extends SubsystemBase {
     m_limitSwitch = new DigitalInput(IntakeConstants.kLimitSiwtchID);
     m_distanceSensor = new AnalogInput(IntakeConstants.kDistanceSensorID);
     m_distanceSensor.setAverageBits(4);
-    m_pivotMotor.setPosition(0);
 
     TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
     pivotConfigs.withSlot0(IntakeConstants.kPivotGains);
@@ -60,7 +60,6 @@ public class Intake extends SubsystemBase {
     
 
     m_pivotMotor.getConfigurator().apply(pivotConfigs);
-    m_request = new MotionMagicVoltage(0);
     
     BaseStatusSignal.setUpdateFrequencyForAll(250,
     m_pivotMotor.getPosition(),
@@ -68,6 +67,7 @@ public class Intake extends SubsystemBase {
     m_pivotMotor.getMotorVoltage());
     
     m_pivotMotor.optimizeBusUtilization();
+    m_request = new MotionMagicVoltage(0);
     
 
     SmartDashboard.putData("Intake", this);
@@ -153,10 +153,19 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (!homed){
+      if (!limitSwitch()){
+        m_pivotMotor.setControl(m_voltReq.withOutput(-2));
+      } else {
+        m_pivotMotor.setControl(m_voltReq.withOutput(0));
+        m_pivotMotor.setPosition(0);
+        homed=true;
+      }
+    }
 
     SmartDashboard.putBoolean("IntakeAtGoal", isAtGoal());
     SmartDashboard.putNumber("IntakeDistToGoal", m_request.Position - m_pivotMotor.getPosition().getValueAsDouble());
-
+    SmartDashboard.putBoolean("intake switch", limitSwitch());
     SmartDashboard.putBoolean("IntakeHasNote", hasNote());
     SmartDashboard.putNumber("IntakeSensor", m_distanceSensor.getAverageValue());
     SmartDashboard.putNumber("Intake position", m_pivotMotor.getPosition().getValueAsDouble());

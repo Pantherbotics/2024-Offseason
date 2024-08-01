@@ -72,21 +72,22 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-
+    /*
     mainController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
     mainController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
     mainController.button(1).whileTrue(intake.sysIdQuasistaticCommand(Direction.kForward));
     mainController.button(2).whileTrue(intake.sysIdQuasistaticCommand(Direction.kReverse));
     mainController.button(3).whileTrue(intake.sysIdDynamicCommand(Direction.kForward));
     mainController.button(4).whileTrue(intake.sysIdDynamicCommand(Direction.kReverse));
-    /* 
+    */
+    
     mainIO.intake().toggleOnTrue(new IntakeAssist(intake, drivetrain, mainIO));
     mainIO.climb().onTrue(climber.climbUntilSwitches());
     mainIO.shoot().onTrue(new Shoot(shooter, drivetrain, mainIO));
     mainIO.amp().onTrue(new Amp(shooter, drivetrain, mainIO));
 
     intake.gotNote().onTrue(new Handoff(intake, shooter));
-    */
+    
 
         
   }
