@@ -17,7 +17,14 @@
   },
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/Pose": "Field2d",
+      "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/Intake": "Subsystem",
+      "/SmartDashboard/Shooter Controller": "PIDController",
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d",
+      "/SmartDashboard/shooter": "Subsystem",
+      "/SmartDashboard/thing": "PIDController"
     },
     "windows": {
       "/SmartDashboard/VisionSystemSim-main/Sim Field": {
