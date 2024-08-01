@@ -42,6 +42,7 @@ public class Intake extends SubsystemBase {
     null,
     (state) -> SignalLogger.writeString("state", state.toString())), new Mechanism(this::pivotVoltage, null, this));
   
+    
   public Intake() {
     m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorID);
     m_rollersMotor = new TalonFX(IntakeConstants.kRollersMotorID);
