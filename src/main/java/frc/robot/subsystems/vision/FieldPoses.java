@@ -22,6 +22,7 @@ public class FieldPoses {
     private static final Pose2d speakerPose = new Pose2d(0,5.5, Rotation2d.fromDegrees(90));
     private static final Pose2d ampPassPose = new Pose2d(2,7, Rotation2d.fromDegrees(90));
     private static final Pose2d midPassPose = new Pose2d(7,6, Rotation2d.fromDegrees(90));
+    public static boolean isRedAlliance = false;
     public static Pose2d kAmpPose = ampPose;
     public static Pose2d kSpeakerPose = speakerPose;
     public static Pose2d kAmpPassPose = ampPassPose;
@@ -46,7 +47,8 @@ public class FieldPoses {
     public static void flipPoses(){
         if (!hasFlipppedPoses || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent((allianceColor) -> {
-                if (allianceColor == Alliance.Red){
+                isRedAlliance = (allianceColor == Alliance.Red);
+                if (isRedAlliance){
                     kAmpPose = GeometryUtil.flipFieldPose(ampPose);
                     kSpeakerPose = GeometryUtil.flipFieldPose(speakerPose);
                     kAmpPassPose = GeometryUtil.flipFieldPose(ampPassPose);

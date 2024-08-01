@@ -11,12 +11,12 @@ import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.DriveConstants;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.subsystems.vision.FieldPoses;
 
 public class Amp extends Command {
   private final Shooter shooter;
   private final CommandSwerveDrivetrain drivetrain;
   private final DriverIO mainIO;
-  /** Creates a new Amp. */
   public Amp(Shooter shooter, CommandSwerveDrivetrain drivetrain, DriverIO mainIO) {
     this.shooter = shooter;
     this.drivetrain = drivetrain;
@@ -37,7 +37,7 @@ public class Amp extends Command {
       DriveConstants.facing
       .withVelocityX(-mainIO.moveY() * DriveConstants.kMaxSpeed)
       .withVelocityY(-mainIO.moveX() * DriveConstants.kMaxSpeed)
-      .withTargetDirection(Rotation2d.fromDegrees(-90))
+      .withTargetDirection(Rotation2d.fromDegrees(FieldPoses.isRedAlliance?-90:90))
     );
   }
 

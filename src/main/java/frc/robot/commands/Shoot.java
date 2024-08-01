@@ -115,7 +115,7 @@ public class Shoot extends Command {
       break;
     }
     
-    Rotation2d angleToSpeaker = new Rotation2d(targetPose.getX() - robotPose.getX(),targetPose.getY() - robotPose.getY()).plus(Rotation2d.fromDegrees(180));//Rotation2d.fromRadians(Math.atan2(targetPose.getY() - robotPose.getY(), targetPose.getX() - robotPose.getX()));
+    Rotation2d angleToSpeaker = new Rotation2d(targetPose.getX() - robotPose.getX(),targetPose.getY() - robotPose.getY()).plus(Rotation2d.fromDegrees(FieldPoses.isRedAlliance?180:0));//Rotation2d.fromRadians(Math.atan2(targetPose.getY() - robotPose.getY(), targetPose.getX() - robotPose.getX()));
     double distanceToSpeaker = robotPose.relativeTo(targetPose).getTranslation().getNorm();
     drivetrain.setControl(
       DriveConstants.facing.withTargetDirection(angleToSpeaker)
