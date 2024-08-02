@@ -34,6 +34,11 @@ public class DriverIO extends GenericHID{
     public double rotate(){
         return getRawAxis(ports.kRotateAxisPort);
     }
+
+    public double wiggleAmp(){
+        return getRawAxis(ports.kWiggleAmpPort);
+    }
+
     public Trigger intake(){
         return new Trigger(()->getRawButton(ports.kIntakeButtonPort));
     }

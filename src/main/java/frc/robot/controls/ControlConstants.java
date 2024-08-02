@@ -16,6 +16,7 @@ public class ControlConstants {
     public int kAmpButtonPort;
     public int kPassButtonPort;
     public int kClimbButtonPort;
+    public int kWiggleAmpPort = 5;
 
     public ControlConstants(InputType type){
         switch (type) {
@@ -23,6 +24,7 @@ public class ControlConstants {
                 kMoveYAxisPort = 1;
                 kMoveXAxisPort = 0;
                 kRotateAxisPort = 4;
+                kWiggleAmpPort = 5;
                 kIntakeButtonPort = 6;
                 kShootButtonPort = 5;
                 kAmpButtonPort = 7;
