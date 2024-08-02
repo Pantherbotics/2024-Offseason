@@ -191,11 +191,11 @@ public class Shooter extends SubsystemBase {
     currentSetpoint = nextSetpoint;
 
     m_leftFlywheel.set(
-      m_leftController.calculate(m_leftFlywheel.getVelocity().getValueAsDouble())
+      m_leftController.calculate(Math.max(m_leftFlywheel.getVelocity().getValueAsDouble(), 0))
     );
 
     m_rightFlywheel.set(
-      -m_rightController.calculate(-m_rightFlywheel.getVelocity().getValueAsDouble())
+      -m_rightController.calculate(-Math.max(m_rightFlywheel.getVelocity().getValueAsDouble(), 0))
     );
   }
 }
