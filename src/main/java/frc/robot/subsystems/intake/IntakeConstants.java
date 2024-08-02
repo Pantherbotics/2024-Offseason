@@ -15,13 +15,13 @@ public class IntakeConstants {
 
     public static final double kGoalTolerance = 0.1;
 
-    public static final int kLimitSiwtchID = 3;
+    public static final int kLimitSiwtchID = 0;
 
     public static final int kDistanceSensorID = 3;
     public static final int kSensorThreshold = 600;
 
-    public static final double kDownPosition = 0.25;
-    public static final double kUpPosition = 0.0;
+    public static final double kDownPosition = 1.2;
+    public static final double kUpPosition = 0.1;
     public static final double kInSpeed = -0.5;
     public static final double kOutSpeed = 0.5;
 
@@ -29,18 +29,18 @@ public class IntakeConstants {
     public static final double kMotorToPivotRatio = 64.0 * (23.0/42.0);
 
     public static Slot0Configs kPivotGains = new Slot0Configs()
-    .withKS(0.0)
-    .withKV(0.0)
-    .withKG(0.0)
-    .withKA(0.0)
-    .withKP(0.0)
-    .withKD(0.0)
+    .withKS(0.10809)
+    .withKV(3.7321)
+    .withKG(0.032992)
+    .withKA(0.044371)
+    .withKP(65.454)
+    .withKD(5.3774)
     .withGravityType(GravityTypeValue.Arm_Cosine);
 
     public static MotionMagicConfigs kProfileConfigs = new MotionMagicConfigs()
-    .withMotionMagicCruiseVelocity(80)
-    .withMotionMagicAcceleration(160)
-    .withMotionMagicJerk(1600);
+    .withMotionMagicCruiseVelocity(60)
+    .withMotionMagicAcceleration(29)
+    .withMotionMagicJerk(75);
 
 
 

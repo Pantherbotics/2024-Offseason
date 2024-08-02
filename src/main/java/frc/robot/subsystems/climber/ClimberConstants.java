@@ -9,7 +9,7 @@ public class ClimberConstants {
     public static final int kLeftMotorID = 30;
     public static final int kRightMotorID = 31;
     
-    public static final int kLeftSwitchID = 0;
-    public static final int kRightSwitchID = 1;
+    public static final int kLeftSwitchID = 1;
+    public static final int kRightSwitchID = 9;
 
 }
