@@ -4,6 +4,12 @@
 
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
@@ -56,7 +62,18 @@ public class Shooter extends SubsystemBase {
 
   private ExponentialProfile.State currentSetpoint = new ExponentialProfile.State();
   private ExponentialProfile.State goal = new ExponentialProfile.State();
-  private final SysIdRoutine routine = new SysIdRoutine(new Config(), new Mechanism(this::pivotVoltage, null, this));
+
+  private final VoltageOut m_voltReq = new VoltageOut(0.0);
+
+  private final SysIdRoutine routine = new SysIdRoutine(new Config(
+    null, Volts.of(4),
+    null,
+    (state) -> SignalLogger.writeString("state", state.toString())),
+     new Mechanism(this::pivotVoltage, null, this));
+
+     
+  private double lastTime = Utils.getCurrentTimeSeconds();
+  private double encoderValue;
   
   public Shooter() {
     
@@ -96,6 +113,15 @@ public class Shooter extends SubsystemBase {
         passTable.put(ShooterConstants.passMatrix[i][0], ShooterConstants.passMatrix[i][1]);
     }
 
+    BaseStatusSignal.setUpdateFrequencyForAll(250,
+    m_pivotMotor.getPosition(),
+    m_pivotMotor.getVelocity(),
+    m_pivotMotor.getMotorVoltage());
+    
+    m_pivotMotor.optimizeBusUtilization();
+
+    
+    encoderValue = m_encoder.get();
   
     setPivotGoal(ShooterConstants.kHandoffPosition);
 
@@ -113,7 +139,7 @@ public class Shooter extends SubsystemBase {
   }
   
   public void pivotVoltage(Measure<Voltage> voltageMeasure){
-    m_pivotMotor.setVoltage(voltageMeasure.magnitude());
+    m_pivotMotor.setControl(m_voltReq.withOutput(voltageMeasure.in(Volts)));
   }
 
   public void setPivotGoal(double goal){
@@ -173,15 +199,27 @@ public class Shooter extends SubsystemBase {
   public Command sysIdQuasistaticCommand(Direction direction){
     return routine.quasistatic(direction);
   }
+  
 
+  
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ShooterTopSensor", m_topSensor.getAverageValue());
     SmartDashboard.putBoolean("ShooterHasNote", noteSeated());
+    SmartDashboard.putNumber("ShooterSideSensor", m_sideSensor.getAverageValue());
+    SmartDashboard.putBoolean("sideSeesNote", sideSensor());
 
     SmartDashboard.putBoolean("ShooterAtGoal", isAtGoal());
     SmartDashboard.putNumber("ShooterDistToGoal", this.goal.position - m_encoder.get());
     SmartDashboard.putNumber("shooterEncoderPosition", m_encoder.getAbsolutePosition());
+    SmartDashboard.putBoolean("shooter encoder connected", m_encoder.isConnected());
+
+
+    double currentTime = Utils.getCurrentTimeSeconds();
+    double diffTime = currentTime - lastTime;
+    lastTime = currentTime;
+    SignalLogger.writeDouble("Shooter Encoder Position", m_encoder.get());
+    SignalLogger.writeDouble("encoder velocity", (encoderValue - m_encoder.get())/diffTime);
 
     var nextSetpoint = profile.calculate(ShooterConstants.dt, currentSetpoint, goal);
     var encoderValue = m_encoder.get();
