@@ -29,7 +29,7 @@ public final class ShooterConstants {
     public static final int kTopSensorID = 0;
     public static final int kSideSensorID = 2;
     public static final int kTopSensorThreshold = 1800;
-    public static final int kSideSensorThreshold = 0;
+    public static final int kSideSensorThreshold = 1200;
 
     public static final double kBangBangTolerance = 0.05;
     public static final double kPivotTolerance = 0.1;

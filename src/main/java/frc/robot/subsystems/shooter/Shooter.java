@@ -91,8 +91,7 @@ public class Shooter extends SubsystemBase {
 
     m_leftFlywheel = new TalonFX(ShooterConstants.kLeftFlywheelMotorID);
     m_rightFlywheel = new TalonFX(ShooterConstants.kRightFlywheelMotorID);
-    m_leftFlywheel.setNeutralMode(NeutralModeValue.Coast);
-    m_rightFlywheel.setNeutralMode(NeutralModeValue.Coast);
+    
 
     m_topSensor = new AnalogInput(ShooterConstants.kTopSensorID);
     m_sideSensor = new AnalogInput(ShooterConstants.kSideSensorID);
@@ -124,6 +123,10 @@ public class Shooter extends SubsystemBase {
     encoderValue = m_encoder.get();
   
     setPivotGoal(ShooterConstants.kHandoffPosition);
+
+    
+    m_leftFlywheel.setNeutralMode(NeutralModeValue.Coast);
+    m_rightFlywheel.setNeutralMode(NeutralModeValue.Coast);
 
     SmartDashboard.putData("shooter", this);
     SmartDashboard.putData("Shooter Controller", controller);
@@ -228,12 +231,14 @@ public class Shooter extends SubsystemBase {
     m_pivotMotor.setVoltage(feed + control);
     currentSetpoint = nextSetpoint;
 
+    SmartDashboard.putNumber("left flywheel", m_leftFlywheel.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("right flywheel", m_rightFlywheel.getVelocity().getValueAsDouble());
     m_leftFlywheel.set(
-      m_leftController.calculate(Math.max(m_leftFlywheel.getVelocity().getValueAsDouble(), 0))
+      -m_leftController.calculate(-Math.min(m_leftFlywheel.getVelocity().getValueAsDouble(), 0))
     );
 
     m_rightFlywheel.set(
-      -m_rightController.calculate(-Math.max(m_rightFlywheel.getVelocity().getValueAsDouble(), 0))
+      m_rightController.calculate(Math.max(m_rightFlywheel.getVelocity().getValueAsDouble(), 0))
     );
   }
 }
