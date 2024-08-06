@@ -25,6 +25,7 @@ public class NoteDetection extends SubsystemBase {
     .getStructArrayTopic("fieldNotes3d", Pose3d.struct).publish();
 
 
+
   public NoteDetection(CommandSwerveDrivetrain m_drivetrain) {
     drivetrain = m_drivetrain;
   }
@@ -33,7 +34,7 @@ public class NoteDetection extends SubsystemBase {
   public Transform2d noteAngleToTranslation(double x, double y){
     x = -Units.degreesToRadians(x);
     y = -Units.degreesToRadians(y);
-    double camHeight = VisionConstants.kRobotToNoteCam.getRotation().getY() - Units.inchesToMeters(1);
+    double camHeight = VisionConstants.kRobotToNoteCam.getRotation().getY() - Units.inchesToMeters(1); // note center is 1 in off the ground
     double pitchAngle = VisionConstants.kRobotToNoteCam.getRotation().getY() + y; // true angle relative to robot
 
     double xDist = (camHeight) / Math.tan(pitchAngle); // x is forward relative to robot
@@ -50,7 +51,7 @@ public class NoteDetection extends SubsystemBase {
     Transform2d[] robotRelativeNotes = new Transform2d[results.length];
     fieldNotes2d = new Pose2d[results.length];//new Pose2d(5,5,Rotation2d.fromDegrees(0))};
     Pose3d[] fieldNotes3d = new Pose3d[results.length];//new Pose3d(5,5,Units.inchesToMeters(1), new Rotation3d(0.0,0.0,0.0))};
-
+    
     for (var i = 0; i < results.length; i++){
       robotRelativeNotes[i] = noteAngleToTranslation(results[i].tx, results[i].ty);
       fieldNotes2d[i] = drivetrain.getState().Pose.plus(robotRelativeNotes[i]);

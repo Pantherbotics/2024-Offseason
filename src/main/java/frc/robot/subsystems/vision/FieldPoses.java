@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.vision;
 
+import java.util.List;
+
 import org.opencv.core.Rect2d;
 
 import com.pathplanner.lib.util.GeometryUtil;
@@ -35,6 +37,30 @@ public class FieldPoses {
     public static Rect2d kAmpPassRegion = ampPassRegion;
     public static Rect2d kMidPassRegion = midPassRegion;
 
+    private static final List<Pose2d> notePosesUnflipped = List.of(
+        new Pose2d(2.9, 4.1, Rotation2d.fromDegrees(0)),
+        new Pose2d(2.9, 5.55, Rotation2d.fromDegrees(0)),
+        new Pose2d(2.9, 7, Rotation2d.fromDegrees(0)),
+        new Pose2d(8.27, 7.46, Rotation2d.fromDegrees(0)),
+        new Pose2d(8.27, 5.78, Rotation2d.fromDegrees(0)),
+        new Pose2d(8.27, 4.1, Rotation2d.fromDegrees(0)),
+        new Pose2d(8.27, 2.42, Rotation2d.fromDegrees(0)),
+        new Pose2d(8.27, 0.74, Rotation2d.fromDegrees(0))
+    );
+
+    private static final List<Pose2d> notePosesFlipped = List.of(
+        new Pose2d(13.64, 4.1, Rotation2d.fromDegrees(0)),
+        new Pose2d(13.64, 5.55, Rotation2d.fromDegrees(0)),
+        new Pose2d(13.64, 7, Rotation2d.fromDegrees(0)),
+        new Pose2d(8.27, 7.46, Rotation2d.fromDegrees(0)),
+        new Pose2d(8.27, 5.78, Rotation2d.fromDegrees(0)),
+        new Pose2d(8.27, 4.1, Rotation2d.fromDegrees(0)),
+        new Pose2d(8.27, 2.42, Rotation2d.fromDegrees(0)),
+        new Pose2d(8.27, 0.74, Rotation2d.fromDegrees(0))
+    );
+
+    public static List<Pose2d> notePoses = notePosesUnflipped;
+
 
     private static boolean hasFlipppedPoses = false;
 
@@ -56,6 +82,7 @@ public class FieldPoses {
                     kShootRegion = flipFieldRect(shootRegion);
                     kAmpPassRegion = flipFieldRect(ampPassRegion);
                     kMidPassRegion = flipFieldRect(midPassRegion);
+                    notePoses = notePosesFlipped;
                 } else {
                     kAmpPose = ampPose;
                     kSpeakerPose = speakerPose;
@@ -64,6 +91,7 @@ public class FieldPoses {
                     kShootRegion = shootRegion;
                     kAmpPassRegion = ampPassRegion;
                     kMidPassRegion = midPassRegion;
+                    notePoses = notePosesUnflipped;
                 }
                 hasFlipppedPoses = true;
             });
