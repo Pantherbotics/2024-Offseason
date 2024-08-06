@@ -214,7 +214,8 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putBoolean("ShooterAtGoal", isAtGoal());
     SmartDashboard.putNumber("ShooterDistToGoal", this.goal.position - m_encoder.get());
-    SmartDashboard.putNumber("shooterEncoderPosition", m_encoder.getAbsolutePosition());
+    SmartDashboard.putNumber("shooterEncoderAbsPosition", m_encoder.getAbsolutePosition());
+    SmartDashboard.putNumber("shooterEncoderPosition", m_encoder.get());
     SmartDashboard.putBoolean("shooter encoder connected", m_encoder.isConnected());
 
 
@@ -222,7 +223,7 @@ public class Shooter extends SubsystemBase {
     double diffTime = currentTime - lastTime;
     lastTime = currentTime;
     SignalLogger.writeDouble("Shooter Encoder Position", m_encoder.get());
-    SignalLogger.writeDouble("encoder velocity", (encoderValue - m_encoder.get())/diffTime);
+    SignalLogger.writeDouble("encoder velocity", (m_encoder.get() - encoderValue)/diffTime);
 
     var nextSetpoint = profile.calculate(ShooterConstants.dt, currentSetpoint, goal);
     var encoderValue = m_encoder.get();

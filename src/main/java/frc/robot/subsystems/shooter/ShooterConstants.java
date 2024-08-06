@@ -41,7 +41,7 @@ public final class ShooterConstants {
     public static final double Kg = 0.0;
     public static final double Ka = 0.0;
 
-    public static final double Kp = 0.0;
+    public static final double Kp = 1;
     public static final double Ki = 0.0;
     public static final double Kd = 0.0;
 
