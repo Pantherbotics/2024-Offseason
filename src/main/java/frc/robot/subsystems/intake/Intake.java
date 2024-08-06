@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class Intake extends SubsystemBase {
-  private boolean homed = false;
   private final TalonFX m_pivotMotor;
   private final TalonFX m_rollersMotor;
   private final DigitalInput m_limitSwitch;
@@ -153,15 +152,6 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (!homed){
-      if (!limitSwitch()){
-        m_pivotMotor.setControl(m_voltReq.withOutput(-2));
-      } else {
-        m_pivotMotor.setControl(m_voltReq.withOutput(0));
-        m_pivotMotor.setPosition(0);
-        homed=true;
-      }
-    }
 
     SmartDashboard.putBoolean("IntakeAtGoal", isAtGoal());
     SmartDashboard.putNumber("IntakeDistToGoal", m_request.Position - m_pivotMotor.getPosition().getValueAsDouble());

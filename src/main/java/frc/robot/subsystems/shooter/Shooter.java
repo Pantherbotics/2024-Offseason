@@ -10,6 +10,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
@@ -39,7 +40,7 @@ public class Shooter extends SubsystemBase {
 
   private final TalonFX m_pivotMotor;
 
-  private final DutyCycleEncoder m_encoder;
+  private final CANcoder m_encoder;
 
   private final AnalogInput m_topSensor;
   private final AnalogInput m_sideSensor;
@@ -77,9 +78,7 @@ public class Shooter extends SubsystemBase {
   
   public Shooter() {
     
-
-    m_encoder = new DutyCycleEncoder(ShooterConstants.kEncoderID);
-    m_encoder.setPositionOffset(ShooterConstants.kEncoderOffset);
+    m_encoder = new CANcoder(ShooterConstants.kEncoderID);
 
     m_pivotMotor = new TalonFX(ShooterConstants.kPivotMotorID);
 
@@ -120,7 +119,7 @@ public class Shooter extends SubsystemBase {
     m_pivotMotor.optimizeBusUtilization();
 
     
-    encoderValue = m_encoder.get();
+    encoderValue = m_encoder.getPosition().getValueAsDouble();
   
     setPivotGoal(ShooterConstants.kHandoffPosition);
 
@@ -213,20 +212,19 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putBoolean("sideSeesNote", sideSensor());
 
     SmartDashboard.putBoolean("ShooterAtGoal", isAtGoal());
-    SmartDashboard.putNumber("ShooterDistToGoal", this.goal.position - m_encoder.get());
-    SmartDashboard.putNumber("shooterEncoderAbsPosition", m_encoder.getAbsolutePosition());
-    SmartDashboard.putNumber("shooterEncoderPosition", m_encoder.get());
-    SmartDashboard.putBoolean("shooter encoder connected", m_encoder.isConnected());
+    SmartDashboard.putNumber("ShooterDistToGoal", this.goal.position - m_encoder.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("shooterEncoderAbsPosition", m_encoder.getAbsolutePosition().getValueAsDouble());
+    SmartDashboard.putNumber("shooterEncoderPosition", m_encoder.getPosition().getValueAsDouble());
 
 
     double currentTime = Utils.getCurrentTimeSeconds();
     double diffTime = currentTime - lastTime;
     lastTime = currentTime;
-    SignalLogger.writeDouble("Shooter Encoder Position", m_encoder.get());
-    SignalLogger.writeDouble("encoder velocity", (m_encoder.get() - encoderValue)/diffTime);
+    SignalLogger.writeDouble("Shooter Encoder Position", m_encoder.getPosition().getValueAsDouble());
+    SignalLogger.writeDouble("encoder velocity", (m_encoder.getPosition().getValueAsDouble() - encoderValue)/diffTime);
 
     var nextSetpoint = profile.calculate(ShooterConstants.dt, currentSetpoint, goal);
-    var encoderValue = m_encoder.get();
+    var encoderValue = m_encoder.getPosition().getValueAsDouble();
     double feed = feedforward.calculate(Units.rotationsToRadians(encoderValue), Units.rotationsToRadians(m_pivotMotor.getVelocity().getValueAsDouble()), Units.rotationsToRadians(m_pivotMotor.getAcceleration().getValueAsDouble()));
     double control = controller.calculate(encoderValue, currentSetpoint.position);
     m_pivotMotor.setVoltage(feed + control);

@@ -21,7 +21,7 @@ public class IntakeConstants {
     public static final int kSensorThreshold = 600;
 
     public static final double kDownPosition = 1.2;
-    public static final double kUpPosition = 0.1;
+    public static final double kUpPosition = 0;
     public static final double kInSpeed = -0.5;
     public static final double kOutSpeed = 0.5;
 
@@ -38,9 +38,9 @@ public class IntakeConstants {
     .withGravityType(GravityTypeValue.Arm_Cosine);
 
     public static MotionMagicConfigs kProfileConfigs = new MotionMagicConfigs()
-    .withMotionMagicCruiseVelocity(60)
-    .withMotionMagicAcceleration(29)
-    .withMotionMagicJerk(75);
+    .withMotionMagicCruiseVelocity(70)
+    .withMotionMagicAcceleration(35)
+    .withMotionMagicJerk(90);
 
 
 

@@ -8,7 +8,7 @@ package frc.robot.subsystems.shooter;
 public final class ShooterConstants {
     
     public static final int kPivotMotorID = 30;
-    public static final int kEncoderID = 2;
+    public static final int kEncoderID = 33;
 
     public static final double kEncoderOffset = 0.25;
 
