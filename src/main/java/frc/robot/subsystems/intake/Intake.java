@@ -50,14 +50,12 @@ public class Intake extends SubsystemBase {
     m_distanceSensor = new AnalogInput(IntakeConstants.kDistanceSensorID);
     m_distanceSensor.setAverageBits(4);
 
-    TalonFXConfiguration pivotConfigs = new TalonFXConfiguration();
-    pivotConfigs.withSlot0(IntakeConstants.kPivotGains);
-    pivotConfigs.withMotionMagic(IntakeConstants.kProfileConfigs);
-
+    TalonFXConfiguration pivotConfigs = new TalonFXConfiguration()
+    .withSlot0(IntakeConstants.kPivotGains)
+    .withMotionMagic(IntakeConstants.kProfileConfigs);
     FeedbackConfigs feedbackConfigs = pivotConfigs.Feedback;
     feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.kMotorToPivotRatio);
     
-
     m_pivotMotor.getConfigurator().apply(pivotConfigs);
     
     BaseStatusSignal.setUpdateFrequencyForAll(250,
