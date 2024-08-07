@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import org.opencv.core.Point;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -27,7 +29,6 @@ public class Shoot extends Command {
   private final DriverIO mainIO;
   private boolean shootButton = true;
   private boolean justShot = false;
-  private noteStates noteState;
   private RegionIn regionIn;
   private Pose2d targetPose;
   private InterpolatingDoubleTreeMap map;
@@ -36,12 +37,8 @@ public class Shoot extends Command {
   private final NetworkTable table = inst.getTable("Pose");
   private final StructPublisher<Pose2d> targetPub = table.getStructTopic("targetPose", Pose2d.struct).publish();
 
-  private enum noteStates{
-    SEATED,     // (  |)|    the bars || are the sensor and the parentheses are the ends of the note
-    SHOOTING,   // ( || )
-    END,        // |(|  )
-    OUT         // ||(  )
-  }
+  private Debouncer m_debouncer = new Debouncer(0.25, DebounceType.kFalling);
+
   private enum RegionIn{
     SHOOT,
     AMP_PASS,
@@ -65,7 +62,6 @@ public class Shoot extends Command {
     shooter.setRollers(0);
     shootButton = true;
     justShot = false;
-    noteState = noteStates.SEATED;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -79,13 +75,6 @@ public class Shoot extends Command {
       shooter.setRollers(ShooterConstants.kRollersShootSpeed);
     }
 
-    if (noteState == noteStates.SEATED && !shooter.noteSeated()){
-      noteState = noteStates.SHOOTING;
-    } else if (noteState == noteStates.SHOOTING && shooter.noteSeated()) {
-      noteState = noteStates.END;
-    } else if (noteState == noteStates.END && !shooter.noteSeated()) {
-      noteState = noteStates.OUT;
-    }
 
 
     Pose2d robotPose = drivetrain.getState().Pose;
@@ -141,6 +130,6 @@ public class Shoot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return noteState == noteStates.OUT;
+    return !shooter.sideSensor() && !m_debouncer.calculate(shooter.noteSeated());
   }
 }
