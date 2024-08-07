@@ -64,7 +64,7 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(DriveConstants.driveCommand(drivetrain, mainIO).ignoringDisable(true));
     configureBindings();
     drivetrain.seedFieldRelative(new Pose2d(6.0, 4.0, Rotation2d.fromDegrees(0)));
-    vision.setDefaultCommand(vision.updatePose(drivetrain));
+    vision.setDefaultCommand(vision.updatePose(drivetrain).ignoringDisable(true));
 
     invertEncoders();
 

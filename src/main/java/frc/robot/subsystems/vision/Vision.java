@@ -20,9 +20,15 @@ import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayEntry;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,7 +46,12 @@ public class Vision extends SubsystemBase {
   private PhotonCameraSim cameraSim;
   private VisionSystemSim visionSim;
 
+  NetworkTable camStuff = NetworkTableInstance.getDefault().getTable("camStuff");
+  StructArrayPublisher<Pose3d> camPosePub = camStuff.getStructArrayTopic("CamPose", Pose3d.struct).publish();
+  StructArrayEntry<Transform3d> tranformEntry = camStuff.getStructArrayTopic("tranformEntry", Transform3d.struct).getEntry(new Transform3d[]{});
+
   public Vision() {
+
     mainCam = new PhotonCamera(VisionConstants.kMainCamName);
 
     photonEstimator =
@@ -153,8 +164,23 @@ public class Vision extends SubsystemBase {
                 drivetrain.addVisionMeasurement(
                         est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
             });
+    
+    camPosePub.set(new Pose3d[]{
+        new Pose3d(drivetrain.getState().Pose).plus(VisionConstants.kRobotToNoteCam),
+        new Pose3d(drivetrain.getState().Pose).plus(VisionConstants.kRobotToBackCam),
+        new Pose3d(drivetrain.getState().Pose).plus(VisionConstants.kRobotToMainCam),
+    });
+    tranformEntry.set(
+        new Transform3d[]{
+            VisionConstants.kRobotToNoteCam,
+            VisionConstants.kRobotToBackCam,
+            VisionConstants.kRobotToMainCam,
+        }
+    );
           });
     }
+
+    
   
   @Override
   public void periodic() {
