@@ -18,7 +18,7 @@ public class IntakeConstants {
     public static final int kLimitSiwtchID = 0;
 
     public static final int kDistanceSensorID = 3;
-    public static final int kSensorThreshold = 600;
+    public static final int kSensorThreshold = 1000;
 
     public static final double kDownPosition = 1.2;
     public static final double kUpPosition = 0;
@@ -39,8 +39,8 @@ public class IntakeConstants {
 
     public static MotionMagicConfigs kProfileConfigs = new MotionMagicConfigs()
     .withMotionMagicCruiseVelocity(70)
-    .withMotionMagicAcceleration(35)
-    .withMotionMagicJerk(90);
+    .withMotionMagicAcceleration(33)
+    .withMotionMagicJerk(85);
 
 
 

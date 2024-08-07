@@ -29,6 +29,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayEntry;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -48,6 +49,7 @@ public class Vision extends SubsystemBase {
 
   NetworkTable camStuff = NetworkTableInstance.getDefault().getTable("camStuff");
   StructArrayPublisher<Pose3d> camPosePub = camStuff.getStructArrayTopic("CamPose", Pose3d.struct).publish();
+  StructPublisher<Pose3d> noteCamPose = camStuff.getStructTopic("notecam", Pose3d.struct).publish();
   StructArrayEntry<Transform3d> tranformEntry = camStuff.getStructArrayTopic("tranformEntry", Transform3d.struct).getEntry(new Transform3d[]{});
 
   public Vision() {
@@ -177,6 +179,7 @@ public class Vision extends SubsystemBase {
             VisionConstants.kRobotToMainCam,
         }
     );
+    noteCamPose.set(new Pose3d(drivetrain.getState().Pose).plus(VisionConstants.kRobotToNoteCam));
           });
     }
 

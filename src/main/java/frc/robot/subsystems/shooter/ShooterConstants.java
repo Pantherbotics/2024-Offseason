@@ -16,15 +16,15 @@ public final class ShooterConstants {
     public static final int kPivotMotorID = 30;
     public static final int kEncoderID = 33;
 
-    public static final double kEncoderOffset = 0.25;
+    public static final double kEncoderOffset = -0.16;
 
-    public static final double kHandoffPosition = 0.0;
-    public static final double kAmpPosition = 1.0;
+    public static final double kHandoffPosition = -0.06;
+    public static final double kAmpPosition = 0.1;
 
     public static final int kLeftFlywheelMotorID = 31;
     public static final int kRightFlywheelMotorID = 32;
-    public static final int kLeftIntakeMotorID = 23;
-    public static final int kRightIntakeMotorID = 24;
+    public static final int kLeftIntakeMotorID = 22;
+    public static final int kRightIntakeMotorID = 23;
 
     public static final double kRollersInSpeed = 1;
     public static final double kRollersOutSpeed = -1;
@@ -39,15 +39,15 @@ public final class ShooterConstants {
 
     public static final double kBangBangTolerance = 0.05;
     public static final double kPivotTolerance = 0.1;
-    public static final double kMotorToPivotRatio = 64.0 * (23.0/42.0);
+    public static final double kMotorToPivotRatio =117.87;// 64.0 * (23.0/42.0);
 
     public static Slot0Configs kPivotGains = new Slot0Configs()
-    .withKS(0)
-    .withKV(0)
-    .withKG(0)
-    .withKA(0)
-    .withKP(0)
-    .withKD(0)
+    .withKS(0.15)
+    .withKV(9)
+    .withKG(0.07)
+    .withKA(0.05)
+    .withKP(35)
+    .withKD(3)
     .withGravityType(GravityTypeValue.Arm_Cosine);
 
     public static MotionMagicConfigs kProfileConfigs = new MotionMagicConfigs()
@@ -57,9 +57,8 @@ public final class ShooterConstants {
 
     
     public static FeedbackConfigs kFeedbackConfigs = new FeedbackConfigs()
-    .withFeedbackRemoteSensorID(kPivotMotorID)
+    .withFeedbackRemoteSensorID(kEncoderID)
     .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
-    .withFeedbackRotorOffset(kEncoderOffset)
     .withRotorToSensorRatio(kMotorToPivotRatio);
 
 

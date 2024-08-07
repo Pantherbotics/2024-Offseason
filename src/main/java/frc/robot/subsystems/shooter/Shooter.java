@@ -8,7 +8,9 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -67,7 +69,8 @@ public class Shooter extends SubsystemBase {
     m_rightIntake = new CANSparkMax(ShooterConstants.kRightIntakeMotorID, MotorType.kBrushless);
     m_leftIntake.setIdleMode(IdleMode.kBrake);
     m_rightIntake.setIdleMode(IdleMode.kBrake);
-    m_leftIntake.follow(m_leftIntake, true);
+    m_rightIntake.follow(m_leftIntake, true);
+    
     //Flywheel setup
     m_leftFlywheel = new TalonFX(ShooterConstants.kLeftFlywheelMotorID);
     m_rightFlywheel = new TalonFX(ShooterConstants.kRightFlywheelMotorID);
@@ -85,12 +88,12 @@ public class Shooter extends SubsystemBase {
     m_pivotMotor = new TalonFX(ShooterConstants.kPivotMotorID);
     m_encoder = new CANcoder(ShooterConstants.kEncoderID);
 
+    m_encoder.getConfigurator().apply(new MagnetSensorConfigs().withMagnetOffset(ShooterConstants.kEncoderOffset));
+
     TalonFXConfiguration pivotConfigs = new TalonFXConfiguration()
     .withSlot0(ShooterConstants.kPivotGains)
     .withMotionMagic(ShooterConstants.kProfileConfigs)
     .withFeedback(ShooterConstants.kFeedbackConfigs);
-    FeedbackConfigs feedbackConfigs = pivotConfigs.Feedback;
-    feedbackConfigs.withSensorToMechanismRatio(ShooterConstants.kMotorToPivotRatio);
   
     m_pivotMotor.getConfigurator().apply(pivotConfigs);
 
@@ -101,6 +104,7 @@ public class Shooter extends SubsystemBase {
       m_encoder.getPosition(),
       m_encoder.getVelocity());
     m_pivotMotor.optimizeBusUtilization();
+    m_encoder.optimizeBusUtilization();
 
     
     m_request = new MotionMagicVoltage(0);
@@ -203,6 +207,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("shooterEncoderAbsPosition", m_encoder.getAbsolutePosition().getValueAsDouble());
     SmartDashboard.putNumber("shooterEncoderPosition", m_encoder.getPosition().getValueAsDouble());
 
+    SmartDashboard.putNumber("shooter motor", m_pivotMotor.getPosition().getValueAsDouble());
 
 
 

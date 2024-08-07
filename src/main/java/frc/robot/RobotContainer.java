@@ -15,7 +15,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -72,6 +74,10 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", this.autoChooser);
   }
 
+  public void onStart(){
+    CommandScheduler.getInstance().schedule(intake.zeroIntake());
+  }
+
   private void configureBindings() {
     /*
     mainController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
@@ -88,7 +94,11 @@ public class RobotContainer {
     mainIO.amp().onTrue(new Amp(shooter, drivetrain, mainIO));
 
     intake.gotNote().onTrue(new Handoff(intake, shooter).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
-    
+    mainController.povUp().onTrue(shooter.handoffPosition());
+    mainController.povDown().onTrue(shooter.ampPosition());
+    mainController.povLeft().onTrue(shooter.rollersIn());
+    mainController.povRight().onTrue(shooter.rollersOut());
+    mainController.y().onTrue(new InstantCommand(()->shooter.setRollers(1)));
 
         
   }

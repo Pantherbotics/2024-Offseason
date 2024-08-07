@@ -148,6 +148,10 @@ public class Intake extends SubsystemBase {
     return new Trigger(this::hasNote);
   }
 
+  public Command zeroIntake(){
+    return runEnd(()->m_pivotMotor.setControl(m_voltReq.withOutput(-2)), ()->{m_pivotMotor.setPosition(0);setGoal(0);}).until(this::limitSwitch);
+  }
+
   @Override
   public void periodic() {
 

@@ -22,6 +22,8 @@ public class Climber extends SubsystemBase {
   public Climber() {
     m_leftClimber = new TalonFX(ClimberConstants.kLeftMotorID);
     m_rightClimber = new TalonFX(ClimberConstants.kRightMotorID);
+    m_leftClimber.optimizeBusUtilization();
+    m_rightClimber.optimizeBusUtilization();
 
     m_leftSwitch = new DigitalInput(ClimberConstants.kLeftSwitchID);
     m_rightSwitch = new DigitalInput(ClimberConstants.kRightSwitchID);
