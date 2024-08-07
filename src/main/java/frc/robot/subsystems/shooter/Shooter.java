@@ -97,8 +97,12 @@ public class Shooter extends SubsystemBase {
     BaseStatusSignal.setUpdateFrequencyForAll(250,
       m_pivotMotor.getPosition(),
       m_pivotMotor.getVelocity(),
-      m_pivotMotor.getMotorVoltage());
+      m_pivotMotor.getMotorVoltage(),
+      m_encoder.getPosition(),
+      m_encoder.getVelocity());
     m_pivotMotor.optimizeBusUtilization();
+
+    
     m_request = new MotionMagicVoltage(0);
 
     shotTable = new InterpolatingDoubleTreeMap();
