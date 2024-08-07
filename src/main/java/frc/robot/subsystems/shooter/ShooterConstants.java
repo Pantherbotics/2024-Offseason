@@ -4,6 +4,12 @@
 
 package frc.robot.subsystems.shooter;
 
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+
 /** Add your docs here. */
 public final class ShooterConstants {
     
@@ -33,17 +39,29 @@ public final class ShooterConstants {
 
     public static final double kBangBangTolerance = 0.05;
     public static final double kPivotTolerance = 0.1;
+    public static final double kMotorToPivotRatio = 64.0 * (23.0/42.0);
 
-    // Pivot gains
-    public static final double dt = 0.02; // PID update period
-    public static final double Ks = 0.0;
-    public static final double Kv = 0.0;
-    public static final double Kg = 0.0;
-    public static final double Ka = 0.0;
+    public static Slot0Configs kPivotGains = new Slot0Configs()
+    .withKS(0)
+    .withKV(0)
+    .withKG(0)
+    .withKA(0)
+    .withKP(0)
+    .withKD(0)
+    .withGravityType(GravityTypeValue.Arm_Cosine);
 
-    public static final double Kp = 1;
-    public static final double Ki = 0.0;
-    public static final double Kd = 0.0;
+    public static MotionMagicConfigs kProfileConfigs = new MotionMagicConfigs()
+    .withMotionMagicCruiseVelocity(70)
+    .withMotionMagicAcceleration(35)
+    .withMotionMagicJerk(90);
+
+    
+    public static FeedbackConfigs kFeedbackConfigs = new FeedbackConfigs()
+    .withFeedbackRemoteSensorID(kPivotMotorID)
+    .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
+    .withFeedbackRotorOffset(kEncoderOffset)
+    .withRotorToSensorRatio(kMotorToPivotRatio);
+
 
     public static final double[][] shotMatrix = {
         {0,0}
