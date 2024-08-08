@@ -14,6 +14,8 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -33,7 +35,7 @@ public class Intake extends SubsystemBase {
   private final AnalogInput m_distanceSensor;
   private final MotionMagicVoltage m_request;
   private final VoltageOut m_voltReq = new VoltageOut(0.0);
-
+  private final Debouncer m_sensorDebouncer;
   
   private final SysIdRoutine routine = new SysIdRoutine(            
     new SysIdRoutine.Config(
@@ -69,6 +71,8 @@ public class Intake extends SubsystemBase {
     m_rollersMotor.optimizeBusUtilization(10, 0.05);
 
     m_request = new MotionMagicVoltage(0);
+
+    m_sensorDebouncer = new Debouncer(0.1, DebounceType.kBoth);
     
 
     SmartDashboard.putData("Intake", this);
@@ -84,7 +88,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasNote(){
-    return m_distanceSensor.getAverageValue() > IntakeConstants.kSensorThreshold;
+    return m_sensorDebouncer.calculate(m_distanceSensor.getAverageValue() > IntakeConstants.kSensorThreshold);
   }
 
   public void setGoal(double goal){
