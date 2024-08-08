@@ -8,8 +8,6 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -97,7 +95,7 @@ public class Shooter extends SubsystemBase {
   
     m_pivotMotor.getConfigurator().apply(pivotConfigs);
 
-    BaseStatusSignal.setUpdateFrequencyForAll(250,
+    BaseStatusSignal.setUpdateFrequencyForAll(100,
       m_pivotMotor.getPosition(),
       m_pivotMotor.getVelocity(),
       m_pivotMotor.getMotorVoltage(),
@@ -105,6 +103,8 @@ public class Shooter extends SubsystemBase {
       m_encoder.getVelocity());
     m_pivotMotor.optimizeBusUtilization();
     m_encoder.optimizeBusUtilization();
+    m_leftFlywheel.optimizeBusUtilization();
+    m_rightFlywheel.optimizeBusUtilization();
 
     
     m_request = new MotionMagicVoltage(0);

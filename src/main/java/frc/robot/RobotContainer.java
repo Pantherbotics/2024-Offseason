@@ -8,6 +8,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -67,6 +68,7 @@ public class RobotContainer {
     configureBindings();
     drivetrain.seedFieldRelative(new Pose2d(6.0, 4.0, Rotation2d.fromDegrees(0)));
     vision.setDefaultCommand(vision.updatePose(drivetrain).ignoringDisable(true));
+    drivetrain.configNeutralMode(NeutralModeValue.Coast);
 
     invertEncoders();
 

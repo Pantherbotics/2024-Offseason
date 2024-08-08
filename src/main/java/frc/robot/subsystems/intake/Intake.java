@@ -58,12 +58,14 @@ public class Intake extends SubsystemBase {
     
     m_pivotMotor.getConfigurator().apply(pivotConfigs);
     
-    BaseStatusSignal.setUpdateFrequencyForAll(250,
+    BaseStatusSignal.setUpdateFrequencyForAll(100,
     m_pivotMotor.getPosition(),
     m_pivotMotor.getVelocity(),
     m_pivotMotor.getMotorVoltage());
     
     m_pivotMotor.optimizeBusUtilization();
+    m_rollersMotor.optimizeBusUtilization();
+
     m_request = new MotionMagicVoltage(0);
     
 
