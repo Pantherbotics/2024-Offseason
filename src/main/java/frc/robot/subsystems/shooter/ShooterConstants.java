@@ -63,7 +63,11 @@ public final class ShooterConstants {
 
 
     public static final double[][] shotMatrix = {
-        {0,0}
+        {1.38,-0.093},
+        {1.63,-0.1},
+        {2,-0.13},
+        {2.67,-0.16},
+        {3.33,-0.17}
     };
     public static final double[][] passMatrix = {
         {0,0}

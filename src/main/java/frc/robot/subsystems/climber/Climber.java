@@ -32,6 +32,14 @@ public class Climber extends SubsystemBase {
     m_rightClimber.setNeutralMode(NeutralModeValue.Brake);
   }
 
+  public void setLeft(double speed){
+    m_leftClimber.set(speed);
+  }
+
+  public void setRight(double speed){
+    m_rightClimber.set(speed);
+  }
+
   public boolean leftSwitch(){
     return m_leftSwitch.get();
   }
@@ -50,4 +58,5 @@ public class Climber extends SubsystemBase {
     SmartDashboard.putBoolean("climb right switch", rightSwitch());
 
   }
+
 }

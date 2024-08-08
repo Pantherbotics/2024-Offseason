@@ -169,6 +169,10 @@ public class Shooter extends SubsystemBase {
     m_leftIntake.set(speed);
   }
 
+  public double pivotAngle(){
+    return m_pivotMotor.getPosition().getValueAsDouble();
+  }
+
   public Command rollersIn(){
     return runOnce(()->setRollers(ShooterConstants.kRollersInSpeed));
   }

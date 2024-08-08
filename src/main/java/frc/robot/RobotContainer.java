@@ -27,6 +27,7 @@ import frc.robot.commands.Amp;
 import frc.robot.commands.Handoff;
 import frc.robot.commands.IntakeAssist;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.climb;
 import frc.robot.commands.simpleShot;
 import frc.robot.controls.DriverIO;
 import frc.robot.controls.ControlConstants.InputType;
@@ -94,8 +95,8 @@ public class RobotContainer {
     mainController.povUp().onTrue(shooter.speedUp());
     
     mainIO.intake().toggleOnTrue(new IntakeAssist(intake, drivetrain, mainIO));
-    mainIO.climb().onTrue(climber.climbUntilSwitches());
-    mainIO.shoot().onTrue(new simpleShot(shooter, mainIO));
+    mainIO.climb().onTrue(new climb(climber));
+    mainIO.shoot().onTrue(new Shoot(shooter, drivetrain, mainIO));
     mainIO.amp().onTrue(new Amp(shooter, drivetrain, mainIO));
     mainIO.reset().onTrue(Commands.idle(shooter, intake));
 
