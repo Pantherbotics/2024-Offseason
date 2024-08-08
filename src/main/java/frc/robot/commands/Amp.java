@@ -21,6 +21,7 @@ public class Amp extends Command {
   private final DriverIO mainIO;
   private boolean ampButton = true;
   private boolean amping = false;
+  private double time;
 
   public Amp(Shooter shooter, CommandSwerveDrivetrain drivetrain, DriverIO mainIO) {
     this.shooter = shooter;
@@ -36,26 +37,28 @@ public class Amp extends Command {
     amping = false;
     shooter.setPivotGoal(ShooterConstants.kAmpPosition);
   }
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!ampButton && mainIO.shoot().getAsBoolean() && shooter.isAtGoal()){
+    if (!ampButton && mainIO.amp().getAsBoolean() && shooter.isAtGoal() && !amping){
       amping = true;
       shooter.setRollers(ShooterConstants.kRollersOutSpeed);
+      time = Utils.getCurrentTimeSeconds();
     }
 
     if (amping) {
+      shooter.setRollers(ShooterConstants.kRollersOutSpeed);
       shooter.setPivotGoal(ShooterConstants.kAmpPosition + mainIO.wiggleAmp()/30);
     }
 
+    
     drivetrain.setControl(
       DriveConstants.facing
       .withVelocityX(-mainIO.moveY() * DriveConstants.kMaxSpeed)
       .withVelocityY(-mainIO.moveX() * DriveConstants.kMaxSpeed)
       .withTargetDirection(Rotation2d.fromDegrees(FieldPoses.isRedAlliance?-90:90))
     );
-
+    
     
     ampButton = mainIO.amp().getAsBoolean();
   }
@@ -70,6 +73,6 @@ public class Amp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !shooter.sideSensor() && !Utils.isSimulation();
+    return amping && Utils.getCurrentTimeSeconds() - time > 1;
   }
 }

@@ -157,7 +157,7 @@ public class Intake extends SubsystemBase {
   }
 
   public Command zeroIntake(){
-    return runEnd(()->m_pivotMotor.setControl(m_voltReq.withOutput(-2)), ()->{m_pivotMotor.setPosition(0);setGoal(0);}).until(this::limitSwitch);
+    return runEnd(()->{m_pivotMotor.setControl(m_voltReq.withOutput(-2));setRollersStop();}, ()->{m_pivotMotor.setPosition(0);setGoal(0);}).until(this::limitSwitch);
   }
 
   @Override

@@ -39,7 +39,7 @@ public class Shoot extends Command {
   private final NetworkTable table = inst.getTable("Pose");
   private final StructPublisher<Pose2d> targetPub = table.getStructTopic("targetPose", Pose2d.struct).publish();
 
-  private Debouncer m_debouncer = new Debouncer(0.25, DebounceType.kFalling);
+  private Debouncer m_debouncer = new Debouncer(0.5, DebounceType.kFalling);
 
   private enum RegionIn{
     SHOOT,
@@ -132,6 +132,6 @@ public class Shoot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !shooter.sideSensor() && !m_debouncer.calculate(shooter.noteSeated()) && !Utils.isSimulation();
+    return !m_debouncer.calculate(shooter.noteSeated()) && !Utils.isSimulation();
   }
 }

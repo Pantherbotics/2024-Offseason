@@ -19,18 +19,18 @@ public final class ShooterConstants {
     public static final double kEncoderOffset = -0.16;
 
     public static final double kHandoffPosition = -0.06;
-    public static final double kAmpPosition = 0.1;
+    public static final double kAmpPosition = 0.13;
 
     public static final int kLeftFlywheelMotorID = 31;
     public static final int kRightFlywheelMotorID = 32;
     public static final int kLeftIntakeMotorID = 22;
     public static final int kRightIntakeMotorID = 23;
 
-    public static final double kRollersInSpeed = 1;
-    public static final double kRollersOutSpeed = -1;
-    public static final double kRollersShootSpeed = 1;
+    public static final double kRollersInSpeed = -0.3;
+    public static final double kRollersOutSpeed = 1;
+    public static final double kRollersShootSpeed = -1;
 
-    public static final double kFlywheelShotSpeed = 1;
+    public static final double kFlywheelShotSpeed = 100;
 
     public static final int kTopSensorID = 0;
     public static final int kSideSensorID = 2;
@@ -51,9 +51,9 @@ public final class ShooterConstants {
     .withGravityType(GravityTypeValue.Arm_Cosine);
 
     public static MotionMagicConfigs kProfileConfigs = new MotionMagicConfigs()
-    .withMotionMagicCruiseVelocity(70)
+    .withMotionMagicCruiseVelocity(200)
     .withMotionMagicAcceleration(35)
-    .withMotionMagicJerk(90);
+    .withMotionMagicJerk(200);
 
     
     public static FeedbackConfigs kFeedbackConfigs = new FeedbackConfigs()

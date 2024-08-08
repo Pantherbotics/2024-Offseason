@@ -40,7 +40,7 @@ public class DriveConstants {
       );
     }
 
-    public static PhoenixPIDController kHeadingController = new PhoenixPIDController(20, 0.0, 0.5);
+    public static PhoenixPIDController kHeadingController = new PhoenixPIDController(2, 0.0, 0.1);
     
 
     public static final PathConstraints kPathfindingConstraints = new PathConstraints(

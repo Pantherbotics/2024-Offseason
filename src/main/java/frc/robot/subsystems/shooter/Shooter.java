@@ -68,6 +68,7 @@ public class Shooter extends SubsystemBase {
     m_leftIntake.setIdleMode(IdleMode.kBrake);
     m_rightIntake.setIdleMode(IdleMode.kBrake);
     m_rightIntake.follow(m_leftIntake, true);
+
     
     //Flywheel setup
     m_leftFlywheel = new TalonFX(ShooterConstants.kLeftFlywheelMotorID);
@@ -224,5 +225,11 @@ public class Shooter extends SubsystemBase {
       m_rightController.calculate(Math.max(m_rightFlywheel.getVelocity().getValueAsDouble(), 0))
     );
     
+  }
+
+
+
+  public Command speedUp() {
+    return runOnce(()->setFlywheelSpeed(100));
   }
 }
