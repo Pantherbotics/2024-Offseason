@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix6.Utils;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.controls.DriverIO;
@@ -68,6 +70,6 @@ public class Amp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !shooter.sideSensor();
+    return !shooter.sideSensor() && !Utils.isSimulation();
   }
 }

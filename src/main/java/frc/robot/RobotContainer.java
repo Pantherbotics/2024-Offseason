@@ -94,14 +94,16 @@ public class RobotContainer {
     mainIO.climb().onTrue(climber.climbUntilSwitches());
     mainIO.shoot().onTrue(new Shoot(shooter, drivetrain, mainIO));
     mainIO.amp().onTrue(new Amp(shooter, drivetrain, mainIO));
+    mainIO.reset().onTrue(Commands.idle(shooter, intake));
 
     intake.gotNote().onTrue(new Handoff(intake, shooter).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+    /*
     mainController.povUp().onTrue(shooter.handoffPosition());
     mainController.povDown().onTrue(shooter.ampPosition());
     mainController.povLeft().onTrue(shooter.rollersIn());
     mainController.povRight().onTrue(shooter.rollersOut());
     mainController.y().onTrue(new InstantCommand(()->shooter.setRollers(1)));
-
+    */
         
   }
 

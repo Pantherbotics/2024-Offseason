@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import org.opencv.core.Point;
 
+import com.ctre.phoenix6.Utils;
+
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -130,6 +132,6 @@ public class Shoot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !shooter.sideSensor() && !m_debouncer.calculate(shooter.noteSeated());
+    return !shooter.sideSensor() && !m_debouncer.calculate(shooter.noteSeated()) && !Utils.isSimulation();
   }
 }

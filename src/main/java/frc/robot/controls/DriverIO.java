@@ -51,6 +51,9 @@ public class DriverIO extends GenericHID{
     public Trigger climb(){
         return new Trigger(()->getRawButton(ports.kClimbButtonPort));
     }
+    public Trigger reset(){
+        return new Trigger(()->getRawButton(ports.kResetButtonPort));
+    }
     public void setRumble(double left, double right){
         setRumble(RumbleType.kLeftRumble, left);
         setRumble(RumbleType.kRightRumble, right);

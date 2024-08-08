@@ -14,7 +14,7 @@ public class ControlConstants {
     public int kIntakeButtonPort;
     public int kShootButtonPort;
     public int kAmpButtonPort;
-    public int kPassButtonPort;
+    public int kResetButtonPort;
     public int kClimbButtonPort;
     public int kWiggleAmpPort = 5;
 
@@ -28,7 +28,7 @@ public class ControlConstants {
                 kIntakeButtonPort = 6;
                 kShootButtonPort = 5;
                 kAmpButtonPort = 7;
-                kPassButtonPort = 8;
+                kResetButtonPort = 8;
                 kClimbButtonPort = 1;
             break;
             case JOYSTICK:
@@ -38,7 +38,7 @@ public class ControlConstants {
                 kIntakeButtonPort = 0;
                 kShootButtonPort = 1;
                 kAmpButtonPort = 2;
-                kPassButtonPort = 3;
+                kResetButtonPort = 3;
                 kClimbButtonPort = 5;
             break;
             default:
@@ -48,7 +48,7 @@ public class ControlConstants {
                 kIntakeButtonPort = 5;
                 kShootButtonPort = 4;
                 kAmpButtonPort = 6;
-                kPassButtonPort = 7;
+                kResetButtonPort = 7;
                 kClimbButtonPort = 0;
             break;
         }
