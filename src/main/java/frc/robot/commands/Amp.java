@@ -44,7 +44,7 @@ public class Amp extends Command {
     }
 
     if (amping) {
-      shooter.setPivotGoal(ShooterConstants.kAmpPosition + mainIO.wiggleAmp()/2);
+      shooter.setPivotGoal(ShooterConstants.kAmpPosition + mainIO.wiggleAmp()/30);
     }
 
     drivetrain.setControl(
