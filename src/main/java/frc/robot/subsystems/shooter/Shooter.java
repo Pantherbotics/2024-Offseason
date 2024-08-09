@@ -100,12 +100,16 @@ public class Shooter extends SubsystemBase {
       m_pivotMotor.getPosition(),
       m_pivotMotor.getVelocity(),
       m_pivotMotor.getMotorVoltage(),
+      m_pivotMotor.getTorqueCurrent(),
       m_encoder.getPosition(),
       m_encoder.getVelocity(),
       m_leftFlywheel.getVelocity(),
-      m_rightFlywheel.getVelocity());
-    m_pivotMotor.optimizeBusUtilization(10, 0.05);
-    m_encoder.optimizeBusUtilization(10, 0.05);
+      m_leftFlywheel.getTorqueCurrent(),
+      m_rightFlywheel.getVelocity(),
+      m_rightFlywheel.getTorqueCurrent()
+      );
+    m_pivotMotor.optimizeBusUtilization(4, 0.05);
+    m_encoder.optimizeBusUtilization(4, 0.05);
     m_leftFlywheel.optimizeBusUtilization();
     m_rightFlywheel.optimizeBusUtilization();
 

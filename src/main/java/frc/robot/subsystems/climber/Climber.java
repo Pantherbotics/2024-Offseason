@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.climber;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -22,6 +23,9 @@ public class Climber extends SubsystemBase {
   public Climber() {
     m_leftClimber = new TalonFX(ClimberConstants.kLeftMotorID);
     m_rightClimber = new TalonFX(ClimberConstants.kRightMotorID);
+    BaseStatusSignal.setUpdateFrequencyForAll(25, 
+    m_leftClimber.getTorqueCurrent(),
+    m_leftClimber.getTorqueCurrent());
     m_leftClimber.optimizeBusUtilization(10,0.05);
     m_rightClimber.optimizeBusUtilization(10,0.05);
 
