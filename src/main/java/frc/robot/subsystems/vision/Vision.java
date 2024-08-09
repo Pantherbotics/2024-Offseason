@@ -22,12 +22,10 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructArrayEntry;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -50,7 +48,6 @@ public class Vision extends SubsystemBase {
   NetworkTable camStuff = NetworkTableInstance.getDefault().getTable("camStuff");
   StructArrayPublisher<Pose3d> camPosePub = camStuff.getStructArrayTopic("CamPose", Pose3d.struct).publish();
   StructPublisher<Pose3d> noteCamPose = camStuff.getStructTopic("notecam", Pose3d.struct).publish();
-  StructArrayEntry<Transform3d> tranformEntry = camStuff.getStructArrayTopic("tranformEntry", Transform3d.struct).getEntry(new Transform3d[]{});
 
   public Vision() {
 
@@ -172,13 +169,6 @@ public class Vision extends SubsystemBase {
         new Pose3d(drivetrain.getState().Pose).plus(VisionConstants.kRobotToBackCam),
         new Pose3d(drivetrain.getState().Pose).plus(VisionConstants.kRobotToMainCam),
     });
-    tranformEntry.set(
-        new Transform3d[]{
-            VisionConstants.kRobotToNoteCam,
-            VisionConstants.kRobotToBackCam,
-            VisionConstants.kRobotToMainCam,
-        }
-    );
     noteCamPose.set(new Pose3d(drivetrain.getState().Pose).plus(VisionConstants.kRobotToNoteCam));
           });
     }

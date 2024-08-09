@@ -92,7 +92,6 @@ public class RobotContainer {
     mainController.button(3).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     mainController.button(4).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         */
-    mainController.povUp().onTrue(shooter.speedUp());
     
     mainIO.intake().toggleOnTrue(new IntakeAssist(intake, drivetrain, mainIO));
     mainIO.climb().onTrue(new climb(climber));

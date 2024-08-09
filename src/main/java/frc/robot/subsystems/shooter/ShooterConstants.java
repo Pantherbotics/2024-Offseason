@@ -39,8 +39,7 @@ public final class ShooterConstants {
 
     public static final double kBangBangTolerance = 0.05;
     public static final double kPivotTolerance = 0.1;
-    public static final double kMotorToPivotRatio =117.87;// 64.0 * (23.0/42.0);
-
+    public static final double kMotorToPivotRatio = 117.87;
     public static Slot0Configs kPivotGains = new Slot0Configs()
     .withKS(0.15)
     .withKV(9)
