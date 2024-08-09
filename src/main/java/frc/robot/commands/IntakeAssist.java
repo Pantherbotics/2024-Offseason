@@ -61,8 +61,8 @@ public class IntakeAssist extends Command {
       double[] joystickSpeeds = toPolar(-mainIO.moveX(), -mainIO.moveY());
       double[] toNote = toPolar(robotPose.getY() - nearestNote.getY(),robotPose.getX()-nearestNote.getX() );
       double match = Math.max(Math.cos(Math.abs(joystickSpeeds[1] - toNote[1])), 0);
-      //match = Math.sqrt(match);
-      match /= Math.cbrt(toNote[0]);
+      match = Math.sqrt(match);
+      //match /= Math.cbrt(toNote[0]);
 
       double[] toNoteMove = toCartesian(new double[]{MathUtil.clamp(toNote[0], 0.1, 1), toNote[1]});
       Rotation2d toNoteRotate = Rotation2d.fromRadians(-toNote[1]);
