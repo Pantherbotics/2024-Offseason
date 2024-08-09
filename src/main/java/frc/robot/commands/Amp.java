@@ -68,6 +68,7 @@ public class Amp extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.setRollers(0);
+    shooter.setPivotGoal(ShooterConstants.kHandoffPosition);
   }
 
   // Returns true when the command should end.
