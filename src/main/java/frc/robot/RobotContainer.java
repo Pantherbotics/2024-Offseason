@@ -11,6 +11,9 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -18,9 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.Amp;
@@ -28,7 +29,6 @@ import frc.robot.commands.Handoff;
 import frc.robot.commands.IntakeAssist;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.climb;
-import frc.robot.commands.simpleShot;
 import frc.robot.controls.DriverIO;
 import frc.robot.controls.ControlConstants.InputType;
 import frc.robot.subsystems.climber.Climber;
@@ -66,32 +66,44 @@ public class RobotContainer {
     intake = new Intake();
     climber = new Climber();
 
+    registerCommands();
+
     drivetrain.setDefaultCommand(DriveConstants.driveCommand(drivetrain, mainIO).ignoringDisable(true));
-    configureBindings();
     drivetrain.seedFieldRelative(new Pose2d(6.0, 4.0, Rotation2d.fromDegrees(0)));
     vision.setDefaultCommand(vision.updatePose(drivetrain).ignoringDisable(true));
     drivetrain.configNeutralMode(NeutralModeValue.Coast);
 
+    configureBindings();
+
     invertEncoders();
 
     autoChooser = AutoBuilder.buildAutoChooser();
+    
+    
     SmartDashboard.putData("Auto Chooser", this.autoChooser);
   }
 
   public void onStart(){
-    CommandScheduler.getInstance().schedule(intake.zeroIntake(), shooter.rollersStop());
+    CommandScheduler.getInstance().schedule(
+      intake.zeroIntake(),
+      shooter.rollersStop()
+      );
+  }
+
+  public void registerCommands(){
+    NamedCommands.registerCommand("goBack", AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("back"), DriveConstants.kPathfindingConstraints));
   }
 
   private void configureBindings() {
     
-    /*
+      /*
     mainController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
     mainController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
     mainController.button(1).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
     mainController.button(2).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
     mainController.button(3).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     mainController.button(4).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        */
+      */
     
     mainIO.intake().toggleOnTrue(new IntakeAssist(intake, drivetrain, mainIO));
     mainIO.climb().onTrue(new climb(climber));

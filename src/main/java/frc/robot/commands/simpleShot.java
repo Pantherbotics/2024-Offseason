@@ -4,28 +4,13 @@
 
 package frc.robot.commands;
 
-import java.util.List;
-
-import org.opencv.core.Point;
-
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.networktables.DoubleEntry;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.PubSubOption;
-import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.wpilibj.DataLogManager;
-import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.controls.DriverIO;
-import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
@@ -36,10 +21,6 @@ public class simpleShot extends Command {
   private final DriverIO mainIO;
   private boolean shootButton = true;
   private boolean justShot = false;
-
-  private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  private final NetworkTable table = inst.getTable("shooter");
-  private final DoubleEntry angle = table.getDoubleTopic("angle").getEntry(0);
   private double pivotAngle = 0;
   private Debouncer m_debouncer = new Debouncer(0.5, DebounceType.kFalling);
 

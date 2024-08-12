@@ -95,6 +95,7 @@ public class Shooter extends SubsystemBase {
     .withFeedback(ShooterConstants.kFeedbackConfigs);
   
     m_pivotMotor.getConfigurator().apply(pivotConfigs);
+    m_pivotMotor.setNeutralMode(NeutralModeValue.Brake);
 
     BaseStatusSignal.setUpdateFrequencyForAll(100,
       m_pivotMotor.getPosition(),
@@ -235,9 +236,4 @@ public class Shooter extends SubsystemBase {
     
   }
 
-
-
-  public Command speedUp() {
-    return runOnce(()->setFlywheelSpeed(100));
-  }
 }
