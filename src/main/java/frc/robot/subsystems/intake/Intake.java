@@ -35,7 +35,6 @@ public class Intake extends SubsystemBase {
   private final AnalogInput m_distanceSensor;
   private final MotionMagicVoltage m_request;
   private final VoltageOut m_voltReq = new VoltageOut(0.0);
-  private final Debouncer m_sensorDebouncer;
   
   private final SysIdRoutine routine = new SysIdRoutine(            
     new SysIdRoutine.Config(
@@ -72,7 +71,6 @@ public class Intake extends SubsystemBase {
 
     m_request = new MotionMagicVoltage(0);
 
-    m_sensorDebouncer = new Debouncer(0.1, DebounceType.kBoth);
     
 
     SmartDashboard.putData("Intake", this);
@@ -88,7 +86,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasNote(){
-    return m_sensorDebouncer.calculate(m_distanceSensor.getAverageValue() > IntakeConstants.kSensorThreshold);
+    return m_distanceSensor.getAverageValue() > IntakeConstants.kSensorThreshold;
   }
 
   public void setGoal(double goal){

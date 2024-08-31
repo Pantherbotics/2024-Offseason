@@ -220,9 +220,6 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("shooterEncoderPosition", m_encoder.getPosition().getValueAsDouble());
 
     SmartDashboard.putNumber("shooter motor", m_pivotMotor.getPosition().getValueAsDouble());
-
-
-
     SmartDashboard.putNumber("left flywheel", m_leftFlywheel.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("right flywheel", m_rightFlywheel.getVelocity().getValueAsDouble());
 

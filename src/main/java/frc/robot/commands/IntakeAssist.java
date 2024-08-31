@@ -7,6 +7,8 @@ package frc.robot.commands;
 import java.util.Arrays;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,6 +22,7 @@ public class IntakeAssist extends Command {
   private final Intake intake;
   private final CommandSwerveDrivetrain drivetrain;
   private DriverIO mainIO;
+  private Debouncer inputDebouncer = new Debouncer(0.1, DebounceType.kBoth);
 
 
   //private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -102,7 +105,7 @@ public class IntakeAssist extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.setRollersStop();
+    intake.setRollers(-0.05);
     intake.setPivotUp();
     mainIO.setRumble(0, 0);
   }
@@ -110,6 +113,6 @@ public class IntakeAssist extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return intake.hasNote();
+    return inputDebouncer.calculate(intake.hasNote());
   }
 }

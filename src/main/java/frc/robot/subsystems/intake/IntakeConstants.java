@@ -13,18 +13,18 @@ public class IntakeConstants {
     public static final int kPivotMotorID = 25;
     public static final int kRollersMotorID = 24;
 
-    public static final double kGoalTolerance = 0.1;
+    public static final double kGoalTolerance = 0.025;
 
     public static final int kLimitSiwtchID = 0;
 
     public static final int kDistanceSensorID = 3;
-    public static final int kSensorThreshold = 1000;
-    public static final double kDebounceTime = 0.1;
+    public static final int kSensorThreshold = 500;
+    public static final double kDebounceTime = 0.08;
 
     public static final double kDownPosition = 1.35;
     public static final double kUpPosition = 0;
-    public static final double kInSpeed = -0.5;
-    public static final double kOutSpeed = 0.5;
+    public static final double kInSpeed = -0.45;
+    public static final double kOutSpeed = 0.3;
 
     
     public static final double kMotorToPivotRatio = 64.0 * (23.0/42.0);
