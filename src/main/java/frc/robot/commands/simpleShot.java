@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.Utils;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,7 +23,7 @@ public class simpleShot extends Command {
   private boolean shootButton = true;
   private boolean justShot = false;
   private double pivotAngle = 0;
-  private Debouncer m_debouncer = new Debouncer(0.5, DebounceType.kFalling);
+  private Debouncer m_debouncer = new Debouncer(0.1, DebounceType.kFalling);
 
   public simpleShot(Shooter shooter, DriverIO mainIO) {
     this.shooter = shooter;
@@ -37,6 +38,7 @@ public class simpleShot extends Command {
   public void initialize() {
     shooter.setFlywheelSpeed(ShooterConstants.kFlywheelShotSpeed);
     shooter.setRollers(0);
+    pivotAngle = -0.1;
     shootButton = true;
     justShot = false;
   }
@@ -44,8 +46,8 @@ public class simpleShot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivotAngle += mainIO.wiggleAmp()/50;
-    shooter.setPivotGoal(pivotAngle);
+    pivotAngle += mainIO.wiggleAmp()/60;
+    shooter.setPivotGoal(MathUtil.clamp(-0.2, pivotAngle, 0.1));
     if (!shootButton && mainIO.shoot().getAsBoolean()){
       justShot = true;
     }
@@ -71,6 +73,6 @@ public class simpleShot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !m_debouncer.calculate(shooter.noteSeated()) && !Utils.isSimulation();
+    return !m_debouncer.calculate(shooter.noteSeated()) && justShot;
   }
 }

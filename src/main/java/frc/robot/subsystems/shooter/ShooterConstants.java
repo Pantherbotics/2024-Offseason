@@ -18,7 +18,7 @@ public final class ShooterConstants {
 
     public static final double kEncoderOffset = -0.16;
 
-    public static final double kHandoffPosition = -0.06;
+    public static final double kHandoffPosition = -0.05;
     public static final double kAmpPosition = 0.13;
 
     public static final int kLeftFlywheelMotorID = 31;
@@ -34,7 +34,7 @@ public final class ShooterConstants {
 
     public static final int kTopSensorID = 0;
     public static final int kSideSensorID = 2;
-    public static final int kTopSensorThreshold = 1800;
+    public static final int kTopSensorThreshold = 1300;
     public static final int kSideSensorThreshold = 1200;
 
     public static final double kBangBangTolerance = 0.05;

@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.shooter.Shooter;
@@ -22,10 +23,11 @@ public class Handoff extends SequentialCommandGroup {
       intake.pivotUp(),
       shooter.handoffPosition(),
       // TODO: see if this works
-      new WaitUntilCommand(()->intake.isAtGoal() && shooter.isAtGoal()).withTimeout(5).finallyDo((end)->{if(end){DataLogManager.log("handoff pivot failed");CommandScheduler.getInstance().cancel(this);}}),
+      new WaitUntilCommand(()->intake.isAtGoal() && shooter.isAtGoal()).withTimeout(1).finallyDo((end)->{if(end){DataLogManager.log("handoff pivot failed");CommandScheduler.getInstance().cancel(this);}}),
+      new WaitCommand(0.1),
       intake.rollersOut(),
       shooter.rollersIn(),
-      new WaitUntilCommand(shooter::noteSeated).withTimeout(5).finallyDo((end)->{if(end){DataLogManager.log("shooter note loading failed");CommandScheduler.getInstance().cancel(this);}}),
+      new WaitUntilCommand(shooter::noteSeated).withTimeout(1).finallyDo((end)->{if(end){DataLogManager.log("shooter note loading failed");CommandScheduler.getInstance().cancel(this);}}),
       shooter.rollersStop(),
       intake.rollersStop()
     );

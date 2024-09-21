@@ -29,6 +29,7 @@ import frc.robot.commands.Handoff;
 import frc.robot.commands.IntakeAssist;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.climb;
+import frc.robot.commands.simpleShot;
 import frc.robot.controls.DriverIO;
 import frc.robot.controls.ControlConstants.InputType;
 import frc.robot.subsystems.climber.Climber;
@@ -96,20 +97,20 @@ public class RobotContainer {
 
   private void configureBindings() {
     
-      /*
+    /*   
     mainController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
     mainController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
     mainController.button(1).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
     mainController.button(2).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
     mainController.button(3).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
     mainController.button(4).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-      */
+    */
     
     mainIO.intake().toggleOnTrue(new IntakeAssist(intake, drivetrain, mainIO));
     mainIO.climb().onTrue(new climb(climber));
-    mainIO.shoot().onTrue(new Shoot(shooter, drivetrain, mainIO));
+    mainIO.shoot().onTrue(new simpleShot(shooter, mainIO));
     mainIO.amp().onTrue(new Amp(shooter, drivetrain, mainIO));
-    mainIO.reset().onTrue(Commands.idle(shooter, intake));
+    mainIO.reset().onTrue(intake.zeroIntake().alongWith(Commands.idle(shooter)));
 
     intake.gotNote().onTrue(new Handoff(intake, shooter).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
     
