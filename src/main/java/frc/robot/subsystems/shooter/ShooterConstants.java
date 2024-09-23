@@ -34,7 +34,7 @@ public final class ShooterConstants {
 
     public static final int kTopSensorID = 0;
     public static final int kSideSensorID = 2;
-    public static final int kTopSensorThreshold = 1300;
+    public static final int kTopSensorThreshold = 1500;
     public static final int kSideSensorThreshold = 1200;
 
     public static final double kBangBangTolerance = 0.05;

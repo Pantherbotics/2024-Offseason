@@ -72,7 +72,7 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(DriveConstants.driveCommand(drivetrain, mainIO).ignoringDisable(true));
     drivetrain.seedFieldRelative(new Pose2d(6.0, 4.0, Rotation2d.fromDegrees(0)));
     vision.setDefaultCommand(vision.updatePose(drivetrain).ignoringDisable(true));
-    drivetrain.configNeutralMode(NeutralModeValue.Coast);
+    drivetrain.configNeutralMode(NeutralModeValue.Brake);
 
     configureBindings();
 
@@ -113,7 +113,6 @@ public class RobotContainer {
     mainIO.reset().onTrue(intake.zeroIntake().alongWith(Commands.idle(shooter)));
 
     intake.gotNote().onTrue(new Handoff(intake, shooter).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
-    
 
     
         

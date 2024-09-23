@@ -105,7 +105,7 @@ public class IntakeAssist extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.setRollers(-0.05);
+    intake.setRollers(0);
     intake.setPivotUp();
     mainIO.setRumble(0, 0);
   }
