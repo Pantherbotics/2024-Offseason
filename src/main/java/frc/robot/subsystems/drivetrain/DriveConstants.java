@@ -13,7 +13,6 @@ import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.controls.DriverIO;
 
 /** Add your docs here. */
 public class DriveConstants {
@@ -32,7 +31,7 @@ public class DriveConstants {
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage).withSteerRequestType(SteerRequestType.MotionMagic);
 
       
-    public static Command driveCommand(CommandSwerveDrivetrain drivetrain, DriverIO mainIO){
+    public static Command driveCommand(CommandSwerveDrivetrain drivetrain){
       return drivetrain.applyRequest(
         () -> drive.withVelocityX(-mainIO.moveY() * kMaxSpeed)
         .withVelocityY(-mainIO.moveX() * kMaxSpeed) 

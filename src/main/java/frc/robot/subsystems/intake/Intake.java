@@ -29,11 +29,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class Intake extends SubsystemBase {
-  private final TalonFX m_pivotMotor;
-  private final TalonFX m_rollersMotor;
-  private final DigitalInput m_limitSwitch;
-  private final AnalogInput m_distanceSensor;
-  private final MotionMagicVoltage m_request;
+  private final TalonFX m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorID);
+  private final TalonFX m_rollersMotor = new TalonFX(IntakeConstants.kRollersMotorID);
+  private final DigitalInput m_limitSwitch = new DigitalInput(IntakeConstants.kLimitSiwtchID);
+  private final AnalogInput m_distanceSensor = new AnalogInput(IntakeConstants.kDistanceSensorID);
+
+
+  private final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
   private final VoltageOut m_voltReq = new VoltageOut(0.0);
   
   private final SysIdRoutine routine = new SysIdRoutine(            
@@ -45,10 +47,6 @@ public class Intake extends SubsystemBase {
   
     
   public Intake() {
-    m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorID);
-    m_rollersMotor = new TalonFX(IntakeConstants.kRollersMotorID);
-    m_limitSwitch = new DigitalInput(IntakeConstants.kLimitSiwtchID);
-    m_distanceSensor = new AnalogInput(IntakeConstants.kDistanceSensorID);
     m_distanceSensor.setAverageBits(4);
 
     TalonFXConfiguration pivotConfigs = new TalonFXConfiguration()
@@ -69,17 +67,36 @@ public class Intake extends SubsystemBase {
     m_pivotMotor.optimizeBusUtilization(10, 0.05);
     m_rollersMotor.optimizeBusUtilization(10, 0.05);
 
-    m_request = new MotionMagicVoltage(0);
-
-    
-
     SmartDashboard.putData("Intake", this);
   }
 
-    
+
+  public void setPivotGoal(double position){
+    SmartDashboard.putNumber("Intake goal", position);
+    m_pivotMotor.setControl(m_request.withPosition(position));
+  }
+
   public void pivotVoltage(Measure<Voltage> voltageMeasure){
     m_pivotMotor.setControl(m_voltReq.withOutput(voltageMeasure.in(Volts)));
   }
+
+  public Command pivotCtrCmd(double position){
+    return runOnce(()->setPivotGoal(position));
+  }
+
+  public Command zeroIntake(){
+    return runEnd(()->{m_pivotMotor.setControl(m_voltReq.withOutput(-2));m_rollersMotor.set(0);}, ()->{m_pivotMotor.setPosition(0);setPivotGoal(0);}).until(this::limitSwitch);
+  }
+
+  public boolean isAtGoal(){
+    return Math.abs(m_request.Position - m_pivotMotor.getPosition().getValueAsDouble()) < IntakeConstants.kGoalTolerance;
+  }
+
+
+  public Command rollerCtrlCmd(double dutyCycle) {
+    return runOnce(() -> m_rollersMotor.set(dutyCycle)); 
+  }
+
 
   public boolean limitSwitch(){
     return m_limitSwitch.get();
@@ -89,58 +106,10 @@ public class Intake extends SubsystemBase {
     return m_distanceSensor.getAverageValue() > IntakeConstants.kSensorThreshold;
   }
 
-  public void setGoal(double goal){
-    SmartDashboard.putNumber("Intake goal", goal);
-    m_pivotMotor.setControl(m_request.withPosition(goal));
+  public Trigger gotNote(){
+    return new Trigger(this::hasNote);
   }
 
-  public boolean isAtGoal(){
-    return Math.abs(m_request.Position - m_pivotMotor.getPosition().getValueAsDouble()) < IntakeConstants.kGoalTolerance;
-  }
-
-  public void setRollers(double speed){
-    m_rollersMotor.set(speed);
-  }
-
-  public void setPivotDown(){
-    setGoal(IntakeConstants.kDownPosition);
-  }
-
-  public void setPivotUp(){
-    setGoal(IntakeConstants.kUpPosition);
-  }
-
-  public void setRollersIn(){
-    setRollers(IntakeConstants.kInSpeed);
-  }
-
-  public void setRollersStop(){
-    setRollers(0);
-  }
-
-  public void setRollersOut(){
-    setRollers(IntakeConstants.kOutSpeed);
-  }
-
-  public Command pivotDown(){
-    return runOnce(()->setPivotDown());
-  }
-
-  public Command pivotUp(){
-    return runOnce(()->setPivotUp());
-  }
-
-  public Command rollersIn(){
-    return runOnce(()->setRollersIn());
-  }
-
-  public Command rollersStop(){
-    return runOnce(()->setRollersStop());
-  }
-
-  public Command rollersOut(){
-    return runOnce(()->setRollersOut());
-  }
 
   public Command sysIdDynamicCommand(Direction direction){
     return routine.dynamic(direction);
@@ -150,13 +119,6 @@ public class Intake extends SubsystemBase {
     return routine.quasistatic(direction);
   }
 
-  public Trigger gotNote(){
-    return new Trigger(this::hasNote);
-  }
-
-  public Command zeroIntake(){
-    return runEnd(()->{m_pivotMotor.setControl(m_voltReq.withOutput(-2));setRollersStop();}, ()->{m_pivotMotor.setPosition(0);setGoal(0);}).until(this::limitSwitch);
-  }
 
   @Override
   public void periodic() {
