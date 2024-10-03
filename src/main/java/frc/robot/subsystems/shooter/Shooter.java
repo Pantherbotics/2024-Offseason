@@ -11,15 +11,16 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.math.controller.BangBangController;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
@@ -33,25 +34,24 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 public class Shooter extends SubsystemBase {
 
-  private final TalonFX m_pivotMotor;
+  private final TalonFX m_pivotMotor = new TalonFX(ShooterConstants.kPivotMotorID);
 
-  private final CANcoder m_encoder;
+  private final CANcoder m_encoder = new CANcoder(ShooterConstants.kEncoderID);
 
-  private final AnalogInput m_topSensor;
-  private final AnalogInput m_sideSensor;
+  private final AnalogInput m_topSensor = new AnalogInput(ShooterConstants.kTopSensorID);
+  private final AnalogInput m_sideSensor = new AnalogInput(ShooterConstants.kSideSensorID);
 
-  private final CANSparkMax m_leftIntake;
-  private final CANSparkMax m_rightIntake;
+  private final CANSparkMax m_leftIntake = new CANSparkMax(ShooterConstants.kLeftIntakeMotorID, MotorType.kBrushless);
+  private final CANSparkMax m_rightIntake = new CANSparkMax(ShooterConstants.kRightIntakeMotorID, MotorType.kBrushless);
 
-  private final TalonFX m_leftFlywheel;
-  private final TalonFX m_rightFlywheel;
-  private final BangBangController m_leftController;
-  private final BangBangController m_rightController;
+  private final TalonFX m_leftFlywheel = new TalonFX(ShooterConstants.kLeftFlywheelMotorID);
+  private final TalonFX m_rightFlywheel = new TalonFX(ShooterConstants.kRightFlywheelMotorID);
   
-  private final InterpolatingDoubleTreeMap shotTable;
-  private final InterpolatingDoubleTreeMap passTable;
+  private final InterpolatingDoubleTreeMap shotTable = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap passTable = new InterpolatingDoubleTreeMap();
 
-  private final MotionMagicVoltage m_request;
+  private final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+  private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final VoltageOut m_voltReq = new VoltageOut(0.0);
 
   private final SysIdRoutine routine = new SysIdRoutine(new Config(
@@ -60,33 +60,25 @@ public class Shooter extends SubsystemBase {
     (state) -> SignalLogger.writeString("state", state.toString())),
      new Mechanism(this::pivotVoltage, null, this));
 
+
      
   public Shooter() {
     //Rollers setup
-    m_leftIntake = new CANSparkMax(ShooterConstants.kLeftIntakeMotorID, MotorType.kBrushless);
-    m_rightIntake = new CANSparkMax(ShooterConstants.kRightIntakeMotorID, MotorType.kBrushless);
     m_leftIntake.setIdleMode(IdleMode.kBrake);
     m_rightIntake.setIdleMode(IdleMode.kBrake);
     m_rightIntake.follow(m_leftIntake, true);
 
-    
-    //Flywheel setup
-    m_leftFlywheel = new TalonFX(ShooterConstants.kLeftFlywheelMotorID);
-    m_rightFlywheel = new TalonFX(ShooterConstants.kRightFlywheelMotorID);
-    m_leftFlywheel.setNeutralMode(NeutralModeValue.Coast);
-    m_rightFlywheel.setNeutralMode(NeutralModeValue.Coast);
-    m_leftController = new BangBangController(ShooterConstants.kBangBangTolerance);
-    m_rightController = new BangBangController(ShooterConstants.kBangBangTolerance);
     //Sensor setup
-    m_topSensor = new AnalogInput(ShooterConstants.kTopSensorID);
-    m_sideSensor = new AnalogInput(ShooterConstants.kSideSensorID);
     m_topSensor.setAverageBits(4);
     m_sideSensor.setAverageBits(4);
+    
+    //Flywheel setup
+    m_leftFlywheel.setNeutralMode(NeutralModeValue.Coast);
+    m_rightFlywheel.setNeutralMode(NeutralModeValue.Coast);
+    m_leftFlywheel.getConfigurator().apply(new TalonFXConfiguration().withSlot0(ShooterConstants.kLeftFlywheelGains));
+    m_rightFlywheel.getConfigurator().apply(new TalonFXConfiguration().withSlot0(ShooterConstants.kRightFlywheelGains));
 
     //Pivot setup
-    m_pivotMotor = new TalonFX(ShooterConstants.kPivotMotorID);
-    m_encoder = new CANcoder(ShooterConstants.kEncoderID);
-
     m_encoder.getConfigurator().apply(new MagnetSensorConfigs().withMagnetOffset(ShooterConstants.kEncoderOffset));
 
     TalonFXConfiguration pivotConfigs = new TalonFXConfiguration()
@@ -108,26 +100,18 @@ public class Shooter extends SubsystemBase {
       m_leftFlywheel.getTorqueCurrent(),
       m_rightFlywheel.getVelocity(),
       m_rightFlywheel.getTorqueCurrent()
-      );
+    );
     m_pivotMotor.optimizeBusUtilization(4, 0.05);
     m_encoder.optimizeBusUtilization(4, 0.05);
     m_leftFlywheel.optimizeBusUtilization();
     m_rightFlywheel.optimizeBusUtilization();
 
-    
-    m_request = new MotionMagicVoltage(0);
-
-    shotTable = new InterpolatingDoubleTreeMap();
     for(int i = 0; i < ShooterConstants.shotMatrix.length; i++){
         shotTable.put(ShooterConstants.shotMatrix[i][0], ShooterConstants.shotMatrix[i][1]);
     }
-
-    passTable = new InterpolatingDoubleTreeMap();
     for(int i = 0; i < ShooterConstants.passMatrix.length; i++){
         passTable.put(ShooterConstants.passMatrix[i][0], ShooterConstants.passMatrix[i][1]);
     }
-
-    SmartDashboard.putData("shooter", this);
   }
 
 
@@ -140,29 +124,47 @@ public class Shooter extends SubsystemBase {
     return passTable;
   }
   
+
+  public void setPivotGoal(double goal){
+    m_pivotMotor.setControl(m_request.withPosition(goal));
+  }
+
   public void pivotVoltage(Measure<Voltage> voltageMeasure){
     m_pivotMotor.setControl(m_voltReq.withOutput(voltageMeasure.in(Volts)));
   }
 
-  public void setPivotGoal(double goal){
-    m_pivotMotor.setControl(m_request.withPosition(goal));
+  public Command pivotCtrlCmd(double position){
+    return runOnce(()->setPivotGoal(position));
+  }
+
+  public double pivotAngle(){
+    return m_pivotMotor.getPosition().getValueAsDouble();
   }
 
   public boolean isAtGoal(){
     return Math.abs(m_request.Position - m_pivotMotor.getPosition().getValueAsDouble()) < ShooterConstants.kPivotTolerance;
   }
 
+
+
+
   public void setFlywheelSpeed(double goal){
-    m_leftController.setSetpoint(goal);
-    m_rightController.setSetpoint(goal);
+    m_leftFlywheel.setControl(m_velocityRequest.withVelocity(goal));
+    m_rightFlywheel.setControl(m_velocityRequest.withVelocity(goal));
+  }
+
+  public Command FlywheelCtrCmd(double velocity){
+    return runOnce(()->setFlywheelSpeed(velocity));
   }
 
   public boolean flywheelsAtSetpoint(){
-    return m_leftController.atSetpoint() && m_rightController.atSetpoint();
+    return MathUtil.isNear(m_leftFlywheel.getClosedLoopReference().getValueAsDouble(), m_leftFlywheel.getVelocity().getValueAsDouble(), ShooterConstants.kFlywheelTolerance) 
+      && MathUtil.isNear(m_rightFlywheel.getClosedLoopReference().getValueAsDouble(), m_rightFlywheel.getVelocity().getValueAsDouble(), ShooterConstants.kFlywheelTolerance);
   }
 
 
-  public boolean noteSeated(){
+
+  public boolean topSensor(){
     return m_topSensor.getAverageValue() > ShooterConstants.kTopSensorThreshold;
   }
 
@@ -170,33 +172,17 @@ public class Shooter extends SubsystemBase {
     return m_sideSensor.getAverageValue() > ShooterConstants.kSideSensorThreshold;
   }
 
+
+
   public void setRollers(double speed){
     m_leftIntake.set(speed);
   }
 
-  public double pivotAngle(){
-    return m_pivotMotor.getPosition().getValueAsDouble();
+  public Command rollerCtrlCmd(double dutyCycle) {
+    return runOnce(()->setRollers(dutyCycle));
   }
 
-  public Command rollersIn(){
-    return runOnce(()->setRollers(ShooterConstants.kRollersInSpeed));
-  }
 
-  public Command rollersOut(){
-    return runOnce(()->setRollers(ShooterConstants.kRollersOutSpeed));
-  }
-
-  public Command rollersStop(){
-    return runOnce(()->setRollers(0));
-  }
-
-  public Command ampPosition(){
-    return runOnce(()->setPivotGoal(ShooterConstants.kAmpPosition));
-  }
-
-  public Command handoffPosition(){
-    return runOnce(()->setPivotGoal(ShooterConstants.kHandoffPosition));
-  }
   
   public Command sysIdDynamicCommand(Direction direction){
     return routine.dynamic(direction);
@@ -211,7 +197,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ShooterTopSensor", m_topSensor.getAverageValue());
-    SmartDashboard.putBoolean("ShooterHasNote", noteSeated());
+    SmartDashboard.putBoolean("ShooterHasNote", topSensor());
     SmartDashboard.putNumber("ShooterSideSensor", m_sideSensor.getAverageValue());
     SmartDashboard.putBoolean("sideSeesNote", sideSensor());
 
@@ -221,14 +207,6 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("left flywheel", m_leftFlywheel.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("right flywheel", m_rightFlywheel.getVelocity().getValueAsDouble());
 
-    m_leftFlywheel.set(
-      -m_leftController.calculate(-Math.min(m_leftFlywheel.getVelocity().getValueAsDouble(), 0))
-    );
-
-    m_rightFlywheel.set(
-      m_rightController.calculate(Math.max(m_rightFlywheel.getVelocity().getValueAsDouble(), 0))
-    );
-    
   }
 
 }
