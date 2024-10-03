@@ -7,19 +7,34 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.IntakeAssist;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drivetrain.Telemetry;
+import frc.robot.subsystems.drivetrain.TunerConstants;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.shooter.Shooter;
+
 
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+  private final CommandXboxController mainController = new CommandXboxController(1);
+  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
+  private final Climber climber = new Climber();
+  private final Shooter shooter = new Shooter();
+  private final Intake intake = new Intake();
+  private final Telemetry logger = new Telemetry();
+
+  public Robot(){
+    mainController.leftBumper().onTrue();
+  }
 
   @Override
   public void robotInit() {
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
-    m_robotContainer = new RobotContainer();
   }
 
   @Override
@@ -27,57 +42,6 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
   }
 
-  @Override
-  public void disabledInit() {}
 
-  @Override
-  public void disabledPeriodic() {}
 
-  @Override
-  public void disabledExit() {
-    m_robotContainer.onStart();
-  }
-
-  @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-  }
-
-  @Override
-  public void autonomousPeriodic() {}
-
-  @Override
-  public void autonomousExit() {}
-
-  @Override
-  public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
-  }
-
-  @Override
-  public void teleopPeriodic() {}
-
-  @Override
-  public void teleopExit() {}
-
-  @Override
-  public void simulationPeriodic(){
-  }
-
-  @Override
-  public void testInit() {
-    CommandScheduler.getInstance().cancelAll();
-  }
-
-  @Override
-  public void testPeriodic() {}
-
-  @Override
-  public void testExit() {}
 }
