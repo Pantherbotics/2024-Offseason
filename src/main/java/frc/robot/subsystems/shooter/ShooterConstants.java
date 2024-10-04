@@ -57,7 +57,7 @@ public final class ShooterConstants {
     
     public static FeedbackConfigs kFeedbackConfigs = new FeedbackConfigs()
     .withFeedbackRemoteSensorID(kEncoderID)
-    .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder)
+    .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
     .withRotorToSensorRatio(kMotorToPivotRatio);
 
 
