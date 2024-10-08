@@ -14,23 +14,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
-  private final TalonFX m_leftClimber;
-  private final TalonFX m_rightClimber;
+  private final TalonFX m_leftClimber = new TalonFX(ClimberConstants.kLeftMotorID);
+  private final TalonFX m_rightClimber = new TalonFX(ClimberConstants.kRightMotorID);
 
-  private final DigitalInput m_leftSwitch;
-  private final DigitalInput m_rightSwitch;
+  private final DigitalInput m_leftSwitch = new DigitalInput(ClimberConstants.kLeftSwitchID);
+  private final DigitalInput m_rightSwitch = new DigitalInput(ClimberConstants.kRightSwitchID);
 
   public Climber() {
-    m_leftClimber = new TalonFX(ClimberConstants.kLeftMotorID);
-    m_rightClimber = new TalonFX(ClimberConstants.kRightMotorID);
     BaseStatusSignal.setUpdateFrequencyForAll(25, 
     m_leftClimber.getTorqueCurrent(),
     m_leftClimber.getTorqueCurrent());
     m_leftClimber.optimizeBusUtilization(10,0.05);
     m_rightClimber.optimizeBusUtilization(10,0.05);
-
-    m_leftSwitch = new DigitalInput(ClimberConstants.kLeftSwitchID);
-    m_rightSwitch = new DigitalInput(ClimberConstants.kRightSwitchID);
 
     m_leftClimber.setNeutralMode(NeutralModeValue.Brake);
     m_rightClimber.setNeutralMode(NeutralModeValue.Brake);
