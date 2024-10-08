@@ -14,8 +14,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,7 +39,7 @@ public class Intake extends SubsystemBase {
     null,
     Volts.of(4),
     null,
-    (state) -> SignalLogger.writeString("state", state.toString())), new Mechanism(this::pivotVoltage, null, this));
+    (state) -> SignalLogger.writeString("state", state.toString())), new Mechanism((voltageMeasure)->m_pivotMotor.setControl(m_voltReq.withOutput(voltageMeasure.in(Volts))), null, this));
   
     
   public Intake() {
@@ -72,10 +70,6 @@ public class Intake extends SubsystemBase {
   public void setPivotGoal(double position){
     SmartDashboard.putNumber("Intake goal", position);
     m_pivotMotor.setControl(m_request.withPosition(position));
-  }
-
-  public void pivotVoltage(Measure<Voltage> voltageMeasure){
-    m_pivotMotor.setControl(m_voltReq.withOutput(voltageMeasure.in(Volts)));
   }
 
   public Command pivotCtrCmd(double position){
@@ -120,12 +114,9 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-
     SmartDashboard.putBoolean("IntakeAtGoal", isAtGoal());
-    SmartDashboard.putNumber("IntakeDistToGoal", m_request.Position - m_pivotMotor.getPosition().getValueAsDouble());
     SmartDashboard.putBoolean("intake switch", limitSwitch());
     SmartDashboard.putBoolean("IntakeHasNote", hasNote());
     SmartDashboard.putNumber("IntakeSensor", m_distanceSensor.getAverageValue());
-    SmartDashboard.putNumber("Intake position", m_pivotMotor.getPosition().getValueAsDouble());
   }
 }
