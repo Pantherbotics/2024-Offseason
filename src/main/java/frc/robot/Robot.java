@@ -40,8 +40,10 @@ public class Robot extends TimedRobot {
     drivetrain.setDefaultCommand(DriveConstants.driveCommand(drivetrain));
 
     mainController.leftBumper().onTrue(
-      intake.rollerCtrlCmd(IntakeConstants.kInSpeed).andThen(intake.pivotCtrCmd(IntakeConstants.kDownPosition))
+      intake.pivotCtrCmd(IntakeConstants.kDownPosition).andThen(intake.rollerCtrlCmd(IntakeConstants.kInSpeed))
     );
+
+    
 
 
   }
