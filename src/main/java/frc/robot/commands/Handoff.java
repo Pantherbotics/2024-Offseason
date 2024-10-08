@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -20,16 +22,14 @@ public class Handoff extends SequentialCommandGroup {
   public Handoff(Intake intake, Shooter shooter) {
     
     addCommands(
-      intake.pivotUp(),
-      shooter.handoffPosition(),
-      // TODO: see if this works
-      new WaitUntilCommand(()->intake.isAtGoal() && shooter.isAtGoal()).withTimeout(1).finallyDo((end)->{if(end){DataLogManager.log("handoff pivot failed");CommandScheduler.getInstance().cancel(this);}}),
+      intake.pivotCtrCmd(IntakeConstants.kUpPosition),
+      shooter.pivotCtrlCmd(ShooterConstants.kHandoffPosition),
       new WaitCommand(0.1),
-      intake.rollersOut(),
-      shooter.rollersIn(),
-      new WaitUntilCommand(shooter::noteSeated).withTimeout(1).finallyDo((end)->{if(end){DataLogManager.log("shooter note loading failed");CommandScheduler.getInstance().cancel(this);}}),
-      shooter.rollersStop(),
-      intake.rollersStop()
+      intake.rollerCtrlCmd(IntakeConstants.kOutSpeed),
+      shooter.rollerCtrlCmd(ShooterConstants.kRollersInSpeed),
+      new WaitUntilCommand(shooter::topSensor).withTimeout(1).finallyDo((end)->{if(end){DataLogManager.log("shooter note loading failed");CommandScheduler.getInstance().cancel(this);}}),
+      shooter.rollerCtrlCmd(0),
+      intake.rollerCtrlCmd(0)
     );
     
   }
