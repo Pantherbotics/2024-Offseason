@@ -37,7 +37,11 @@ public class Robot extends TimedRobot {
     shooter.setDefaultCommand(
       shooter.pivotCtrlCmd(ShooterConstants.kHandoffPosition).andThen(shooter.rollerCtrlCmd(0)).andThen(shooter.coastFlywheelsCmd()).repeatedly()
     );
-    drivetrain.setDefaultCommand(DriveConstants.driveCommand(drivetrain));
+    drivetrain.setDefaultCommand(drivetrain.applyRequest( 
+      ()->DriveConstants.drive.withVelocityX(-mainController.getLeftX() * DriveConstants.kMaxSpeed)
+        .withVelocityY(-mainController.getLeftY() * DriveConstants.kMaxSpeed) 
+        .withRotationalRate(-mainController.getRightX() * DriveConstants.kMaxAngularRate)
+    ));
 
     mainController.leftBumper().onTrue(
       intake.pivotCtrCmd(IntakeConstants.kDownPosition).andThen(intake.rollerCtrlCmd(IntakeConstants.kInSpeed))
