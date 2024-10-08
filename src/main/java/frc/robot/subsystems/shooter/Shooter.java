@@ -10,6 +10,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -20,7 +21,6 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
@@ -142,7 +142,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isAtGoal(){
-    return Math.abs(m_request.Position - m_pivotMotor.getPosition().getValueAsDouble()) < ShooterConstants.kPivotTolerance;
+    return Math.abs(m_pivotMotor.getClosedLoopError().getValueAsDouble()) < ShooterConstants.kPivotTolerance;
   }
 
 
@@ -158,8 +158,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean flywheelsAtSetpoint(){
-    return MathUtil.isNear(m_leftFlywheel.getClosedLoopReference().getValueAsDouble(), m_leftFlywheel.getVelocity().getValueAsDouble(), ShooterConstants.kFlywheelTolerance) 
-      && MathUtil.isNear(m_rightFlywheel.getClosedLoopReference().getValueAsDouble(), m_rightFlywheel.getVelocity().getValueAsDouble(), ShooterConstants.kFlywheelTolerance);
+    return m_leftFlywheel.getClosedLoopError().getValueAsDouble() < ShooterConstants.kFlywheelTolerance && m_rightFlywheel.getClosedLoopError().getValueAsDouble() < ShooterConstants.kFlywheelTolerance;
+  }
+
+  public Command coastFlywheelsCmd() {
+    return runOnce(()->{m_leftFlywheel.setControl(new CoastOut());m_rightFlywheel.setControl(new CoastOut());});
   }
 
 
@@ -196,10 +199,10 @@ public class Shooter extends SubsystemBase {
   
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("ShooterTopSensor", m_topSensor.getAverageValue());
-    SmartDashboard.putBoolean("ShooterHasNote", topSensor());
-    SmartDashboard.putNumber("ShooterSideSensor", m_sideSensor.getAverageValue());
-    SmartDashboard.putBoolean("sideSeesNote", sideSensor());
+    SmartDashboard.putNumber("topSensorValue", m_topSensor.getAverageValue());
+    SmartDashboard.putBoolean("topSensor", topSensor());
+    SmartDashboard.putNumber("sideSensorValue", m_sideSensor.getAverageValue());
+    SmartDashboard.putBoolean("sideSensor", sideSensor());
 
     SmartDashboard.putBoolean("ShooterAtGoal", isAtGoal());
     SmartDashboard.putNumber("shooterEncoderPosition", m_encoder.getPosition().getValueAsDouble());
@@ -208,5 +211,8 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("right flywheel", m_rightFlywheel.getVelocity().getValueAsDouble());
 
   }
+
+
+
 
 }
