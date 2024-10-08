@@ -12,7 +12,6 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
 
 /** Add your docs here. */
 public class DriveConstants {
@@ -30,14 +29,6 @@ public class DriveConstants {
       .withDeadband(kMaxSpeed * 0.01).withRotationalDeadband(kMaxAngularRate * 0.01)
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage).withSteerRequestType(SteerRequestType.MotionMagic);
 
-      
-    public static Command driveCommand(CommandSwerveDrivetrain drivetrain){
-      return drivetrain.applyRequest(
-        () -> drive.withVelocityX(-mainIO.moveY() * kMaxSpeed)
-        .withVelocityY(-mainIO.moveX() * kMaxSpeed) 
-        .withRotationalRate(-mainIO.rotate() * kMaxAngularRate)
-      );
-    }
 
     public static PhoenixPIDController kHeadingController = new PhoenixPIDController(2, 0.0, 0.1);
     
