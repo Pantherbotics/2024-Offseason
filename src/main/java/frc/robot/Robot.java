@@ -9,13 +9,15 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.IntakeAssist;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drivetrain.DriveConstants;
 import frc.robot.subsystems.drivetrain.Telemetry;
 import frc.robot.subsystems.drivetrain.TunerConstants;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
 
 
 public class Robot extends TimedRobot {
@@ -28,7 +30,20 @@ public class Robot extends TimedRobot {
   private final Telemetry logger = new Telemetry();
 
   public Robot(){
-    mainController.leftBumper().onTrue();
+
+    intake.setDefaultCommand(
+      intake.pivotCtrCmd(IntakeConstants.kUpPosition).andThen(intake.rollerCtrlCmd(0)).repeatedly()
+    );
+    shooter.setDefaultCommand(
+      shooter.pivotCtrlCmd(ShooterConstants.kHandoffPosition).andThen(shooter.rollerCtrlCmd(0)).andThen(shooter.coastFlywheelsCmd()).repeatedly()
+    );
+    drivetrain.setDefaultCommand(DriveConstants.driveCommand(drivetrain));
+
+    mainController.leftBumper().onTrue(
+      intake.rollerCtrlCmd(IntakeConstants.kInSpeed).andThen(intake.pivotCtrCmd(IntakeConstants.kDownPosition))
+    );
+
+
   }
 
   @Override
