@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
@@ -36,11 +37,12 @@ public class Robot extends TimedRobot {
 
   public Robot(){
 
+    // default commands put subsystems in regular state
     intake.setDefaultCommand(
-      intake.pivotCtrCmd(IntakeConstants.kUpPosition).andThen(intake.rollerCtrlCmd(0)).repeatedly()
+      Commands.repeatingSequence(intake.pivotCtrCmd(IntakeConstants.kUpPosition), intake.rollerCtrlCmd(0))
     );
     shooter.setDefaultCommand(
-      shooter.pivotCtrlCmd(ShooterConstants.kHandoffPosition).andThen(shooter.rollerCtrlCmd(0)).andThen(shooter.coastFlywheelsCmd()).repeatedly()
+      Commands.repeatingSequence(shooter.pivotCtrlCmd(ShooterConstants.kHandoffPosition), (shooter.rollerCtrlCmd(0)), (shooter.coastFlywheelsCmd()))
     );
     drivetrain.setDefaultCommand(drivetrain.applyRequest( 
       ()->DriveConstants.drive.withVelocityX(-mainController.getLeftX() * DriveConstants.kMaxSpeed)
@@ -48,9 +50,9 @@ public class Robot extends TimedRobot {
         .withRotationalRate(-mainController.getRightX() * DriveConstants.kMaxAngularRate)
     ));
 
-
     intake.gotNote().onTrue(new Handoff(intake, shooter).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
+    // Controller bindings
     mainController.leftBumper().onTrue(
       intake.pivotCtrCmd(IntakeConstants.kDownPosition).andThen(intake.rollerCtrlCmd(IntakeConstants.kInSpeed))
     );
@@ -59,7 +61,7 @@ public class Robot extends TimedRobot {
       new SequentialCommandGroup(
         shooter.FlywheelCtrCmd(ShooterConstants.kFlywheelShotSpeed),
         shooter.pivotCtrlCmd(ShooterConstants.kSpeakerPosition),
-        new WaitUntilCommand(shooter::flywheelsAtSetpoint)
+        Commands.idle(shooter)
       )
     );
   
