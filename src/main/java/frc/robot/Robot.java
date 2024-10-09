@@ -72,10 +72,10 @@ public class Robot extends TimedRobot {
       )
     );
 
-    mainController.button(5).onTrue(
+    mainController.button(7).onTrue(
       Commands.sequence(
         shooter.pivotCtrlCmd(ShooterConstants.kAmpPosition),
-        Commands.waitUntil(mainController.button(5)),
+        Commands.waitUntil(mainController.button(7)),
         shooter.rollerCtrlCmd(ShooterConstants.kRollersOutSpeed),
         Commands.waitUntil(()->!shooter.topSensor()).withTimeout(0.5),
         Commands.waitSeconds(1)
@@ -84,6 +84,10 @@ public class Robot extends TimedRobot {
 
     mainController.a().onTrue(
       climber.climbUntilSwitches().withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+    );
+
+    mainController.button(8).onTrue(
+      intake.zeroIntake()
     );
   }
 
