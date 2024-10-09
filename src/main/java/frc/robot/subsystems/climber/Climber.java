@@ -11,6 +11,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climber extends SubsystemBase {
@@ -39,6 +40,15 @@ public class Climber extends SubsystemBase {
     m_rightClimber.set(speed);
   }
 
+  public Command ctrlLeftCmd(double dutyCycle){
+    return runOnce(()->setLeft(dutyCycle));
+  }
+
+  public Command ctrlRightCmd(double dutyCycle){
+    return runOnce(()->setRight(-dutyCycle));
+  }
+
+
   public boolean leftSwitch(){
     return m_leftSwitch.get();
   }
@@ -48,7 +58,10 @@ public class Climber extends SubsystemBase {
   }
 
   public Command climbUntilSwitches(){
-    return runEnd(()->m_leftClimber.set(1), ()->m_leftClimber.set(0)).until(this::leftSwitch).asProxy().alongWith(runEnd(()->m_rightClimber.set(-1), ()->m_rightClimber.set(0)).until(this::rightSwitch));
+    return Commands.parallel(
+      ctrlLeftCmd(1).until(this::leftSwitch).andThen(ctrlLeftCmd(0)),
+      ctrlRightCmd(1).until(this::rightSwitch).andThen(ctrlRightCmd(0)).asProxy()
+    );
   } 
 
   @Override
