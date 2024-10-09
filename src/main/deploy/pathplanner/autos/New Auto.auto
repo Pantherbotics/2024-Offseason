@@ -1,12 +1,5 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.3411226822453648,
-      "y": 2.889255778511557
-    },
-    "rotation": 0
-  },
   "command": {
     "type": "sequential",
     "data": {
@@ -14,30 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "bottom"
+            "pathName": "midline"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "goBack"
+            "name": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "back"
+            "pathName": "Back"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "other"
+            "pathName": "Coast"
           }
         }
       ]
     }
   },
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }
