@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
   private final Shooter shooter = new Shooter();
   private final Intake intake = new Intake();
   private final Telemetry logger = new Telemetry();
-
+  
 
   public Robot(){
     // default commands put subsystems in default state
@@ -46,6 +46,7 @@ public class Robot extends TimedRobot {
         .withVelocityY(-mainController.getLeftY() * DriveConstants.kMaxSpeed) 
         .withRotationalRate(-mainController.getRightX() * DriveConstants.kMaxAngularRate)
     ));
+    drivetrain.registerTelemetry(logger::telemeterize);
 
     // sensor bindings
     intake.gotNote().onTrue(
