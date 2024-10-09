@@ -18,16 +18,15 @@ public class DriveConstants {
 
     public static final double kMaxSpeed = 4.0;
     public static final double kMaxAngularRate = 1.5 * Math.PI;
-  
 
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric() // main drive type
       .withDeadband(kMaxSpeed * 0.01).withRotationalDeadband(kMaxAngularRate * 0.01)
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage).withSteerRequestType(SteerRequestType.MotionMagic);
+      .withDriveRequestType(DriveRequestType.Velocity).withSteerRequestType(SteerRequestType.MotionMagic);
 
 
     public static final SwerveRequest.FieldCentricFacingAngle facing = new SwerveRequest.FieldCentricFacingAngle()
       .withDeadband(kMaxSpeed * 0.01).withRotationalDeadband(kMaxAngularRate * 0.01)
-      .withDriveRequestType(DriveRequestType.OpenLoopVoltage).withSteerRequestType(SteerRequestType.MotionMagic);
+      .withDriveRequestType(DriveRequestType.Velocity).withSteerRequestType(SteerRequestType.MotionMagic);
 
 
     public static PhoenixPIDController kHeadingController = new PhoenixPIDController(2, 0.0, 0.1);
