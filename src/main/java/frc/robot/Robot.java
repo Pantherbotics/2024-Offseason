@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Handoff;
@@ -36,8 +34,7 @@ public class Robot extends TimedRobot {
 
 
   public Robot(){
-
-    // default commands put subsystems in regular state
+    // default commands put subsystems in default state
     intake.setDefaultCommand(
       Commands.repeatingSequence(intake.pivotCtrCmd(IntakeConstants.kUpPosition), intake.rollerCtrlCmd(0))
     );
@@ -50,21 +47,43 @@ public class Robot extends TimedRobot {
         .withRotationalRate(-mainController.getRightX() * DriveConstants.kMaxAngularRate)
     ));
 
-    intake.gotNote().onTrue(new Handoff(intake, shooter).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+    // sensor bindings
+    intake.gotNote().onTrue(
+      new Handoff(intake, shooter).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+    );
 
     // Controller bindings
-    mainController.leftBumper().onTrue(
-      intake.pivotCtrCmd(IntakeConstants.kDownPosition).andThen(intake.rollerCtrlCmd(IntakeConstants.kInSpeed))
+    mainController.leftBumper().toggleOnTrue(
+      Commands.sequence(
+        intake.pivotCtrCmd(IntakeConstants.kDownPosition),
+        intake.rollerCtrlCmd(IntakeConstants.kInSpeed)
+      )
     );
     
     mainController.rightBumper().onTrue(
-      new SequentialCommandGroup(
+      Commands.sequence(
         shooter.FlywheelCtrCmd(ShooterConstants.kFlywheelShotSpeed),
         shooter.pivotCtrlCmd(ShooterConstants.kSpeakerPosition),
-        Commands.idle(shooter)
+        Commands.waitUntil(mainController.rightBumper()),
+        shooter.rollerCtrlCmd(ShooterConstants.kRollersShootSpeed),
+        Commands.waitUntil(()->!shooter.topSensor()).withTimeout(0.5),
+        Commands.waitSeconds(0.5)
       )
     );
-  
+
+    mainController.button(5).onTrue(
+      Commands.sequence(
+        shooter.pivotCtrlCmd(ShooterConstants.kAmpPosition),
+        Commands.waitUntil(mainController.button(5)),
+        shooter.rollerCtrlCmd(ShooterConstants.kRollersOutSpeed),
+        Commands.waitUntil(()->!shooter.topSensor()).withTimeout(0.5),
+        Commands.waitSeconds(1)
+      )
+    );
+
+    mainController.a().onTrue(
+      climber.climbUntilSwitches().withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+    );
   }
 
   @Override
