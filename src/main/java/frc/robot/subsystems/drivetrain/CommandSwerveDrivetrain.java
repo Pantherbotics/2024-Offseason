@@ -5,11 +5,14 @@ import static edu.wpi.first.units.Units.Volts;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -139,6 +142,33 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return RoutineToApply.quasistatic(direction);
     }
+
+    public void invertEncoders(){
+        if(!Utils.isSimulation()){
+        for (int i = 0; i < 4; ++i)
+        {
+        var module = TunerConstants.DriveTrain.getModule(i);
+        CANcoderConfiguration cfg = new CANcoderConfiguration();
+        StatusCode response = StatusCode.StatusCodeNotInitialized;
+
+        /* Repeat this in a loop until we have success */
+        do {
+            /* First make sure we refresh the object so we don't overwrite anything */
+            response = module.getCANcoder().getConfigurator().refresh(cfg);
+        } while(!response.isOK());
+
+        /* Invert your CANcoder magnet direction */
+        cfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+
+        /* Repeat this in a loop until we have success */
+        do {
+            /* Apply configuration to CANcoder */
+            module.getCANcoder().getConfigurator().apply(cfg);
+        } while (!response.isOK());
+        }
+        }
+    }
+
 
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return RoutineToApply.dynamic(direction);

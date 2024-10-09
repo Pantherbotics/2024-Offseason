@@ -149,7 +149,7 @@ public class Shooter extends SubsystemBase {
 
 
   public void setFlywheelSpeed(double goal){
-    m_leftFlywheel.setControl(m_velocityRequest.withVelocity(goal));
+    m_leftFlywheel.setControl(m_velocityRequest.withVelocity(-goal));
     m_rightFlywheel.setControl(m_velocityRequest.withVelocity(goal));
   }
 

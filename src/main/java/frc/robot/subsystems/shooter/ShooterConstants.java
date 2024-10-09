@@ -19,8 +19,8 @@ public final class ShooterConstants {
     public static final double kEncoderOffset = -0.16;
 
     public static final double kHandoffPosition = -0.05;
-    public static final double kAmpPosition = 0.13;
-    public static final double kSpeakerPosition = 0;
+    public static final double kAmpPosition = 0.15;
+    public static final double kSpeakerPosition = -0.1;
 
     public static final int kLeftFlywheelMotorID = 31;
     public static final int kRightFlywheelMotorID = 32;
@@ -35,7 +35,7 @@ public final class ShooterConstants {
 
     public static final int kTopSensorID = 0;
     public static final int kSideSensorID = 2;
-    public static final int kTopSensorThreshold = 1300;
+    public static final int kTopSensorThreshold = 1600;
     public static final int kSideSensorThreshold = 1200;
 
     public static final double kFlywheelTolerance = 0.05;
