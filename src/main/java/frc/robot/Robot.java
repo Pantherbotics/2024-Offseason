@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -25,7 +27,7 @@ import frc.robot.subsystems.shooter.ShooterConstants;
 
 public class Robot extends TimedRobot {
 
-  private final CommandXboxController mainController = new CommandXboxController(1);
+  private final CommandXboxController mainController = new CommandXboxController(0);
   private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
   private final Climber climber = new Climber();
   private final Shooter shooter = new Shooter();
@@ -42,20 +44,22 @@ public class Robot extends TimedRobot {
       Commands.repeatingSequence(shooter.pivotCtrlCmd(ShooterConstants.kHandoffPosition), (shooter.rollerCtrlCmd(0)), (shooter.coastFlywheelsCmd()))
     );
     drivetrain.setDefaultCommand(drivetrain.applyRequest( 
-      ()->DriveConstants.drive.withVelocityX(-mainController.getLeftX() * DriveConstants.kMaxSpeed)
-        .withVelocityY(-mainController.getLeftY() * DriveConstants.kMaxSpeed) 
+      ()->DriveConstants.drive.withVelocityX(mainController.getLeftY() * DriveConstants.kMaxSpeed)
+        .withVelocityY(mainController.getLeftX() * DriveConstants.kMaxSpeed) 
         .withRotationalRate(-mainController.getRightX() * DriveConstants.kMaxAngularRate)
     ));
     drivetrain.registerTelemetry(logger::telemeterize);
+    drivetrain.invertEncoders();
 
     // sensor bindings
     intake.gotNote().onTrue(
       new Handoff(intake, shooter).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
     );
 
+    mainController.povDown().onTrue(Commands.runOnce(()->drivetrain.seedFieldRelative(new Pose2d(0,0, Rotation2d.fromDegrees(0))), drivetrain));
     // Controller bindings
     mainController.leftBumper().toggleOnTrue(
-      Commands.sequence(
+      Commands.repeatingSequence(
         intake.pivotCtrCmd(IntakeConstants.kDownPosition),
         intake.rollerCtrlCmd(IntakeConstants.kInSpeed)
       )
@@ -65,6 +69,7 @@ public class Robot extends TimedRobot {
       Commands.sequence(
         shooter.FlywheelCtrCmd(ShooterConstants.kFlywheelShotSpeed),
         shooter.pivotCtrlCmd(ShooterConstants.kSpeakerPosition),
+        Commands.waitUntil(mainController.rightBumper().negate()),
         Commands.waitUntil(mainController.rightBumper()),
         shooter.rollerCtrlCmd(ShooterConstants.kRollersShootSpeed),
         Commands.waitUntil(()->!shooter.topSensor()).withTimeout(0.5),
@@ -75,6 +80,11 @@ public class Robot extends TimedRobot {
     mainController.button(7).onTrue(
       Commands.sequence(
         shooter.pivotCtrlCmd(ShooterConstants.kAmpPosition),
+        shooter.FlywheelCtrCmd(0),
+        shooter.rollerCtrlCmd(-0.5),
+        Commands.waitSeconds(0.25),
+        shooter.rollerCtrlCmd(0),
+        Commands.waitUntil(mainController.button(7).negate()),
         Commands.waitUntil(mainController.button(7)),
         shooter.rollerCtrlCmd(ShooterConstants.kRollersOutSpeed),
         Commands.waitUntil(()->!shooter.topSensor()).withTimeout(0.5),
