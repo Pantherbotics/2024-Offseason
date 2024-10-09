@@ -6,7 +6,6 @@ package frc.robot.subsystems.drivetrain;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.utility.PhoenixPIDController;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.PIDConstants;
@@ -22,15 +21,6 @@ public class DriveConstants {
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric() // main drive type
       .withDeadband(kMaxSpeed * 0.01).withRotationalDeadband(kMaxAngularRate * 0.01)
       .withDriveRequestType(DriveRequestType.Velocity).withSteerRequestType(SteerRequestType.MotionMagic);
-
-
-    public static final SwerveRequest.FieldCentricFacingAngle facing = new SwerveRequest.FieldCentricFacingAngle()
-      .withDeadband(kMaxSpeed * 0.01).withRotationalDeadband(kMaxAngularRate * 0.01)
-      .withDriveRequestType(DriveRequestType.Velocity).withSteerRequestType(SteerRequestType.MotionMagic);
-
-
-    public static PhoenixPIDController kHeadingController = new PhoenixPIDController(2, 0.0, 0.1);
-    
 
     public static final PathConstraints kPathfindingConstraints = new PathConstraints(
         6, 4,
