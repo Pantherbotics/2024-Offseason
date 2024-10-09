@@ -8,7 +8,11 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.Handoff;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.DriveConstants;
@@ -29,6 +33,7 @@ public class Robot extends TimedRobot {
   private final Intake intake = new Intake();
   private final Telemetry logger = new Telemetry();
 
+
   public Robot(){
 
     intake.setDefaultCommand(
@@ -43,13 +48,21 @@ public class Robot extends TimedRobot {
         .withRotationalRate(-mainController.getRightX() * DriveConstants.kMaxAngularRate)
     ));
 
+
+    intake.gotNote().onTrue(new Handoff(intake, shooter).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+
     mainController.leftBumper().onTrue(
       intake.pivotCtrCmd(IntakeConstants.kDownPosition).andThen(intake.rollerCtrlCmd(IntakeConstants.kInSpeed))
     );
-
     
-
-
+    mainController.rightBumper().onTrue(
+      new SequentialCommandGroup(
+        shooter.FlywheelCtrCmd(ShooterConstants.kFlywheelShotSpeed),
+        shooter.pivotCtrlCmd(ShooterConstants.kSpeakerPosition),
+        new WaitUntilCommand(shooter::flywheelsAtSetpoint)
+      )
+    );
+  
   }
 
   @Override
