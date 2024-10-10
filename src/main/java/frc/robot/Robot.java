@@ -56,7 +56,6 @@ public class Robot extends TimedRobot {
       new Handoff(intake, shooter).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
     );
 
-    mainController.povDown().onTrue(Commands.runOnce(()->drivetrain.seedFieldRelative(new Pose2d(0,0, Rotation2d.fromDegrees(0))), drivetrain));
     // Controller bindings
     mainController.leftBumper().toggleOnTrue(
       Commands.repeatingSequence(
@@ -97,7 +96,11 @@ public class Robot extends TimedRobot {
     );
 
     mainController.button(8).onTrue(
-      intake.zeroIntake()
+      intake.zeroIntake().alongWith(Commands.runOnce(null, shooter))
+    );
+
+    mainController.povDown().onTrue(
+      Commands.runOnce(()->drivetrain.seedFieldRelative(), drivetrain)
     );
   }
 

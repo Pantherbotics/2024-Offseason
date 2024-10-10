@@ -166,7 +166,6 @@ public class Shooter extends SubsystemBase {
   }
 
 
-
   public boolean topSensor(){
     return m_topSensor.getAverageValue() > ShooterConstants.kTopSensorThreshold;
   }
