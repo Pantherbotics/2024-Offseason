@@ -15,7 +15,7 @@ import edu.wpi.first.math.util.Units;
 /** Add your docs here. */
 public class DriveConstants {
 
-    public static final double kMaxSpeed = 4.0;
+    public static final double kMaxSpeed = 4.20;
     public static final double kMaxAngularRate = 1.5 * Math.PI;
 
     public static final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric() // main drive type
