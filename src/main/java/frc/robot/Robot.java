@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Handoff;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
@@ -90,11 +91,14 @@ public class Robot extends TimedRobot {
     );
 
     mainController.a().onTrue(
-      climber.climbUntilSwitches().withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+      climber.ctrClimbersCmd(1)
     );
 
+    new Trigger(climber::leftSwitch).onTrue(climber.ctrlLeftCmd(0));
+    new Trigger(climber::rightSwitch).onTrue(climber.ctrlRightCmd(0).asProxy());
+
     mainController.button(8).onTrue(
-      intake.zeroIntake().alongWith(Commands.runOnce(null, shooter))
+      intake.zeroIntake().alongWith(Commands.runOnce(()->shooter.setFlywheelSpeed(0), shooter))
     );
 
     mainController.povDown().onTrue(
