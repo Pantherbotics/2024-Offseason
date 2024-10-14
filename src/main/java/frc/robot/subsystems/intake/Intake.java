@@ -16,9 +16,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -29,31 +26,28 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class Intake extends SubsystemBase {
-  private final TalonFX m_pivotMotor;
-  private final TalonFX m_rollersMotor;
-  private final DigitalInput m_limitSwitch;
-  private final AnalogInput m_distanceSensor;
-  private final MotionMagicVoltage m_request;
+  private final TalonFX m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorID);
+  private final TalonFX m_rollersMotor = new TalonFX(IntakeConstants.kRollersMotorID);
+
+  private final DigitalInput m_limitSwitch = new DigitalInput(IntakeConstants.kLimitSiwtchID);
+  private final DigitalInput m_beamBreak = new DigitalInput(IntakeConstants.kBeamBreakID);
+  private final Debouncer m_debouncer = new Debouncer(IntakeConstants.kDebounceTime, DebounceType.kFalling);
+
+  private final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
   private final VoltageOut m_voltReq = new VoltageOut(0.0);
-  
+
   private final SysIdRoutine routine = new SysIdRoutine(            
     new SysIdRoutine.Config(
-    null,
-    Volts.of(4),
-    null,
-    (state) -> SignalLogger.writeString("state", state.toString())), new Mechanism(this::pivotVoltage, null, this));
-  
+      null,
+      Volts.of(4),
+      null,
+      (state) -> SignalLogger.writeString("state", state.toString())), new Mechanism((voltageMeasure)->m_pivotMotor.setControl(m_voltReq.withOutput(voltageMeasure.in(Volts))), null, this));
+
     
   public Intake() {
-    m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorID);
-    m_rollersMotor = new TalonFX(IntakeConstants.kRollersMotorID);
-    m_limitSwitch = new DigitalInput(IntakeConstants.kLimitSiwtchID);
-    m_distanceSensor = new AnalogInput(IntakeConstants.kDistanceSensorID);
-    m_distanceSensor.setAverageBits(4);
-
     TalonFXConfiguration pivotConfigs = new TalonFXConfiguration()
-    .withSlot0(IntakeConstants.kPivotGains)
-    .withMotionMagic(IntakeConstants.kProfileConfigs);
+      .withSlot0(IntakeConstants.kPivotGains)
+      .withMotionMagic(IntakeConstants.kProfileConfigs);
     FeedbackConfigs feedbackConfigs = pivotConfigs.Feedback;
     feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.kMotorToPivotRatio);
     
@@ -69,103 +63,52 @@ public class Intake extends SubsystemBase {
     m_pivotMotor.optimizeBusUtilization(10, 0.05);
     m_rollersMotor.optimizeBusUtilization(10, 0.05);
 
-    m_request = new MotionMagicVoltage(0);
-
-    
-
     SmartDashboard.putData("Intake", this);
   }
 
-    
-  public void pivotVoltage(Measure<Voltage> voltageMeasure){
-    m_pivotMotor.setControl(m_voltReq.withOutput(voltageMeasure.in(Volts)));
-  }
 
-  public boolean limitSwitch(){
-    return m_limitSwitch.get();
+  public void setPivotGoal(double position){
+    m_pivotMotor.setControl(m_request.withPosition(position));
   }
-
-  public boolean hasNote(){
-    return m_distanceSensor.getAverageValue() > IntakeConstants.kSensorThreshold;
+  public Command pivotCtrCmd(double position){
+    return runOnce(()->setPivotGoal(position));
   }
-
-  public void setGoal(double goal){
-    SmartDashboard.putNumber("Intake goal", goal);
-    m_pivotMotor.setControl(m_request.withPosition(goal));
+  public Command zeroIntake(){
+    return runEnd(()->{m_pivotMotor.setControl(m_voltReq.withOutput(-2));m_rollersMotor.set(0);}, ()->{m_pivotMotor.setPosition(0);setPivotGoal(0);}).until(this::limitSwitch);
   }
-
   public boolean isAtGoal(){
     return Math.abs(m_request.Position - m_pivotMotor.getPosition().getValueAsDouble()) < IntakeConstants.kGoalTolerance;
   }
 
-  public void setRollers(double speed){
-    m_rollersMotor.set(speed);
+
+  public Command rollerCtrlCmd(double dutyCycle) {
+    return runOnce(() -> m_rollersMotor.set(dutyCycle)); 
   }
 
-  public void setPivotDown(){
-    setGoal(IntakeConstants.kDownPosition);
-  }
 
-  public void setPivotUp(){
-    setGoal(IntakeConstants.kUpPosition);
+  public boolean limitSwitch(){
+    return m_limitSwitch.get();
   }
-
-  public void setRollersIn(){
-    setRollers(IntakeConstants.kInSpeed);
+  public boolean hasNote(){
+    return !m_debouncer.calculate(m_beamBreak.get());
   }
-
-  public void setRollersStop(){
-    setRollers(0);
-  }
-
-  public void setRollersOut(){
-    setRollers(IntakeConstants.kOutSpeed);
-  }
-
-  public Command pivotDown(){
-    return runOnce(()->setPivotDown());
-  }
-
-  public Command pivotUp(){
-    return runOnce(()->setPivotUp());
-  }
-
-  public Command rollersIn(){
-    return runOnce(()->setRollersIn());
-  }
-
-  public Command rollersStop(){
-    return runOnce(()->setRollersStop());
-  }
-
-  public Command rollersOut(){
-    return runOnce(()->setRollersOut());
-  }
-
-  public Command sysIdDynamicCommand(Direction direction){
-    return routine.dynamic(direction);
-  }
-
-  public Command sysIdQuasistaticCommand(Direction direction){
-    return routine.quasistatic(direction);
-  }
-
   public Trigger gotNote(){
     return new Trigger(this::hasNote);
   }
 
-  public Command zeroIntake(){
-    return runEnd(()->{m_pivotMotor.setControl(m_voltReq.withOutput(-2));setRollersStop();}, ()->{m_pivotMotor.setPosition(0);setGoal(0);}).until(this::limitSwitch);
+
+  public Command sysIdDynamicCommand(Direction direction){
+    return routine.dynamic(direction);
   }
+  public Command sysIdQuasistaticCommand(Direction direction){
+    return routine.quasistatic(direction);
+  }
+
 
   @Override
   public void periodic() {
-
     SmartDashboard.putBoolean("IntakeAtGoal", isAtGoal());
-    SmartDashboard.putNumber("IntakeDistToGoal", m_request.Position - m_pivotMotor.getPosition().getValueAsDouble());
     SmartDashboard.putBoolean("intake switch", limitSwitch());
     SmartDashboard.putBoolean("IntakeHasNote", hasNote());
-    SmartDashboard.putNumber("IntakeSensor", m_distanceSensor.getAverageValue());
-    SmartDashboard.putNumber("Intake position", m_pivotMotor.getPosition().getValueAsDouble());
   }
 }

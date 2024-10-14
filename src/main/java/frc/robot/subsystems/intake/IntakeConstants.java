@@ -17,9 +17,8 @@ public class IntakeConstants {
 
     public static final int kLimitSiwtchID = 0;
 
-    public static final int kDistanceSensorID = 3;
-    public static final int kSensorThreshold = 500;
-    public static final double kDebounceTime = 0.08;
+    public static final int kBeamBreakID = 3;
+    public static final double kDebounceTime = 0.25;
 
     public static final double kDownPosition = 1.35;
     public static final double kUpPosition = 0;

@@ -4,22 +4,114 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.Handoff;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
+import frc.robot.subsystems.drivetrain.DriveConstants;
+import frc.robot.subsystems.drivetrain.Telemetry;
+import frc.robot.subsystems.drivetrain.TunerConstants;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeConstants;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterConstants;
+
 
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+  private final CommandXboxController mainController = new CommandXboxController(0);
+  private final CommandSwerveDrivetrain drivetrain = TunerConstants.DriveTrain;
+  private final Climber climber = new Climber();
+  private final Shooter shooter = new Shooter();
+  private final Intake intake = new Intake();
+  private final Telemetry logger = new Telemetry();
+  
+
+  public Robot(){
+    // default commands put subsystems in default state
+    intake.setDefaultCommand(
+      Commands.repeatingSequence(intake.pivotCtrCmd(IntakeConstants.kUpPosition), intake.rollerCtrlCmd(0))
+    );
+    shooter.setDefaultCommand(
+      Commands.repeatingSequence(shooter.pivotCtrlCmd(ShooterConstants.kHandoffPosition), (shooter.rollerCtrlCmd(0)), (shooter.coastFlywheelsCmd()))
+    );
+    drivetrain.setDefaultCommand(drivetrain.applyRequest( 
+      ()->DriveConstants.drive.withVelocityX(mainController.getLeftY() * DriveConstants.kMaxSpeed)
+        .withVelocityY(mainController.getLeftX() * DriveConstants.kMaxSpeed) 
+        .withRotationalRate(-mainController.getRightX() * DriveConstants.kMaxAngularRate)
+    ));
+    drivetrain.registerTelemetry(logger::telemeterize);
+    drivetrain.invertEncoders();
+    drivetrain.setOperatorPerspectiveForward(Rotation2d.fromDegrees(180));
+
+    // sensor bindings
+    intake.gotNote().onTrue(
+      new Handoff(intake, shooter).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+    );
+
+    // Controller bindings
+    mainController.leftBumper().toggleOnTrue(
+      Commands.repeatingSequence(
+        intake.pivotCtrCmd(IntakeConstants.kDownPosition),
+        intake.rollerCtrlCmd(IntakeConstants.kInSpeed)
+      )
+    );
+    
+    mainController.rightBumper().onTrue(
+      Commands.sequence(
+        shooter.FlywheelCtrCmd(ShooterConstants.kFlywheelShotSpeed),
+        shooter.pivotCtrlCmd(ShooterConstants.kSpeakerPosition),
+        Commands.waitUntil(mainController.rightBumper().negate()),
+        Commands.waitUntil(mainController.rightBumper()),
+        shooter.rollerCtrlCmd(ShooterConstants.kRollersShootSpeed),
+        Commands.waitUntil(()->!shooter.topSensor()).withTimeout(0.5),
+        Commands.waitSeconds(0.5)
+      )
+    );
+
+    mainController.button(7).onTrue(
+      Commands.sequence(
+        shooter.pivotCtrlCmd(ShooterConstants.kAmpPosition),
+        shooter.FlywheelCtrCmd(0),
+        shooter.rollerCtrlCmd(-0.5),
+        Commands.waitSeconds(0.25),
+        shooter.rollerCtrlCmd(0),
+        Commands.waitUntil(mainController.button(7).negate()),
+        Commands.waitUntil(mainController.button(7)),
+        shooter.rollerCtrlCmd(ShooterConstants.kRollersOutSpeed),
+        Commands.waitUntil(()->!shooter.topSensor()).withTimeout(0.5),
+        Commands.waitSeconds(1)
+      )
+    );
+
+    mainController.a().onTrue(
+      climber.ctrClimbersCmd(1)
+    );
+
+    new Trigger(climber::leftSwitch).onTrue(climber.ctrlLeftCmd(0));
+    new Trigger(climber::rightSwitch).onTrue(climber.ctrlRightCmd(0).asProxy());
+
+    mainController.button(8).onTrue(
+      intake.zeroIntake().alongWith(Commands.runOnce(()->shooter.setFlywheelSpeed(0), shooter))
+    );
+
+    mainController.povDown().onTrue(
+      Commands.runOnce(()->drivetrain.seedFieldRelative(), drivetrain)
+    );
+  }
 
   @Override
   public void robotInit() {
     DataLogManager.start();
     DriverStation.startDataLog(DataLogManager.getLog());
-    m_robotContainer = new RobotContainer();
   }
 
   @Override
@@ -27,57 +119,6 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
   }
 
-  @Override
-  public void disabledInit() {}
 
-  @Override
-  public void disabledPeriodic() {}
 
-  @Override
-  public void disabledExit() {
-    m_robotContainer.onStart();
-  }
-
-  @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-  }
-
-  @Override
-  public void autonomousPeriodic() {}
-
-  @Override
-  public void autonomousExit() {}
-
-  @Override
-  public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
-  }
-
-  @Override
-  public void teleopPeriodic() {}
-
-  @Override
-  public void teleopExit() {}
-
-  @Override
-  public void simulationPeriodic(){
-  }
-
-  @Override
-  public void testInit() {
-    CommandScheduler.getInstance().cancelAll();
-  }
-
-  @Override
-  public void testPeriodic() {}
-
-  @Override
-  public void testExit() {}
 }

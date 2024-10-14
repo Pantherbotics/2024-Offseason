@@ -19,7 +19,8 @@ public final class ShooterConstants {
     public static final double kEncoderOffset = -0.16;
 
     public static final double kHandoffPosition = -0.05;
-    public static final double kAmpPosition = 0.13;
+    public static final double kAmpPosition = 0.15;
+    public static final double kSpeakerPosition = -0.1;
 
     public static final int kLeftFlywheelMotorID = 31;
     public static final int kRightFlywheelMotorID = 32;
@@ -34,12 +35,27 @@ public final class ShooterConstants {
 
     public static final int kTopSensorID = 0;
     public static final int kSideSensorID = 2;
-    public static final int kTopSensorThreshold = 1500;
+    public static final int kTopSensorThreshold = 1600;
     public static final int kSideSensorThreshold = 1200;
 
-    public static final double kBangBangTolerance = 0.05;
+    public static final double kFlywheelTolerance = 0.05;
     public static final double kPivotTolerance = 0.1;
     public static final double kMotorToPivotRatio = 117.87;
+
+    public static final Slot0Configs kLeftFlywheelGains = new Slot0Configs() // TUNE THIS
+    .withKS(0.1)
+    .withKV(0.12)
+    .withKA(0.05)
+    .withKP(0.11)
+    .withKD(0);
+
+    public static final Slot0Configs kRightFlywheelGains = new Slot0Configs() // TUNE THIS
+    .withKS(0.1)
+    .withKV(0.12)
+    .withKA(0.05)
+    .withKP(0.11)
+    .withKD(0);
+
     public static Slot0Configs kPivotGains = new Slot0Configs()
     .withKS(0.15)
     .withKV(9)

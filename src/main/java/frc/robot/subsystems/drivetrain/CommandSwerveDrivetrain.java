@@ -5,11 +5,14 @@ import static edu.wpi.first.units.Units.Volts;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -20,7 +23,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -104,9 +106,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     private void configurePathPlanner() {
-        DriveConstants.facing.HeadingController = DriveConstants.kHeadingController;
-        DriveConstants.facing.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
-        SmartDashboard.putData("thing", DriveConstants.facing.HeadingController);
         double driveBaseRadius = 0;
         for (var moduleLocation : m_moduleLocations) {
             driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
@@ -142,6 +141,33 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return RoutineToApply.quasistatic(direction);
     }
+
+    public void invertEncoders(){
+        if(!Utils.isSimulation()){
+        for (int i = 0; i < 4; ++i)
+        {
+        var module = TunerConstants.DriveTrain.getModule(i);
+        CANcoderConfiguration cfg = new CANcoderConfiguration();
+        StatusCode response = StatusCode.StatusCodeNotInitialized;
+
+        /* Repeat this in a loop until we have success */
+        do {
+            /* First make sure we refresh the object so we don't overwrite anything */
+            response = module.getCANcoder().getConfigurator().refresh(cfg);
+        } while(!response.isOK());
+
+        /* Invert your CANcoder magnet direction */
+        cfg.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+
+        /* Repeat this in a loop until we have success */
+        do {
+            /* Apply configuration to CANcoder */
+            module.getCANcoder().getConfigurator().apply(cfg);
+        } while (!response.isOK());
+        }
+        }
+    }
+
 
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return RoutineToApply.dynamic(direction);
@@ -187,7 +213,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         /* This allows us to correct the perspective in case the robot code restarts mid-match */
         /* Otherwise, only check and apply the operator perspective if the DS is disabled */
         /* This ensures driving behavior doesn't change until an explicit disable event occurs during testing*/
-        if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
+        /*if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance().ifPresent((allianceColor) -> {
                 this.setOperatorPerspectiveForward(
                         allianceColor == Alliance.Red ? RedAlliancePerspectiveRotation
@@ -196,6 +222,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             });
         }
 
-        FieldPoses.flipPoses();
+        FieldPoses.flipPoses();*/
     }
 }
