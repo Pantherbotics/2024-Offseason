@@ -22,7 +22,7 @@ public class Handoff extends SequentialCommandGroup {
   public Handoff(Intake intake, Shooter shooter) {
     
     addCommands(
-      intake.rollerCtrlCmd(0),
+      intake.rollerCtrlCmd(IntakeConstants.kInSpeed/20),
       intake.pivotCtrCmd(IntakeConstants.kUpPosition),
       shooter.pivotCtrlCmd(ShooterConstants.kHandoffPosition),
       new WaitUntilCommand(intake::isAtGoal),

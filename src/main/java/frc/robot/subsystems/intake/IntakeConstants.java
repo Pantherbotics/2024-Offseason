@@ -22,7 +22,7 @@ public class IntakeConstants {
 
     public static final double kDownPosition = 1.35;
     public static final double kUpPosition = 0;
-    public static final double kInSpeed = -0.45;
+    public static final double kInSpeed = -1;
     public static final double kOutSpeed = 0.3;
 
     
