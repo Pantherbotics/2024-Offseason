@@ -38,7 +38,7 @@ public class TunerConstants {
 
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
-    private static final double kSlipCurrentA = 150;
+    private static final double kSlipCurrentA = 100;
 
     private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration();
 
