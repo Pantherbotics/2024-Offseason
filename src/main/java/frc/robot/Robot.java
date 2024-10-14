@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
         intake.pivotCtrCmd(IntakeConstants.kDownPosition),
         intake.rollerCtrlCmd(IntakeConstants.kInSpeed)
       ).alongWith(
-        new noteAlignedDrive(drivetrain)
+        new noteAlignedDrive(drivetrain, mainController)
       )
     );
     

@@ -4,25 +4,35 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
 import frc.robot.subsystems.drivetrain.DriveConstants;
+import frc.robot.subsystems.vision.LimelightHelpers;
 
 public class noteAlignedDrive extends Command {
   private final CommandSwerveDrivetrain drivetrain;
+  private final CommandXboxController mainController;
+  private PIDController controller = new PIDController(1, 0, 0);
+
   /** Creates a new noteAlignedDrive. */
-  public noteAlignedDrive(CommandSwerveDrivetrain drivetrain) {
+  public noteAlignedDrive(CommandSwerveDrivetrain drivetrain, CommandXboxController xboxController) {
     this.drivetrain = drivetrain;
+    this.mainController = xboxController;
     addRequirements(drivetrain);
   }
 
   @Override
   public void execute() {
+    var pose = drivetrain.getState().Pose;
+    var notespeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0,controller.calculate(LimelightHelpers.getTX("")),0.0, pose.getRotation());
     drivetrain.setControl(
       DriveConstants.drive
-      .withVelocityX(0)
-      .withVelocityY(0)
-      .withRotationalRate(0)
+      .withVelocityX(mainController.getLeftY() * DriveConstants.kMaxSpeed)
+      .withVelocityY(mainController.getLeftX() * DriveConstants.kMaxSpeed + notespeeds.vyMetersPerSecond * 0.1)
+      .withRotationalRate(-mainController.getRightX() * DriveConstants.kMaxAngularRate)
     );
   }
 
