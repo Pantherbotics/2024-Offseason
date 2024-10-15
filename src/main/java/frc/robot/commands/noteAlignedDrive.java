@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix6.sim.ChassisReference;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -31,13 +31,11 @@ public class noteAlignedDrive extends Command {
     var pose = drivetrain.getState().Pose;
     double calculated = controller.calculate(LimelightHelpers.getTX(""));
     var notespeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0,calculated,0.0, pose.getRotation());
-    
-    drivetrain.setControl(
-      DriveConstants.drive
-      .withVelocityX(mainController.getLeftY() * DriveConstants.kMaxSpeed + Math.sin(pose.getRotation().getRadians())*calculated * 0.08)
-      .withVelocityY(mainController.getLeftX() * DriveConstants.kMaxSpeed + Math.cos(pose.getRotation().getRadians())*calculated * 0.08)
-      .withRotationalRate(-mainController.getRightX() * DriveConstants.kMaxAngularRate)
-    );
+    var joystickSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+      mainController.getLeftY() * DriveConstants.kMaxSpeed,
+      mainController.getLeftX() * DriveConstants.kMaxSpeed,
+      -mainController.getRightX() * DriveConstants.kMaxAngularRate,
+      pose.getRotation());
   }
 
   @Override

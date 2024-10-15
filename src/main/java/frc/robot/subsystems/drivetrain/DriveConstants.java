@@ -22,6 +22,10 @@ public class DriveConstants {
       .withDeadband(kMaxSpeed * 0.01).withRotationalDeadband(kMaxAngularRate * 0.01)
       .withDriveRequestType(DriveRequestType.Velocity).withSteerRequestType(SteerRequestType.MotionMagic);
 
+    public static final SwerveRequest.RobotCentric robotDrive = new SwerveRequest.RobotCentric() // main drive type
+      .withDeadband(kMaxSpeed * 0.01).withRotationalDeadband(kMaxAngularRate * 0.01)
+      .withDriveRequestType(DriveRequestType.Velocity).withSteerRequestType(SteerRequestType.MotionMagic);
+
     public static final PathConstraints kPathfindingConstraints = new PathConstraints(
         6, 4,
         Units.degreesToRadians(360), Units.degreesToRadians(180));
