@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix6.sim.ChassisReference;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,11 +29,13 @@ public class noteAlignedDrive extends Command {
   @Override
   public void execute() {
     var pose = drivetrain.getState().Pose;
-    var notespeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0,controller.calculate(LimelightHelpers.getTX("")),0.0, pose.getRotation());
+    double calculated = controller.calculate(LimelightHelpers.getTX(""));
+    var notespeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0,calculated,0.0, pose.getRotation());
+    
     drivetrain.setControl(
       DriveConstants.drive
-      .withVelocityX(mainController.getLeftY() * DriveConstants.kMaxSpeed)
-      .withVelocityY(mainController.getLeftX() * DriveConstants.kMaxSpeed + notespeeds.vyMetersPerSecond * 0.1)
+      .withVelocityX(mainController.getLeftY() * DriveConstants.kMaxSpeed + Math.sin(pose.getRotation().getRadians())*calculated * 0.08)
+      .withVelocityY(mainController.getLeftX() * DriveConstants.kMaxSpeed + Math.cos(pose.getRotation().getRadians())*calculated * 0.08)
       .withRotationalRate(-mainController.getRightX() * DriveConstants.kMaxAngularRate)
     );
   }
