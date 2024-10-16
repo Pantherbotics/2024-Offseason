@@ -33,8 +33,8 @@ public class noteAlignedDrive extends Command {
 
     var notespeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0,calculated,0.0, pose.getRotation());
 
-    drivetrain.applyRequest(
-      ()-> DriveConstants.drive
+    drivetrain.setControl(
+      DriveConstants.drive
       .withVelocityX(mainController.getLeftY() * DriveConstants.kMaxSpeed + notespeeds.vxMetersPerSecond)
       .withVelocityY(mainController.getLeftX() * DriveConstants.kMaxSpeed + notespeeds.vyMetersPerSecond)
       .withRotationalRate(-mainController.getRightX() * DriveConstants.kMaxAngularRate)
