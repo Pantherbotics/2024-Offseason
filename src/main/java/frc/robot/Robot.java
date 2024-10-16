@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -107,7 +108,7 @@ public class Robot extends TimedRobot {
     );
 
     mainController.povDown().onTrue(
-      Commands.runOnce(()->drivetrain.seedFieldRelative(), drivetrain)
+      Commands.runOnce(()->drivetrain.seedFieldRelative(new Pose2d()), drivetrain)
     );
   }
 
