@@ -19,7 +19,7 @@ public final class ShooterConstants {
     public static final double kEncoderOffset = -0.16;
 
     public static final double kHandoffPosition = -0.05;
-    public static final double kAmpPosition = 0.15;
+    public static final double kAmpPosition = 0.16;
     public static final double kSpeakerPosition = -0.1;
 
     public static final int kLeftFlywheelMotorID = 31;
