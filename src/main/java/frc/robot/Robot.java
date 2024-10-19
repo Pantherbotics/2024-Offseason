@@ -4,11 +4,16 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
@@ -109,6 +114,27 @@ public class Robot extends TimedRobot {
 
     mainController.povDown().onTrue(
       Commands.runOnce(()->drivetrain.seedFieldRelative(new Pose2d()), drivetrain)
+    );
+  }
+
+  @Override
+  public void autonomousInit(){
+    CommandScheduler.getInstance().schedule(
+      Commands.sequence(
+        shooter.FlywheelCtrCmd(ShooterConstants.kFlywheelShotSpeed),
+        shooter.pivotCtrlCmd(ShooterConstants.kSpeakerPosition),
+        Commands.waitSeconds(3),
+        shooter.rollerCtrlCmd(ShooterConstants.kRollersShootSpeed),
+        Commands.waitSeconds(1),
+        shooter.rollerCtrlCmd(0),
+        shooter.coastFlywheelsCmd()
+        /*
+        drivetrain.applyRequest(
+          ()->
+          new SwerveRequest.ApplyChassisSpeeds().withSpeeds(new ChassisSpeeds(-1, 0, 0))
+        ).withTimeout(3)
+        */
+      )
     );
   }
 
