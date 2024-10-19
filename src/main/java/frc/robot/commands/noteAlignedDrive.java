@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drivetrain.CommandSwerveDrivetrain;
@@ -15,7 +16,8 @@ import frc.robot.subsystems.vision.LimelightHelpers;
 public class noteAlignedDrive extends Command {
   private final CommandSwerveDrivetrain drivetrain;
   private final CommandXboxController mainController;
-  private PIDController controller = new PIDController(1, 0, 0);
+  private PIDController controller = new PIDController(0.25, 0, 0.005);
+  private final double kP = 0.3;
 
   /** Creates a new noteAlignedDrive. */
   public noteAlignedDrive(CommandSwerveDrivetrain drivetrain, CommandXboxController xboxController) {
@@ -29,7 +31,7 @@ public class noteAlignedDrive extends Command {
 
     var pose = drivetrain.getState().Pose;
 
-    double calculated = controller.calculate(LimelightHelpers.getTX(""));
+    double calculated = controller.calculate(-LimelightHelpers.getTX("") * kP);
 
     var notespeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0,calculated,0.0, pose.getRotation());
 
