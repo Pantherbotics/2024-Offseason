@@ -5,6 +5,8 @@
 package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -20,6 +22,8 @@ public class Climber extends SubsystemBase {
   private final DigitalInput m_leftSwitch = new DigitalInput(ClimberConstants.kLeftSwitchID);
   private final DigitalInput m_rightSwitch = new DigitalInput(ClimberConstants.kRightSwitchID);
 
+  private final PositionVoltage positionReq = new PositionVoltage(0, 0, false, 0, 0, true, false, false);
+
   public Climber() {
     BaseStatusSignal.setUpdateFrequencyForAll(25, 
     m_leftClimber.getTorqueCurrent(),
@@ -27,8 +31,12 @@ public class Climber extends SubsystemBase {
     m_leftClimber.optimizeBusUtilization(10,0.05);
     m_rightClimber.optimizeBusUtilization(10,0.05);
 
+    m_rightClimber.setPosition(0);
+    m_leftClimber.setPosition(0);
     m_leftClimber.setNeutralMode(NeutralModeValue.Brake);
     m_rightClimber.setNeutralMode(NeutralModeValue.Brake);
+
+    //m_leftClimber.getConfigurator().apply(new Slot0Configs().withKP(1).withKI(0).withKG(0).withKS);
   }
 
   public void setLeft(double speed){
@@ -52,6 +60,15 @@ public class Climber extends SubsystemBase {
       setLeft(-dutyCycle);
       setRight(dutyCycle);
     });
+  }
+
+  public Command unclimbCmd(){
+    return runOnce(
+      ()->{
+        m_leftClimber.setControl(positionReq.withPosition(0));
+        m_rightClimber.setControl(positionReq.withPosition(0));
+      }
+    );
   }
 
 

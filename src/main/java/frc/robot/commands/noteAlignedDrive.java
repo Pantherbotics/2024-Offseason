@@ -16,8 +16,8 @@ import frc.robot.subsystems.vision.LimelightHelpers;
 public class noteAlignedDrive extends Command {
   private final CommandSwerveDrivetrain drivetrain;
   private final CommandXboxController mainController;
-  private PIDController controller = new PIDController(0.25, 0, 0.005);
-  private final double kP = 0.3;
+  private PIDController controller = new PIDController(0.75, 0, 0);
+  private final double kP = 0.05;
 
   /** Creates a new noteAlignedDrive. */
   public noteAlignedDrive(CommandSwerveDrivetrain drivetrain, CommandXboxController xboxController) {
@@ -35,12 +35,16 @@ public class noteAlignedDrive extends Command {
 
     var notespeeds = ChassisSpeeds.fromRobotRelativeSpeeds(0.0,calculated,0.0, pose.getRotation());
 
+    double driveSpeed = Math.hypot(drivetrain.getState().speeds.vxMetersPerSecond, drivetrain.getState().speeds.vyMetersPerSecond);
+
     drivetrain.setControl(
       DriveConstants.drive
-      .withVelocityX(mainController.getLeftY() * DriveConstants.kMaxSpeed + notespeeds.vxMetersPerSecond)
-      .withVelocityY(mainController.getLeftX() * DriveConstants.kMaxSpeed + notespeeds.vyMetersPerSecond)
+      .withVelocityX(mainController.getLeftY() * DriveConstants.kMaxSpeed + notespeeds.vxMetersPerSecond * driveSpeed/DriveConstants.kMaxSpeed)
+      .withVelocityY(mainController.getLeftX() * DriveConstants.kMaxSpeed + notespeeds.vyMetersPerSecond * driveSpeed/DriveConstants.kMaxSpeed)
       .withRotationalRate(-mainController.getRightX() * DriveConstants.kMaxAngularRate)
     );
+
+    SmartDashboard.putNumber("Note Align",calculated);
   }
 
   @Override

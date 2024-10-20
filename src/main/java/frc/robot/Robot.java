@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -60,8 +61,17 @@ public class Robot extends TimedRobot {
     drivetrain.setOperatorPerspectiveForward(Rotation2d.fromDegrees(180));
 
     // sensor bindings
-    intake.gotNote().onTrue(
+    mainController.x().onTrue(
       new Handoff(intake, shooter).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+      .andThen(Commands.runOnce(()->DataLogManager.log("manual handoff")))
+    );
+
+    intake.gotNote().onTrue(
+      Commands.runOnce(()->mainController.getHID().setRumble(RumbleType.kBothRumble, 1)
+        ).andThen(Commands.waitSeconds(0.5))
+        .andThen(Commands.runOnce(()->mainController.getHID().setRumble(RumbleType.kBothRumble, 0))).alongWith(
+        new Handoff(intake, shooter).withInterruptBehavior(InterruptionBehavior.kCancelIncoming)
+      )
     );
 
     // Controller bindings
@@ -70,7 +80,14 @@ public class Robot extends TimedRobot {
         intake.pivotCtrCmd(IntakeConstants.kDownPosition),
         intake.rollerCtrlCmd(IntakeConstants.kInSpeed)
       ).alongWith(
-        new noteAlignedDrive(drivetrain, mainController)
+        new noteAlignedDrive(drivetrain, mainController).until(mainController.y()).andThen(Commands.runOnce(()->DataLogManager.log("cancelled note align"))).andThen(
+          drivetrain.applyRequest( 
+      ()->DriveConstants.drive.withVelocityX(mainController.getLeftY() * DriveConstants.kMaxSpeed)
+        .withVelocityY(mainController.getLeftX() * DriveConstants.kMaxSpeed) 
+        .withRotationalRate(-mainController.getRightX() * DriveConstants.kMaxAngularRate)
+        )
+    
+        )
       )
     );
     
@@ -97,19 +114,21 @@ public class Robot extends TimedRobot {
         Commands.waitUntil(mainController.button(7)),
         shooter.rollerCtrlCmd(ShooterConstants.kRollersOutSpeed),
         Commands.waitUntil(()->!shooter.topSensor()).withTimeout(0.5),
-        Commands.waitSeconds(1)
+        Commands.waitSeconds(1.5)
       )
     );
 
     mainController.a().onTrue(
+      //shooter.pivotCtrlCmd(2.0).repeatedly().asProxy().alongWith(
       climber.ctrClimbersCmd(1)
+      //)
     );
 
     new Trigger(climber::leftSwitch).onTrue(climber.ctrlLeftCmd(0));
     new Trigger(climber::rightSwitch).onTrue(climber.ctrlRightCmd(0).asProxy());
 
     mainController.button(8).onTrue(
-      intake.zeroIntake().alongWith(Commands.runOnce(()->shooter.setFlywheelSpeed(0), shooter))
+      intake.zeroIntake().alongWith(Commands.runOnce(()->shooter.setFlywheelSpeed(0), shooter)).alongWith(Commands.runOnce(()->DataLogManager.log("zeroed intake")))
     );
 
     mainController.povDown().onTrue(

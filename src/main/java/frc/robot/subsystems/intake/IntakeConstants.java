@@ -20,7 +20,7 @@ public class IntakeConstants {
     public static final int kBeamBreakID = 3;
     public static final double kDebounceTime = 0.12;
 
-    public static final double kDownPosition = 1.35;
+    public static final double kDownPosition = 1.32;
     public static final double kUpPosition = 0;
     public static final double kInSpeed = -1;
     public static final double kOutSpeed = 0.3;
