@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -52,6 +53,8 @@ public class Intake extends SubsystemBase {
     feedbackConfigs.withSensorToMechanismRatio(IntakeConstants.kMotorToPivotRatio);
     
     m_pivotMotor.getConfigurator().apply(pivotConfigs);
+
+    m_rollersMotor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(14).withStatorCurrentLimitEnable(true));
     
     BaseStatusSignal.setUpdateFrequencyForAll(100,
     m_pivotMotor.getPosition(),
