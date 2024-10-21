@@ -18,7 +18,7 @@ public class IntakeConstants {
     public static final int kLimitSiwtchID = 0;
 
     public static final int kBeamBreakID = 3;
-    public static final double kDebounceTime = 0.12;
+    public static final double kDebounceTime = 0.2;
 
     public static final double kDownPosition = 1.32;
     public static final double kUpPosition = 0;
@@ -26,7 +26,7 @@ public class IntakeConstants {
     public static final double kOutSpeed = 0.3;
 
     
-    public static final double kMotorToPivotRatio = 64.0 * (23.0/42.0);
+    public static final double kMotorToPivotRatio = 64.0 * (24.0/42.0);
 
     public static Slot0Configs kPivotGains = new Slot0Configs()
     .withKS(0.10809)
